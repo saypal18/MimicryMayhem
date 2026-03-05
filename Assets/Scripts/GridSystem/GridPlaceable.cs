@@ -60,7 +60,7 @@ public sealed class GridPlaceable : MonoBehaviour
 
         List<GridPlaceable> newTile = grid.GetTile(newPosition);
 
-        if (newTile == null || grid.IsMovable(newPosition)) return;
+        if (newTile == null || !grid.IsMovable(newPosition)) return;
 
         if (!movement.Move(transform.position, grid.GetWorldPosition(newPosition))) return;
 
