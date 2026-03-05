@@ -50,12 +50,12 @@ public class SurvivorAgent : Agent, IMoveInputHandler
             else if (inputDirection.y < -0.5f) currentHeuristicAction = (int)MoveAction.Down;
             else if (inputDirection.x < -0.5f) currentHeuristicAction = (int)MoveAction.Left;
             else if (inputDirection.x > 0.5f) currentHeuristicAction = (int)MoveAction.Right;
-            else currentHeuristicAction = (int)MoveAction.NoAction;
+            // else currentHeuristicAction = (int)MoveAction.NoAction;
         }
-        //else if (context.canceled)
-        //{
-        //    currentHeuristicAction = 0;
-        //}
+        else if (context.canceled)
+        {
+            currentHeuristicAction = 0;
+        }
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
