@@ -3,7 +3,7 @@ using UnityEngine;
 
 public sealed class GridPlaceable : MonoBehaviour
 {
-    [SerializeField] private Vector2Int position;
+    private Vector2Int position;
     private Grid grid;
     private PoolingEntity poolingEntity;
 
