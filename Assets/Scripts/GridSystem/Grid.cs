@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections.Generic;
 [System.Serializable]
 public class Grid
 {
@@ -8,21 +8,21 @@ public class Grid
     [SerializeField] private Vector2Int size;
 
     public Vector2Int Size => size;
-    private Tile[,] tiles;
+    public List<GridPlaceable>[,] tiles;
 
     public void Initialize()
     {
-        tiles = new Tile[size.x, size.y];
+        tiles = new List<GridPlaceable>[size.x, size.y];
         for (int x = 0; x < size.x; x++)
         {
             for (int y = 0; y < size.y; y++)
             {
-                tiles[x, y] = new Tile(new Vector2Int(x, y));
+                tiles[x, y] = new List<GridPlaceable>();
             }
         }
     }
 
-    public Tile GetTile(Vector2Int gridPosition)
+    public List<GridPlaceable> GetTile(Vector2Int gridPosition)
     {
         if (gridPosition.x < 0 || gridPosition.x >= size.x || gridPosition.y < 0 || gridPosition.y >= size.y)
             return null;
@@ -32,21 +32,28 @@ public class Grid
 
     public bool IsMovable(Vector2Int gridPosition)
     {
-        if (gridPosition.x < 0 || gridPosition.x >= size.x || gridPosition.y < 0 || gridPosition.y >= size.y)
-            return false;
+        List<GridPlaceable> tile = GetTile(gridPosition);
 
-        return tiles[gridPosition.x, gridPosition.y].IsMovable;
+        if (tile == null) return false;
+
+        foreach (GridPlaceable gridPlaceable in tile)
+        {
+            if (gridPlaceable.CompareTag("Wall"))
+                return false;
+        }
+        return true;
+
     }
 
     public Vector3 GetWorldPosition(Vector2Int gridPosition)
     {
-        Vector3 basePos = startingTilePosition != null ? startingTilePosition.position : Vector3.zero;
+        Vector3 basePos = startingTilePosition.position;
         return basePos + new Vector3(gridPosition.x * tileSize.x, gridPosition.y * tileSize.y, 0);
     }
 
     public Vector2Int GetGridPosition(Vector3 worldPosition)
     {
-        Vector3 basePos = startingTilePosition != null ? startingTilePosition.position : Vector3.zero;
+        Vector3 basePos = startingTilePosition.position;
         Vector3 relativePos = worldPosition - basePos;
 
         int x = Mathf.RoundToInt(relativePos.x / tileSize.x);

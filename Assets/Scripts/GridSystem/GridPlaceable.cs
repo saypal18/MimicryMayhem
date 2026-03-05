@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class GridPlaceable : MonoBehaviour, IGridPlaceable
+public sealed class GridPlaceable : MonoBehaviour
 {
     [SerializeField] private Vector2Int position;
     private Grid grid;
@@ -19,7 +20,7 @@ public sealed class GridPlaceable : MonoBehaviour, IGridPlaceable
         this.grid = grid;
         this.position = startPosition;
 
-        Tile startTile = grid.GetTile(position);
+        List<GridPlaceable> startTile = grid.GetTile(position);
         if (startTile != null)
         {
             startTile.Add(this);
@@ -32,14 +33,7 @@ public sealed class GridPlaceable : MonoBehaviour, IGridPlaceable
         RemoveFromGrid();
     }
 
-    public void SetGrid(Grid grid)
-    {
-        this.grid = grid;
-    }
 
-    /// <summary>
-    /// Moves the entity by a discrete grid direction (clamped to 1 unit magnitude).
-    /// </summary>
     public void Move(Vector2Int direction)
     {
         Vector2Int clampedDirection = new Vector2Int(
@@ -49,9 +43,6 @@ public sealed class GridPlaceable : MonoBehaviour, IGridPlaceable
         MoveTo(position + clampedDirection);
     }
 
-    /// <summary>
-    /// Moves the entity by a vector direction (clamped to 1 unit magnitude).
-    /// </summary>
     public void Move(Vector2 direction)
     {
         Vector2Int discreteDirection = new Vector2Int(
@@ -65,8 +56,8 @@ public sealed class GridPlaceable : MonoBehaviour, IGridPlaceable
     {
         if (grid == null) return;
 
-        Tile newTile = grid.GetTile(newPosition);
-        if (newTile != null && newTile.IsMovable)
+        List<GridPlaceable> newTile = grid.GetTile(newPosition);
+        if (newTile != null && grid.IsMovable(newPosition))
         {
             RemoveFromGrid();
 
@@ -74,24 +65,18 @@ public sealed class GridPlaceable : MonoBehaviour, IGridPlaceable
             newTile.Add(this);
 
             transform.position = grid.GetWorldPosition(position);
-            OnMoved();
         }
     }
 
     public void RemoveFromGrid()
     {
-        if (grid != null)
+        if (grid == null) return;
+
+        List<GridPlaceable> currentTile = grid.GetTile(position);
+        if (currentTile != null)
         {
-            Tile currentTile = grid.GetTile(position);
-            if (currentTile != null)
-            {
-                currentTile.Remove(this);
-            }
+            currentTile.Remove(this);
         }
     }
 
-    private void OnMoved()
-    {
-        // Internal movement response
-    }
 }
