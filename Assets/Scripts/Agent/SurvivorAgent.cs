@@ -12,12 +12,12 @@ enum MoveAction
 }
 public class SurvivorAgent : Agent, IMoveInputHandler
 {
-    private IGridPlaceable gridPlaceable;
+    private GridPlaceable gridPlaceable;
     private int currentHeuristicAction = 0;
 
-    public override void Initialize()
+    public void Initialize(GridPlaceable gridPlaceable)
     {
-        gridPlaceable = GetComponent<IGridPlaceable>();
+        this.gridPlaceable = gridPlaceable;
     }
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
@@ -63,5 +63,11 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         {
             currentHeuristicAction = 0;
         }
+    }
+
+    public override void Heuristic(in ActionBuffers actionsOut)
+    {
+        var discreteActions = actionsOut.DiscreteActions;
+        discreteActions[0] = currentHeuristicAction;
     }
 }

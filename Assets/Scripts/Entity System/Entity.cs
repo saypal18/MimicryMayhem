@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Entity : MonoBehaviour, IEntity
+public class Entity : MonoBehaviour
 {
     [SerializeField] private GridPlaceable gridPlaceable;
 
