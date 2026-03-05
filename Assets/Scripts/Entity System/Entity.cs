@@ -3,9 +3,12 @@ using UnityEngine;
 public class Entity : MonoBehaviour
 {
     [SerializeField] private GridPlaceable gridPlaceable;
-
-    public void Initialize(Grid grid, Vector2Int startPosition)
+    [SerializeField] private SurvivorAgent survivorAgent;
+    private IMovement movement;
+    public void Initialize(Grid grid, Vector2Int startPosition, MovementFactory movementFactory)
     {
-        gridPlaceable.Initialize(grid, startPosition);
+        movement = movementFactory.GetMovement(this);
+        gridPlaceable.Initialize(grid, startPosition, movement);
+        survivorAgent.Initialize(gridPlaceable);
     }
 }

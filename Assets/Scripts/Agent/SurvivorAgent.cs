@@ -24,7 +24,6 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         int moveAction = actionBuffers.DiscreteActions[0];
         Vector2Int direction = Vector2Int.zero;
 
-        // 0: None, 1: Up, 2: Down, 3: Left, 4: Right
         switch (moveAction)
         {
             case (int)MoveAction.NoAction: direction = Vector2Int.zero; break;
@@ -37,14 +36,8 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         if (direction != Vector2Int.zero)
         {
             gridPlaceable.Move(direction);
-            // Debug.Log("Moving");
             AddReward(-0.002f);
         }
-        // Debug.Log("Still");
-
-
-        // Small negative reward each step to encourage fast completion
-        // AddReward(-0.001f);
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -59,14 +52,15 @@ public class SurvivorAgent : Agent, IMoveInputHandler
             else if (inputDirection.x > 0.5f) currentHeuristicAction = (int)MoveAction.Right;
             else currentHeuristicAction = (int)MoveAction.NoAction;
         }
-        else if (context.canceled)
-        {
-            currentHeuristicAction = 0;
-        }
+        //else if (context.canceled)
+        //{
+        //    currentHeuristicAction = 0;
+        //}
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        Debug.Log(currentHeuristicAction);
         var discreteActions = actionsOut.DiscreteActions;
         discreteActions[0] = currentHeuristicAction;
     }

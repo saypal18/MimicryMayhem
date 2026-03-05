@@ -6,12 +6,14 @@ public sealed class GridPlaceable : MonoBehaviour
     private Vector2Int position;
     private Grid grid;
     private PoolingEntity poolingEntity;
+    private IMovement movement;
 
     public Vector2Int Position => position;
     public Grid CurrentGrid => grid;
 
-    public void Initialize(Grid grid, Vector2Int startPosition)
+    public void Initialize(Grid grid, Vector2Int startPosition, IMovement movement = null)
     {
+        this.movement = movement;
         if (poolingEntity == null && TryGetComponent(out poolingEntity))
         {
             poolingEntity.OnDespawning += HandleDespawning;
@@ -57,15 +59,15 @@ public sealed class GridPlaceable : MonoBehaviour
         if (grid == null) return;
 
         List<GridPlaceable> newTile = grid.GetTile(newPosition);
-        if (newTile != null && grid.IsMovable(newPosition))
-        {
-            RemoveFromGrid();
 
-            position = newPosition;
-            newTile.Add(this);
+        if (newTile == null || grid.IsMovable(newPosition)) return;
 
-            transform.position = grid.GetWorldPosition(position);
-        }
+        if (!movement.Move(transform.position, grid.GetWorldPosition(newPosition))) return;
+
+        RemoveFromGrid();
+
+        position = newPosition;
+        newTile.Add(this);
     }
 
     public void RemoveFromGrid()

@@ -7,6 +7,7 @@ public class EntitySpawner
     [SerializeField] private Transform entityParent;
     private Grid grid;
     private InputManager inputManager;
+    [SerializeField] private MovementFactory movementFactory;
     public void Initialize(Grid grid, InputManager inputManager)
     {
         this.grid = grid;
@@ -24,7 +25,7 @@ public class EntitySpawner
             return;
         }
         Entity entity = PoolingEntity.Spawn(entityPrefab);
-        entity.Initialize(grid, randomPosition);
+        entity.Initialize(grid, randomPosition, movementFactory);
         if (entity.TryGetComponent(out IMoveInputHandler moveHandler))
         {
             inputManager.InitializeMove(moveHandler);
