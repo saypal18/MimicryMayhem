@@ -5,12 +5,13 @@ using UnityEngine;
 /// Custom ISensor that provides a 11x11 ego-centric view centered on the agent.
 /// 
 /// Channel layout (3 channels):
-///   [0] Enemy power ratio = Clamp01((enemyPower/agentPower - minRatio) / (maxRatio - minRatio))
-///       0.0  -> no enemy present
-///       below middle -> weaker enemy (prey)
-///       above middle -> stronger enemy (threat)
-///   [1] Pickup present  (0 or 1)
-///   [2] Wall or out-of-bounds (0 or 1)
+///   [0] Enemy power representation:
+///       0.0      -> no enemy
+///       0.2..0.4 -> weaker enemy (prey)
+///       0.5..0.7 -> roughly equal
+///       0.8..1.0 -> stronger enemy (threat)
+///   [1] Pickup present (1.0)
+///   [2] Wall or out-of-bounds (1.0)
 /// </summary>
 public class CustomGridSensor : ISensor
 {
@@ -24,19 +25,13 @@ public class CustomGridSensor : ISensor
     private GridPlaceable agentPlaceable;
     private DamageResolver agentDamageResolver;
 
-    // ---- tunable thresholds ----
-    private float minRatio;
-    private float maxRatio;
-
     // ---- cached spec ----
     private ObservationSpec observationSpec;
 
-    public CustomGridSensor(Grid grid, float minRatio = 0.1f, float maxRatio = 10f)
+    public CustomGridSensor(Grid grid)
     {
         this.grid = grid;
-        this.minRatio = minRatio;
-        this.maxRatio = maxRatio;
-        observationSpec = ObservationSpec.Visual(ViewSize, ViewSize, Channels);
+        observationSpec = ObservationSpec.Visual(Channels, ViewSize, ViewSize);
     }
 
     // Called by SurvivorAgent.Initialize() so each agent instance has its own POV
@@ -60,10 +55,10 @@ public class CustomGridSensor : ISensor
         if (agentPlaceable == null || agentDamageResolver == null)
         {
             // Fill with zeros if not initialised yet
-            for (int h = 0; h < ViewSize; h++)
-                for (int w = 0; w < ViewSize; w++)
-                    for (int c = 0; c < Channels; c++)
-                        writer[h, w, c] = 0f;
+            for (int c = 0; c < Channels; c++)
+                for (int h = 0; h < ViewSize; h++)
+                    for (int w = 0; w < ViewSize; w++)
+                        writer[c, h, w] = 0f;
             return ViewSize * ViewSize * Channels;
         }
 
@@ -75,7 +70,7 @@ public class CustomGridSensor : ISensor
             for (int dx = -ViewRadius; dx <= ViewRadius; dx++)
             {
                 // Map to ObservationWriter indices.
-                // MLAgents Visual: writer[height_row, width_col, channel]
+                // MLAgents Visual: writer[channel, height_row, width_col]
                 // We treat dy as the row axis (y) and dx as the column axis (x).
                 int row = dy + ViewRadius;
                 int col = dx + ViewRadius;
@@ -86,9 +81,9 @@ public class CustomGridSensor : ISensor
                 var tile = grid.GetTile(worldCell);
                 if (tile == null)
                 {
-                    writer[row, col, 0] = 0f; // no enemy
-                    writer[row, col, 1] = 0f; // no pickup
-                    writer[row, col, 2] = 1f; // out-of-bounds treated as wall
+                    writer[0, row, col] = 0f; // no enemy
+                    writer[1, row, col] = 0f; // no pickup
+                    writer[2, row, col] = 1f; // out-of-bounds treated as wall
                     continue;
                 }
 
@@ -98,36 +93,47 @@ public class CustomGridSensor : ISensor
 
                 foreach (GridPlaceable gp in tile)
                 {
-                    // Wall?
-                    if (gp.CompareTag("Wall"))
+                    switch (gp.Type)
                     {
-                        wallChannel = 1f;
-                        continue;
-                    }
+                        case GridPlaceable.PlaceableType.Wall:
+                            wallChannel = 1f;
+                            break;
 
-                    // Entity (enemy)?
-                    if (gp.TryGetComponent(out Entity entity))
-                    {
-                        if (gp != agentPlaceable)          // skip self
-                        {
-                            int enemyPow = entity.damageResolver.power;
-                            float ratio = enemyPow / (float)agentPow;
-                            float norm = Mathf.Clamp01((ratio - minRatio) / (maxRatio - minRatio));
-                            enemyChannel = Mathf.Max(enemyChannel, norm); // take strongest if multiple
-                        }
-                        continue;
-                    }
+                        case GridPlaceable.PlaceableType.Entity:
+                            if (gp != agentPlaceable && gp.Entity != null)
+                            {
+                                int enemyPow = gp.Entity.damageResolver.power;
+                                int diff = enemyPow - agentPow;
 
-                    // Pickup? (Pickup is an interface; check the concrete MonoBehaviour type)
-                    if (gp.TryGetComponent(out GrowPickup _))
-                    {
-                        pickupChannel = 1f;
+                                float powerVal;
+                                if (diff < 0)
+                                {
+                                    // Weaker: Map diff (-5 to -1) -> (0.2 to 0.4)
+                                    powerVal = 0.4f + (Mathf.Max(diff, -5) + 1) * 0.05f;
+                                }
+                                else if (diff == 0)
+                                {
+                                    powerVal = 0.5f; // Equal
+                                }
+                                else
+                                {
+                                    // Stronger: Map diff (1 to 5) -> (0.8 to 1.0)
+                                    powerVal = 0.8f + (Mathf.Min(diff, 5) - 1) * 0.05f;
+                                }
+
+                                enemyChannel = Mathf.Max(enemyChannel, powerVal);
+                            }
+                            break;
+
+                        case GridPlaceable.PlaceableType.Pickup:
+                            pickupChannel = 1f;
+                            break;
                     }
                 }
 
-                writer[row, col, 0] = enemyChannel;
-                writer[row, col, 1] = pickupChannel;
-                writer[row, col, 2] = wallChannel;
+                writer[0, row, col] = enemyChannel;
+                writer[1, row, col] = pickupChannel;
+                writer[2, row, col] = wallChannel;
             }
         }
 

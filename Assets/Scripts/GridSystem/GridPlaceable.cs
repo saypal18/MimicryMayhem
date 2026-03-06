@@ -3,13 +3,22 @@ using UnityEngine;
 
 public sealed class GridPlaceable : MonoBehaviour
 {
+    public enum PlaceableType { Unassigned, Entity, Pickup, Wall }
+    [SerializeField] private PlaceableType type;
+    public PlaceableType Type => type;
+
     private Vector2Int position;
     private Grid grid;
     private PoolingEntity poolingEntity;
     private IMovement movement;
 
+    public Entity Entity { get; private set; }
+
     public Vector2Int Position => position;
     public Grid CurrentGrid => grid;
+
+    /// <summary>Returns true when the movement system is ready to accept a new move.</summary>
+    public bool CanMove() => movement != null && movement.CanMove();
 
     public void Initialize(Grid grid, Vector2Int startPosition, IMovement movement = null)
     {
@@ -17,6 +26,11 @@ public sealed class GridPlaceable : MonoBehaviour
         if (poolingEntity == null && TryGetComponent(out poolingEntity))
         {
             poolingEntity.OnDespawning += HandleDespawning;
+        }
+
+        if (type == PlaceableType.Entity)
+        {
+            Entity = GetComponent<Entity>();
         }
 
         this.grid = grid;

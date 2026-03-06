@@ -1,0 +1,2 @@
+mlagents-learn SurvivorAgent.yaml --run-id=run1 --force
+conda activate ml-agents

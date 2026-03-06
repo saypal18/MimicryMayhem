@@ -21,6 +21,7 @@ public class SurvivorAgent : Agent, IMoveInputHandler
     private PickupHandler pickupHandler;
     private EntitySpawner entitySpawner;
     private Entity thisEntity;
+    private GameInitializer gameInitializer;
 
     // ---- heuristic state ----
     private int currentHeuristicAction = 0;
@@ -43,13 +44,15 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         DamageResolver damageResolver,
         PickupHandler pickupHandler,
         EntitySpawner entitySpawner,
-        Entity thisEntity)
+        Entity thisEntity,
+        GameInitializer gameInitializer)
     {
         this.gridPlaceable = gridPlaceable;
         this.damageResolver = damageResolver;
         this.pickupHandler = pickupHandler;
         this.entitySpawner = entitySpawner;
         this.thisEntity = thisEntity;
+        this.gameInitializer = gameInitializer;
 
         // Wire reward events
         damageResolver.OnDamageTaken += HandleDamageTaken;
@@ -83,6 +86,10 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         {
             AddReward(1f);
             EndEpisode();
+            if (gameInitializer != null)
+            {
+                gameInitializer.ResetEnvironment();
+            }
         }
     }
 
@@ -110,6 +117,17 @@ public class SurvivorAgent : Agent, IMoveInputHandler
             {
                 actionMask.SetActionEnabled(0, action, false);
             }
+        }
+    }
+
+    // ---- decision loop ----
+
+    private void Update()
+    {
+        // Request a new decision only when the movement cooldown has elapsed.
+        if (gridPlaceable != null && gridPlaceable.CanMove())
+        {
+            RequestDecision();
         }
     }
 

@@ -30,7 +30,10 @@ public class Grid
         {
             for (int y = 0; y < size.y; y++)
             {
-                foreach (GridPlaceable gridPlaceable in tiles[x, y])
+                // Create a snapshot of the list to avoid InvalidOperationException 
+                // when Despawn triggers RemoveFromGrid() which modifies tiles[x, y].
+                GridPlaceable[] itemsToDespawn = tiles[x, y].ToArray();
+                foreach (GridPlaceable gridPlaceable in itemsToDespawn)
                 {
                     PoolingEntity.Despawn(gridPlaceable.gameObject);
                 }

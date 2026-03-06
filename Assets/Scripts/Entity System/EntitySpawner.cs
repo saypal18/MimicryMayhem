@@ -9,6 +9,7 @@ public class EntitySpawner
     private Grid grid;
     private InputManager inputManager;
     [SerializeField] private MovementFactory movementFactory;
+    private GameInitializer gameInitializer;
 
     private readonly List<Entity> activeEntities = new List<Entity>();
 
@@ -19,17 +20,21 @@ public class EntitySpawner
     public bool IsLastEntity(Entity entity) =>
         activeEntities.Count == 1 && activeEntities[0] == entity;
 
-    public void Initialize(Grid grid, InputManager inputManager)
+    /// <summary>Returns a snapshot of all currently active entities.</summary>
+    public IReadOnlyList<Entity> GetActiveEntities() => activeEntities;
+
+    public void Initialize(Grid grid, InputManager inputManager, GameInitializer gameInitializer)
     {
         this.grid = grid;
         this.inputManager = inputManager;
+        this.gameInitializer = gameInitializer;
         activeEntities.Clear();
     }
 
     public void SpawnAtPosition(Vector2Int position)
     {
         Entity entity = PoolingEntity.Spawn(entityPrefab, entityParent);
-        entity.Initialize(grid, position, movementFactory, this);
+        entity.Initialize(grid, position, movementFactory, this, gameInitializer);
 
         // Track active entities and auto-remove when despawned
         activeEntities.Add(entity);

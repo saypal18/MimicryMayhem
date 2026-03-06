@@ -8,12 +8,6 @@ using UnityEngine;
 /// </summary>
 public class CustomGridSensorComponent : SensorComponent
 {
-    [Tooltip("Minimum power ratio (enemy/self) mapped to 0. Default 0.1")]
-    [SerializeField] private float minRatio = 0.1f;
-
-    [Tooltip("Maximum power ratio (enemy/self) mapped to 1. Default 10")]
-    [SerializeField] private float maxRatio = 10f;
-
     private CustomGridSensor sensor;
 
     // Pending refs if SetAgentReferences is called before CreateSensors
@@ -24,7 +18,7 @@ public class CustomGridSensorComponent : SensorComponent
     public override ISensor[] CreateSensors()
     {
         // Create sensor with null grid — it will be set via SetAgentReferences
-        sensor = new CustomGridSensor(null, minRatio, maxRatio);
+        sensor = new CustomGridSensor(null);
 
         // Apply any references that arrived before CreateSensors was called
         if (pendingPlaceable != null)

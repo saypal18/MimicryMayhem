@@ -2,5 +2,8 @@ using UnityEngine;
 
 public interface IMovement
 {
-    public bool Move(Vector3 initialPosition, Vector3 finalPosition);
+    /// <summary>Returns true when the movement cooldown has elapsed and a move can be executed.</summary>
+    bool CanMove();
+
+    bool Move(Vector3 initialPosition, Vector3 finalPosition);
 }

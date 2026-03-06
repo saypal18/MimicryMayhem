@@ -13,9 +13,14 @@ public class SnapMovement : IMovement
         this.lastMoveTime = -cooldown; // Allow immediate first move
     }
 
+    public bool CanMove()
+    {
+        return Time.time - lastMoveTime >= cooldown;
+    }
+
     public bool Move(Vector3 initialPosition, Vector3 finalPosition)
     {
-        if (Time.time - lastMoveTime < cooldown) return false;
+        if (!CanMove()) return false;
 
         transform.position = finalPosition;
         lastMoveTime = Time.time;
