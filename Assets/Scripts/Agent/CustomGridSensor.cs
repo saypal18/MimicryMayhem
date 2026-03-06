@@ -140,6 +140,89 @@ public class CustomGridSensor : ISensor
         return ViewSize * ViewSize * Channels;
     }
 
+    public void OnDrawGizmos()
+    {
+        if (agentPlaceable == null || grid == null || agentDamageResolver == null)
+        {
+            // Draw a red "X" if references are missing
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(agentPlaceable != null ? agentPlaceable.transform.position + Vector3.left : Vector3.left,
+                           agentPlaceable != null ? agentPlaceable.transform.position + Vector3.right : Vector3.right);
+            return;
+        }
+
+        Vector2Int center = agentPlaceable.Position;
+        int agentPow = Mathf.Max(1, agentDamageResolver.power);
+
+        for (int dy = -ViewRadius; dy <= ViewRadius; dy++)
+        {
+            for (int dx = -ViewRadius; dx <= ViewRadius; dx++)
+            {
+                Vector2Int worldCell = center + new Vector2Int(dx, dy);
+                Vector3 worldPos = grid.GetWorldPosition(worldCell);
+
+                float enemyChannel = 0f;
+                float pickupChannel = 0f;
+                float wallChannel = 0f;
+
+                var tile = grid.GetTile(worldCell);
+                if (tile == null)
+                {
+                    wallChannel = 1f;
+                }
+                else
+                {
+                    foreach (GridPlaceable gp in tile)
+                    {
+                        switch (gp.Type)
+                        {
+                            case GridPlaceable.PlaceableType.Wall:
+                                wallChannel = 1f;
+                                break;
+                            case GridPlaceable.PlaceableType.Pickup:
+                                pickupChannel = 1f;
+                                break;
+                            case GridPlaceable.PlaceableType.Entity:
+                                if (gp != agentPlaceable && gp.Entity != null)
+                                {
+                                    int enemyPow = gp.Entity.damageResolver.power;
+                                    int diff = enemyPow - agentPow;
+                                    float powerVal;
+                                    if (diff < 0)
+                                        powerVal = 0.4f + (Mathf.Max(diff, -5) + 1) * 0.05f;
+                                    else if (diff == 0)
+                                        powerVal = 0.5f;
+                                    else
+                                        powerVal = 0.8f + (Mathf.Min(diff, 5) - 1) * 0.05f;
+
+                                    enemyChannel = Mathf.Max(enemyChannel, powerVal);
+                                }
+                                break;
+                        }
+                    }
+                }
+
+                // Draw cell
+                Color color = new Color(enemyChannel, pickupChannel, wallChannel, 0.3f);
+                if (enemyChannel == 0 && pickupChannel == 0 && wallChannel == 0)
+                    color.a = 0.05f; // very faint for empty spaces
+
+                Gizmos.color = color;
+                Vector3 cubeSize = new Vector3(grid.TileSize.x * 0.9f, grid.TileSize.y * 0.9f, 0.1f);
+                Gizmos.DrawCube(worldPos, cubeSize);
+
+                // Outline for the whole view
+                if (dx == -ViewRadius && dy == -ViewRadius)
+                {
+                    Gizmos.color = Color.white;
+                    Vector3 viewCenter = grid.GetWorldPosition(center);
+                    Vector3 totalViewSize = new Vector3(ViewSize * grid.TileSize.x, ViewSize * grid.TileSize.y, 0.1f);
+                    Gizmos.DrawWireCube(viewCenter, totalViewSize);
+                }
+            }
+        }
+    }
+
     public byte[] GetCompressedObservation() => null;
 
     public void Update() { }

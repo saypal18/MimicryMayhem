@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee010e823f174348bae30735977ddae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridPlaceable
+  type: 1
 --- !u!114 &-2021946009688161316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,5 +295,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd8f518e83647bb4588e49a55dbdc80b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomGridSensorComponent
-  minRatio: 0.1
-  maxRatio: 10
+  showGizmos: 1

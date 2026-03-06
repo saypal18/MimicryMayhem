@@ -8,6 +8,7 @@ public class Grid
     [SerializeField] private Vector2Int size;
 
     public Vector2Int Size => size;
+    public Vector2 TileSize => tileSize;
     public List<GridPlaceable>[,] tiles;
 
     public void Initialize()

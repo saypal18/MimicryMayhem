@@ -120,6 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee010e823f174348bae30735977ddae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridPlaceable
+  type: 2
 --- !u!60 &2639486183766101174
 PolygonCollider2D:
   m_ObjectHideFlags: 0
