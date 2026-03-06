@@ -56,7 +56,7 @@ public sealed class GridPlaceable : MonoBehaviour
 
     public void MoveTo(Vector2Int newPosition)
     {
-        if (grid == null) return;
+        if (grid == null || movement == null) return;
 
         List<GridPlaceable> newTile = grid.GetTile(newPosition);
 

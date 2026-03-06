@@ -12,12 +12,29 @@ public class Grid
 
     public void Initialize()
     {
+        PurgeGrid();
         tiles = new List<GridPlaceable>[size.x, size.y];
         for (int x = 0; x < size.x; x++)
         {
             for (int y = 0; y < size.y; y++)
             {
                 tiles[x, y] = new List<GridPlaceable>();
+            }
+        }
+    }
+
+    public void PurgeGrid()
+    {
+        if (tiles == null) return;
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                foreach (GridPlaceable gridPlaceable in tiles[x, y])
+                {
+                    PoolingEntity.Despawn(gridPlaceable.gameObject);
+                }
+                tiles[x, y].Clear();
             }
         }
     }
@@ -65,5 +82,57 @@ public class Grid
     public Vector2Int GetRandomPosition()
     {
         return new Vector2Int(Random.Range(0, size.x), Random.Range(0, size.y));
+    }
+    public bool IsPositionEmpty(Vector2Int gridPosition)
+    {
+        List<GridPlaceable> tile = GetTile(gridPosition);
+        if (tile == null) return false;
+        return tile.Count == 0;
+    }
+
+    public Vector2Int? GetRandomEmptyPosition()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Vector2Int randomPosition = GetRandomPosition();
+            if (tiles[randomPosition.x, randomPosition.y].Count == 0)
+            {
+                return randomPosition;
+            }
+        }
+
+        List<Vector2Int> emptyPositions = new List<Vector2Int>();
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+                if (tiles[pos.x, pos.y].Count == 0)
+                {
+                    emptyPositions.Add(pos);
+                }
+            }
+        }
+
+        if (emptyPositions.Count > 0)
+        {
+            return emptyPositions[Random.Range(0, emptyPositions.Count)];
+        }
+
+        return null;
+    }
+
+    public List<Vector2Int> GetRandomEmptyPositions(int n)
+    {
+        List<Vector2Int> emptyPositions = new List<Vector2Int>();
+        for (int i = 0; i < n; i++)
+        {
+            Vector2Int? randomPosition = GetRandomEmptyPosition();
+            if (randomPosition != null)
+            {
+                emptyPositions.Add((Vector2Int)randomPosition);
+            }
+        }
+        return emptyPositions;
     }
 }
