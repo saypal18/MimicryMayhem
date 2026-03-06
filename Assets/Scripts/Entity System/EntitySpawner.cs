@@ -31,7 +31,7 @@ public class EntitySpawner
         activeEntities.Clear();
     }
 
-    public void SpawnAtPosition(Vector2Int position)
+    public void SpawnAtPosition(Vector2Int position, int teamId = 0)
     {
         Entity entity = PoolingEntity.Spawn(entityPrefab, entityParent);
         entity.Initialize(grid, position, movementFactory, this, gameInitializer);
@@ -47,14 +47,23 @@ public class EntitySpawner
         {
             inputManager.InitializeMove(moveHandler);
         }
+
+        // Apply dynamic Team ID for free-for-all Self-Play
+        if (entity.TryGetComponent(out Unity.MLAgents.Policies.BehaviorParameters bp))
+        {
+            bp.TeamId = teamId;
+        }
     }
 
     public void SpawnAtRandomPositions(int count)
     {
         List<Vector2Int> randomPositions = grid.GetRandomEmptyPositions(count);
+        int currentTeamId = 0;
         foreach (Vector2Int randomPosition in randomPositions)
         {
-            SpawnAtPosition(randomPosition);
+            // Each agent gets a unique team ID so they see each other as opponents
+            SpawnAtPosition(randomPosition, currentTeamId);
+            currentTeamId++;
         }
     }
 

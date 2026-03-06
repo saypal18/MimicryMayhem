@@ -5,31 +5,49 @@ using Unity.MLAgents.Policies;
 
 public class GameInitializer : MonoBehaviour
 {
+    // ── Wall mode ─────────────────────────────────────────────────────────────
+    public enum WallMode { Random, PerlinNoise, RandomEachReset }
+
+    [Header("Wall Settings")]
+    [SerializeField] private WallMode wallMode = WallMode.RandomEachReset;
+    [Tooltip("When WallMode is RandomEachReset: probability (0–1) that a given reset uses Perlin noise instead of scatter.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float perlinNoiseProbability = 0.5f;
+    [SerializeField] private int wallCount = 4;
+    [SerializeField] private PerlinWallConfig perlinConfig = new PerlinWallConfig();
+
+    // ── Core references ───────────────────────────────────────────────────────
+    [Header("References")]
     [SerializeField] private Grid grid;
     [SerializeField] private EntitySpawner entitySpawner;
     [SerializeField] public InputManager inputManager;
     [SerializeField] private PickupPlacer pickupPlacer;
     [SerializeField] private WallPlacer wallPlacer;
 
-    private const int MaxSteps = 1000;
-    private int stepCount = 0;
+    // ── Episode settings ──────────────────────────────────────────────────────
+    [Header("Episode Settings")]
+    [SerializeField] private int MaxSteps = 1000;
     [SerializeField] private bool predict = true;
+    [SerializeField] private int entitiyCount = 2;
+    [SerializeField] private int pickupCount = 5;
+
+    private int stepCount = 0;
+
     private void Start()
     {
         if (predict)
-        {
             ResetEnvironment();
-        }
     }
 
     private void FixedUpdate()
     {
         stepCount++;
+        pickupPlacer.Tick(Time.fixedDeltaTime);
+
         if (stepCount >= MaxSteps)
         {
-            // End episodes for all active entities, then reset
+            // End episodes for all active entities, then reset.
             IReadOnlyList<Entity> active = entitySpawner.GetActiveEntities();
-            // Iterate a snapshot to avoid modification during iteration
             Entity[] snapshot = new Entity[active.Count];
             for (int i = 0; i < active.Count; i++) snapshot[i] = active[i];
             foreach (Entity entity in snapshot)
@@ -42,37 +60,56 @@ public class GameInitializer : MonoBehaviour
     public void ResetEnvironment()
     {
         stepCount = 0;
+
         grid.Initialize();
+
+        // Initialise subsystems before spawning anything.
         entitySpawner.Initialize(grid, inputManager, this);
         pickupPlacer.Initialize(grid);
         wallPlacer.Initialize(grid);
-        entitySpawner.SpawnAtRandomPositions(2);
-        pickupPlacer.SpawnAtRandomPositions(5);
-        wallPlacer.SpawnAtRandomPositions(4);
 
+        // ── 1. Walls first (so entities/pickups avoid wall tiles) ─────────────
+        PlaceWalls();
+
+        // ── 2. Entities ───────────────────────────────────────────────────────
+        entitySpawner.SpawnAtRandomPositions(entitiyCount);
+
+        // ── 3. Pickups ────────────────────────────────────────────────────────
+        pickupPlacer.SpawnAtRandomPositions(pickupCount);
+
+        // ── 4. Predict-mode behaviour assignment ──────────────────────────────
         if (predict)
         {
             IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
             for (int i = 0; i < activeEntities.Count; i++)
             {
-                if (activeEntities[i].TryGetComponent(out BehaviorParameters bp))
+                if (!activeEntities[i].TryGetComponent(out BehaviorParameters bp)) continue;
+
+                if (i == 0)
                 {
-                    if (i == 0)
-                    {
-                        bp.BehaviorType = BehaviorType.HeuristicOnly;
-                        // For predict mode, ensure the human-controlled (heuristic) agent is wired to input
-                        if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
-                        {
-                            inputManager.InitializeMove(handler);
-                        }
-                    }
-                    else
-                    {
-                        bp.BehaviorType = BehaviorType.InferenceOnly;
-                    }
+                    bp.BehaviorType = BehaviorType.HeuristicOnly;
+                    if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
+                        inputManager.InitializeMove(handler);
+                }
+                else
+                {
+                    bp.BehaviorType = BehaviorType.InferenceOnly;
                 }
             }
         }
     }
 
+    // ── Wall placement helper ─────────────────────────────────────────────────
+    private void PlaceWalls()
+    {
+        WallMode activeMode = wallMode;
+
+        if (wallMode == WallMode.RandomEachReset)
+            activeMode = (Random.value < perlinNoiseProbability) ? WallMode.PerlinNoise : WallMode.Random;
+
+        if (activeMode == WallMode.PerlinNoise)
+            wallPlacer.SpawnPerlinNoise(perlinConfig);
+        else
+            wallPlacer.SpawnAtRandomPositions(wallCount);
+    }
 }

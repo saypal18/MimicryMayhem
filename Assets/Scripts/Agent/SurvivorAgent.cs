@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 enum MoveAction
 {
@@ -22,6 +23,10 @@ public class SurvivorAgent : Agent, IMoveInputHandler
     private EntitySpawner entitySpawner;
     private Entity thisEntity;
     private GameInitializer gameInitializer;
+
+    // ---- position history ----
+    private readonly Queue<Vector2Int> positionHistory = new Queue<Vector2Int>();
+    [SerializeField] private int MaxHistoryCount = 5; // Current + 4 previous
 
     // ---- heuristic state ----
     private int currentHeuristicAction = 0;
@@ -64,13 +69,32 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         {
             sensorComponent.SetAgentReferences(gridPlaceable, damageResolver, gridPlaceable.CurrentGrid);
         }
+
+        ResetPositionHistory();
+    }
+
+    private void ResetPositionHistory()
+    {
+        positionHistory.Clear();
+        if (gridPlaceable != null)
+        {
+            for (int i = 0; i < MaxHistoryCount; i++)
+            {
+                positionHistory.Enqueue(gridPlaceable.Position);
+            }
+        }
+    }
+
+    public override void OnEpisodeBegin()
+    {
+        ResetPositionHistory();
     }
 
     // ---- reward handlers ----
 
     private void HandleDamageTaken()
     {
-        AddReward(-1f);
+        AddReward(-0.5f);
         EndEpisode();
         // Trigger the full despawn chain: OnDespawning → GridPlaceable.RemoveFromGrid
         // → EntitySpawner.activeEntities auto-remove via CreateDespawnHandler
@@ -79,7 +103,7 @@ public class SurvivorAgent : Agent, IMoveInputHandler
 
     private void HandleDamageDealt()
     {
-        AddReward(0.5f);
+        AddReward(1.0f);
 
         // Check win condition: are we the last entity on the grid?
         if (entitySpawner != null && entitySpawner.IsLastEntity(thisEntity))
@@ -131,6 +155,46 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         }
     }
 
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        if (gridPlaceable == null || gridPlaceable.CurrentGrid == null)
+        {
+            for (int i = 0; i < MaxHistoryCount * 2; i++) sensor.AddObservation(0f);
+            return;
+        }
+
+        // Update history with current position
+        Vector2Int currentPos = gridPlaceable.Position;
+        if (positionHistory.Count > 0 && positionHistory.Peek() != currentPos)
+        {
+            // This is a simple way to track movement. 
+            // We want the literal history of positions sampled at decision time.
+            // If the agent hasn't moved, we might still want to shift the history 
+            // or just keep it as is. Usually, for temporal dependencies, 
+            // we want the history of N fixed-interval samples.
+        }
+
+        // To keep it simple and effective: 
+        // Always push current pos and pop oldest if over limit.
+        // But only if it's a new position? No, let's just keep the last 5 sampled positions.
+        positionHistory.Enqueue(currentPos);
+        if (positionHistory.Count > MaxHistoryCount)
+        {
+            positionHistory.Dequeue();
+        }
+
+        Vector2Int gridSize = gridPlaceable.CurrentGrid.Size;
+
+        // Add history (current + 4 previous) to observations
+        // We'll peek through the queue.
+        foreach (var pos in positionHistory)
+        {
+            // Normalize observations for better model performance
+            sensor.AddObservation((float)pos.x / gridSize.x);
+            sensor.AddObservation((float)pos.y / gridSize.y);
+        }
+    }
+
     // ---- ML-Agents overrides ----
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
@@ -142,8 +206,8 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         if (direction != Vector2Int.zero)
         {
             gridPlaceable.Move(direction);
-            AddReward(-0.002f); // small step penalty to encourage efficiency
         }
+        AddReward(-0.002f); // small step penalty to encourage efficiency
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

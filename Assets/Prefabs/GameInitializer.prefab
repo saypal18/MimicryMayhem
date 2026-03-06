@@ -141,10 +141,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 837aefe91f64a8c42a41607e39901353, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameInitializer
+  wallMode: 2
+  perlinNoiseProbability: 0.9
+  wallCount: 40
+  perlinConfig:
+    scaleXMin: 0.15
+    scaleXMax: 0.15
+    scaleYMin: 0.15
+    scaleYMax: 0.75
+    rotationAngleMin: 0
+    rotationAngleMax: 90
+    threshold: 0.5
+    minConnectedCoveragePercent: 0.9
+    maxWallPercentEarlyStop: 0.1
+    maxWallCapPercent: 0.5
   grid:
     startingTilePosition: {fileID: 3509958387582530915}
     tileSize: {x: 1, y: 1}
-    size: {x: 5, y: 5}
+    size: {x: 20, y: 20}
   entitySpawner:
     entityPrefab: {fileID: 5104670366954836522, guid: 742511a84c67a2442afd660b5637f50b, type: 3}
     entityParent: {fileID: 7031706749203332148}
@@ -154,9 +168,14 @@ MonoBehaviour:
   pickupPlacer:
     pickupPrefab: {fileID: 2655546045923351145, guid: 87d6ea1ca96318745b6ec673b2f6ea46, type: 3}
     pickupParent: {fileID: 7199370050930525759}
+    spawnInterval: 2
   wallPlacer:
     wallPrefab: {fileID: 8216846165915037334, guid: 276f3e55d6572654a9b67a7949f30397, type: 3}
     wallParent: {fileID: 3209620099225721577}
+  MaxSteps: 20000
+  predict: 0
+  entitiyCount: 10
+  pickupCount: 100
 --- !u!1 &7782477435353402049
 GameObject:
   m_ObjectHideFlags: 0

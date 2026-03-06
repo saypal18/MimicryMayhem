@@ -26,6 +26,6 @@ public class Entity : MonoBehaviour
     public void ForceEndEpisode()
     {
         if (survivorAgent != null)
-            survivorAgent.EndEpisode();
+            survivorAgent.EpisodeInterrupted();
     }
 }

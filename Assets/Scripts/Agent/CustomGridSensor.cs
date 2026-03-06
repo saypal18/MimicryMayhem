@@ -4,21 +4,19 @@ using UnityEngine;
 /// <summary>
 /// Custom ISensor that provides a 11x11 ego-centric view centered on the agent.
 /// 
-/// Channel layout (3 channels):
-///   [0] Enemy power representation:
-///       0.0      -> no enemy
-///       0.2..0.4 -> weaker enemy (prey)
-///       0.5..0.7 -> roughly equal
-///       0.8..1.0 -> stronger enemy (threat)
-///   [1] Pickup present (1.0)
-///   [2] Wall or out-of-bounds (1.0)
+/// Channel layout (5 channels):
+///   [0] Enemy exists (1.0)
+///   [1] Enemy is stronger than agent (1.0)
+///   [2] Enemy is weaker than agent (1.0)
+///   [3] Pickup present (1.0)
+///   [4] Wall or out-of-bounds (1.0)
 /// </summary>
 public class CustomGridSensor : ISensor
 {
-    // ---- constants ----
-    private const int ViewRadius = 5;         // half-size: gives an 11x11 window
-    private const int ViewSize = ViewRadius * 2 + 1; // 11
-    private const int Channels = 3;
+    // ---- configuration ----
+    private int viewRadius;
+    private int viewSize;
+    private const int Channels = 5;
 
     // ---- references set externally ----
     private Grid grid;
@@ -28,10 +26,12 @@ public class CustomGridSensor : ISensor
     // ---- cached spec ----
     private ObservationSpec observationSpec;
 
-    public CustomGridSensor(Grid grid)
+    public CustomGridSensor(Grid grid, int viewRadius)
     {
         this.grid = grid;
-        observationSpec = ObservationSpec.Visual(Channels, ViewSize, ViewSize);
+        this.viewRadius = viewRadius;
+        this.viewSize = viewRadius * 2 + 1;
+        observationSpec = ObservationSpec.Visual(Channels, viewSize, viewSize);
     }
 
     // Called by SurvivorAgent.Initialize() so each agent instance has its own POV
@@ -56,24 +56,21 @@ public class CustomGridSensor : ISensor
         {
             // Fill with zeros if not initialised yet
             for (int c = 0; c < Channels; c++)
-                for (int h = 0; h < ViewSize; h++)
-                    for (int w = 0; w < ViewSize; w++)
+                for (int h = 0; h < viewSize; h++)
+                    for (int w = 0; w < viewSize; w++)
                         writer[c, h, w] = 0f;
-            return ViewSize * ViewSize * Channels;
+            return viewSize * viewSize * Channels;
         }
 
         Vector2Int center = agentPlaceable.Position;
-        int agentPow = Mathf.Max(1, agentDamageResolver.power); // guard div-by-zero
+        int agentPow = agentDamageResolver.power;
 
-        for (int dy = -ViewRadius; dy <= ViewRadius; dy++)
+        for (int dy = -viewRadius; dy <= viewRadius; dy++)
         {
-            for (int dx = -ViewRadius; dx <= ViewRadius; dx++)
+            for (int dx = -viewRadius; dx <= viewRadius; dx++)
             {
-                // Map to ObservationWriter indices.
-                // MLAgents Visual: writer[channel, height_row, width_col]
-                // We treat dy as the row axis (y) and dx as the column axis (x).
-                int row = dy + ViewRadius;
-                int col = dx + ViewRadius;
+                int row = dy + viewRadius;
+                int col = dx + viewRadius;
 
                 Vector2Int worldCell = center + new Vector2Int(dx, dy);
 
@@ -81,13 +78,17 @@ public class CustomGridSensor : ISensor
                 var tile = grid.GetTile(worldCell);
                 if (tile == null)
                 {
-                    writer[0, row, col] = 0f; // no enemy
-                    writer[1, row, col] = 0f; // no pickup
-                    writer[2, row, col] = 1f; // out-of-bounds treated as wall
+                    writer[0, row, col] = 0f; // enemy exists
+                    writer[1, row, col] = 0f; // enemy is stronger
+                    writer[2, row, col] = 0f; // enemy is weaker
+                    writer[3, row, col] = 0f; // pickup
+                    writer[4, row, col] = 1f; // out-of-bounds treated as wall
                     continue;
                 }
 
-                float enemyChannel = 0f;
+                float enemyExists = 0f;
+                float enemyIsStronger = 0f;
+                float enemyIsWeaker = 0f;
                 float pickupChannel = 0f;
                 float wallChannel = 0f;
 
@@ -102,26 +103,12 @@ public class CustomGridSensor : ISensor
                         case GridPlaceable.PlaceableType.Entity:
                             if (gp != agentPlaceable && gp.Entity != null)
                             {
+                                enemyExists = 1f;
                                 int enemyPow = gp.Entity.damageResolver.power;
-                                int diff = enemyPow - agentPow;
-
-                                float powerVal;
-                                if (diff < 0)
-                                {
-                                    // Weaker: Map diff (-5 to -1) -> (0.2 to 0.4)
-                                    powerVal = 0.4f + (Mathf.Max(diff, -5) + 1) * 0.05f;
-                                }
-                                else if (diff == 0)
-                                {
-                                    powerVal = 0.5f; // Equal
-                                }
-                                else
-                                {
-                                    // Stronger: Map diff (1 to 5) -> (0.8 to 1.0)
-                                    powerVal = 0.8f + (Mathf.Min(diff, 5) - 1) * 0.05f;
-                                }
-
-                                enemyChannel = Mathf.Max(enemyChannel, powerVal);
+                                if (enemyPow > agentPow)
+                                    enemyIsStronger = 1f;
+                                else if (enemyPow < agentPow)
+                                    enemyIsWeaker = 1f;
                             }
                             break;
 
@@ -131,13 +118,15 @@ public class CustomGridSensor : ISensor
                     }
                 }
 
-                writer[0, row, col] = enemyChannel;
-                writer[1, row, col] = pickupChannel;
-                writer[2, row, col] = wallChannel;
+                writer[0, row, col] = enemyExists;
+                writer[1, row, col] = enemyIsStronger;
+                writer[2, row, col] = enemyIsWeaker;
+                writer[3, row, col] = pickupChannel;
+                writer[4, row, col] = wallChannel;
             }
         }
 
-        return ViewSize * ViewSize * Channels;
+        return viewSize * viewSize * Channels;
     }
 
     public void OnDrawGizmos()
@@ -154,14 +143,16 @@ public class CustomGridSensor : ISensor
         Vector2Int center = agentPlaceable.Position;
         int agentPow = Mathf.Max(1, agentDamageResolver.power);
 
-        for (int dy = -ViewRadius; dy <= ViewRadius; dy++)
+        for (int dy = -viewRadius; dy <= viewRadius; dy++)
         {
-            for (int dx = -ViewRadius; dx <= ViewRadius; dx++)
+            for (int dx = -viewRadius; dx <= viewRadius; dx++)
             {
                 Vector2Int worldCell = center + new Vector2Int(dx, dy);
                 Vector3 worldPos = grid.GetWorldPosition(worldCell);
 
-                float enemyChannel = 0f;
+                float enemyExists = 0f;
+                float enemyIsStronger = 0f;
+                float enemyIsWeaker = 0f;
                 float pickupChannel = 0f;
                 float wallChannel = 0f;
 
@@ -185,38 +176,45 @@ public class CustomGridSensor : ISensor
                             case GridPlaceable.PlaceableType.Entity:
                                 if (gp != agentPlaceable && gp.Entity != null)
                                 {
+                                    enemyExists = 1f;
                                     int enemyPow = gp.Entity.damageResolver.power;
-                                    int diff = enemyPow - agentPow;
-                                    float powerVal;
-                                    if (diff < 0)
-                                        powerVal = 0.4f + (Mathf.Max(diff, -5) + 1) * 0.05f;
-                                    else if (diff == 0)
-                                        powerVal = 0.5f;
-                                    else
-                                        powerVal = 0.8f + (Mathf.Min(diff, 5) - 1) * 0.05f;
-
-                                    enemyChannel = Mathf.Max(enemyChannel, powerVal);
+                                    if (enemyPow > agentPow)
+                                        enemyIsStronger = 1f;
+                                    else if (enemyPow < agentPow)
+                                        enemyIsWeaker = 1f;
                                 }
                                 break;
                         }
                     }
                 }
 
-                // Draw cell
-                Color color = new Color(enemyChannel, pickupChannel, wallChannel, 0.3f);
-                if (enemyChannel == 0 && pickupChannel == 0 && wallChannel == 0)
-                    color.a = 0.05f; // very faint for empty spaces
+                // Draw cell: Red=Threat, Yellow=Prey, Orange=Equal, Green=Pickup, Blue=Wall
+                float r = 0, g = 0, b = 0;
+
+                if (enemyExists > 0)
+                {
+                    if (enemyIsStronger > 0) { r = 1f; g = 0f; } // Red
+                    else if (enemyIsWeaker > 0) { r = 1f; g = 1f; } // Yellow
+                    else { r = 1f; g = 0.5f; } // Orange (Equal power)
+                }
+
+                if (pickupChannel > 0) { g = 1f; } // Green (Additive if overlapping)
+                if (wallChannel > 0) { b = 1f; }   // Blue (Additive)
+
+                Color color = new Color(r, g, b, 0.3f);
+                if (enemyExists == 0 && pickupChannel == 0 && wallChannel == 0)
+                    color.a = 0.05f;
 
                 Gizmos.color = color;
                 Vector3 cubeSize = new Vector3(grid.TileSize.x * 0.9f, grid.TileSize.y * 0.9f, 0.1f);
                 Gizmos.DrawCube(worldPos, cubeSize);
 
                 // Outline for the whole view
-                if (dx == -ViewRadius && dy == -ViewRadius)
+                if (dx == -viewRadius && dy == -viewRadius)
                 {
                     Gizmos.color = Color.white;
                     Vector3 viewCenter = grid.GetWorldPosition(center);
-                    Vector3 totalViewSize = new Vector3(ViewSize * grid.TileSize.x, ViewSize * grid.TileSize.y, 0.1f);
+                    Vector3 totalViewSize = new Vector3(viewSize * grid.TileSize.x, viewSize * grid.TileSize.y, 0.1f);
                     Gizmos.DrawWireCube(viewCenter, totalViewSize);
                 }
             }

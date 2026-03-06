@@ -135,7 +135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &149842499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,9 +150,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Trainer
   inputManager: {fileID: 1588366680}
   gameInitializerPrefab: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
-  n: 32
+  n: 16
   initialPosition: {x: 0, y: 0, z: 0}
-  gridSize: {x: 20, y: 20}
+  gridSize: {x: 30, y: 30}
   fieldLength: 4
 --- !u!4 &149842500
 Transform:
@@ -571,7 +571,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4934599878771539894, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5084263085645196711, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_LocalPosition.x

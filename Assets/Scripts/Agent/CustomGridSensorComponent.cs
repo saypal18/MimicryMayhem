@@ -15,13 +15,16 @@ public class CustomGridSensorComponent : SensorComponent
     private DamageResolver pendingDamageResolver;
     private Grid pendingGrid;
 
+    [Header("Settings")]
+    [SerializeField] private int viewRadius = 5;
+
     [Header("Debug")]
     public bool showGizmos = true;
 
     public override ISensor[] CreateSensors()
     {
         // Create sensor with null grid — it will be set via SetAgentReferences
-        sensor = new CustomGridSensor(null);
+        sensor = new CustomGridSensor(null, viewRadius);
 
         // Apply any references that arrived before CreateSensors was called
         if (pendingPlaceable != null)
@@ -94,7 +97,8 @@ public class CustomGridSensorComponent : SensorComponent
         if (initializer != null)
         {
             Gizmos.color = new Color(1, 1, 1, 0.2f);
-            Gizmos.DrawWireCube(transform.position, new Vector3(5, 5, 0.1f));
+            int size = viewRadius * 2 + 1;
+            Gizmos.DrawWireCube(transform.position, new Vector3(size, size, 0.1f));
 #if UNITY_EDITOR
             UnityEditor.Handles.Label(transform.position + Vector3.up, "Sensor Preview (Ego-centric)");
 #endif
