@@ -1,2 +1,5 @@
-mlagents-learn SurvivorAgent.yaml --run-id=run1 --force
+mlagents-learn SurvivorAgent.yaml --run-id=run6 --force
 conda activate ml-agents
+cd "Unity\Survival of The Fattest 2\Assets\ML-Agents"
+pip install -e ml-agents-envs/ -e ml-agents/
+cd C:\Users\Sayantan Pal\Unity\ml-agents\

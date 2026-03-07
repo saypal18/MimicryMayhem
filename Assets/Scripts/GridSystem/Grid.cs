@@ -11,6 +11,11 @@ public class Grid
     public Vector2 TileSize => tileSize;
     public List<GridPlaceable>[,] tiles;
 
+    public void SetSize(Vector2Int newSize)
+    {
+        size = newSize;
+    }
+
     public void Initialize()
     {
         PurgeGrid();
@@ -27,9 +32,11 @@ public class Grid
     public void PurgeGrid()
     {
         if (tiles == null) return;
-        for (int x = 0; x < size.x; x++)
+        int oldX = tiles.GetLength(0);
+        int oldY = tiles.GetLength(1);
+        for (int x = 0; x < oldX; x++)
         {
-            for (int y = 0; y < size.y; y++)
+            for (int y = 0; y < oldY; y++)
             {
                 // Create a snapshot of the list to avoid InvalidOperationException 
                 // when Despawn triggers RemoveFromGrid() which modifies tiles[x, y].

@@ -1,0 +1,1 @@
+python "C:\Users\Sayantan Pal\Unity\ml-agents\ml-agents\standalone_export.py" --run-id "run6" --behavior "SurvivorAgent" --checkpoint "4980" --config "SurvivorAgent.yaml" --results-dir "results"

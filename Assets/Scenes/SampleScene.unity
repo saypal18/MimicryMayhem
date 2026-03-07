@@ -150,10 +150,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Trainer
   inputManager: {fileID: 1588366680}
   gameInitializerPrefab: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
-  n: 16
+  n: 4
   initialPosition: {x: 0, y: 0, z: 0}
-  gridSize: {x: 30, y: 30}
-  fieldLength: 4
+  gridSize: {x: 100, y: 100}
+  fieldLength: 2
 --- !u!4 &149842500
 Transform:
   m_ObjectHideFlags: 0
@@ -561,6 +561,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: predict
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: inputManager
       value: 

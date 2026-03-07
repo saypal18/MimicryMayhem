@@ -28,6 +28,11 @@ public class PickupPlacer
         }
     }
 
+    public void SetInterval(float interval)
+    {
+        spawnInterval = interval;
+    }
+
     public void SpawnAtPosition(Vector2Int position)
     {
         GrowPickup pickup = PoolingEntity.Spawn(pickupPrefab, pickupParent);

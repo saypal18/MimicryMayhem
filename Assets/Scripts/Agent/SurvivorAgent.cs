@@ -24,9 +24,11 @@ public class SurvivorAgent : Agent, IMoveInputHandler
     private Entity thisEntity;
     private GameInitializer gameInitializer;
 
-    // ---- position history ----
-    private readonly Queue<Vector2Int> positionHistory = new Queue<Vector2Int>();
-    [SerializeField] private int MaxHistoryCount = 5; // Current + 4 previous
+    // // ---- action history (one-hot encoded, n-1 format) ----
+    // // Each slot stores a MoveAction int (0=NoAction, 1=Up, 2=Down, 3=Left, 4=Right).
+    // // Encoded as 4 floats: [Up, Down, Left, Right] — NoAction = (0,0,0,0).
+    // private readonly Queue<int> actionHistory = new Queue<int>();
+    // [SerializeField] private int MaxActionHistory = 16; // number of previous actions to remember
 
     // ---- heuristic state ----
     private int currentHeuristicAction = 0;
@@ -70,25 +72,22 @@ public class SurvivorAgent : Agent, IMoveInputHandler
             sensorComponent.SetAgentReferences(gridPlaceable, damageResolver, gridPlaceable.CurrentGrid);
         }
 
-        ResetPositionHistory();
+        // ResetActionHistory();
     }
 
-    private void ResetPositionHistory()
-    {
-        positionHistory.Clear();
-        if (gridPlaceable != null)
-        {
-            for (int i = 0; i < MaxHistoryCount; i++)
-            {
-                positionHistory.Enqueue(gridPlaceable.Position);
-            }
-        }
-    }
+    // private void ResetActionHistory()
+    // {
+    //     actionHistory.Clear();
+    //     for (int i = 0; i < MaxActionHistory; i++)
+    //     {
+    //         actionHistory.Enqueue((int)MoveAction.NoAction);
+    //     }
+    // }
 
-    public override void OnEpisodeBegin()
-    {
-        ResetPositionHistory();
-    }
+    // public override void OnEpisodeBegin()
+    // {
+    //     ResetActionHistory();
+    // }
 
     // ---- reward handlers ----
 
@@ -108,7 +107,7 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         // Check win condition: are we the last entity on the grid?
         if (entitySpawner != null && entitySpawner.IsLastEntity(thisEntity))
         {
-            AddReward(1f);
+            AddReward(2f);
             EndEpisode();
             if (gameInitializer != null)
             {
@@ -155,51 +154,32 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         }
     }
 
-    public override void CollectObservations(VectorSensor sensor)
-    {
-        if (gridPlaceable == null || gridPlaceable.CurrentGrid == null)
-        {
-            for (int i = 0; i < MaxHistoryCount * 2; i++) sensor.AddObservation(0f);
-            return;
-        }
-
-        // Update history with current position
-        Vector2Int currentPos = gridPlaceable.Position;
-        if (positionHistory.Count > 0 && positionHistory.Peek() != currentPos)
-        {
-            // This is a simple way to track movement. 
-            // We want the literal history of positions sampled at decision time.
-            // If the agent hasn't moved, we might still want to shift the history 
-            // or just keep it as is. Usually, for temporal dependencies, 
-            // we want the history of N fixed-interval samples.
-        }
-
-        // To keep it simple and effective: 
-        // Always push current pos and pop oldest if over limit.
-        // But only if it's a new position? No, let's just keep the last 5 sampled positions.
-        positionHistory.Enqueue(currentPos);
-        if (positionHistory.Count > MaxHistoryCount)
-        {
-            positionHistory.Dequeue();
-        }
-
-        Vector2Int gridSize = gridPlaceable.CurrentGrid.Size;
-
-        // Add history (current + 4 previous) to observations
-        // We'll peek through the queue.
-        foreach (var pos in positionHistory)
-        {
-            // Normalize observations for better model performance
-            sensor.AddObservation((float)pos.x / gridSize.x);
-            sensor.AddObservation((float)pos.y / gridSize.y);
-        }
-    }
+    //public override void CollectObservations(VectorSensor sensor)
+    //{
+    //    // Emit 16 one-hot encoded previous actions.
+    //    // Each action occupies 4 floats: [Up, Down, Left, Right]
+    //    // NoAction = (0, 0, 0, 0)
+    //    foreach (int action in actionHistory)
+    //    {
+    //        sensor.AddObservation(action == (int)MoveAction.Up ? 1f : 0f);
+    //        sensor.AddObservation(action == (int)MoveAction.Down ? 1f : 0f);
+    //        sensor.AddObservation(action == (int)MoveAction.Left ? 1f : 0f);
+    //        sensor.AddObservation(action == (int)MoveAction.Right ? 1f : 0f);
+    //    }
+    //}
 
     // ---- ML-Agents overrides ----
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         int moveAction = actionBuffers.DiscreteActions[0];
+
+        // // Record this action in history before executing it
+        // actionHistory.Enqueue(moveAction);
+        // if (actionHistory.Count > MaxActionHistory)
+        // {
+        //     actionHistory.Dequeue();
+        // }
 
         Vector2Int direction = Directions[moveAction];
 
