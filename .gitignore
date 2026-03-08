@@ -98,3 +98,7 @@ fmod_editor.log
 
 #useless checkpoints
 ML-Agents/
+
+training_build/
+html_build/
+build/
