@@ -20,6 +20,14 @@ public class Player : MonoBehaviour
         playerUI.UpdateStats(aliveCount, playerPower);
     }
 
+    // enemy will be 3 distinct shades of red / blue whether 
+    // it is more or less powerful and based on their power relative to the player 
+    // - lighter = closer to player power. == player power means white
+    void UpdateEnemyPowerDisplay()
+    {
+        
+    }
+
     void CreatePvEScenario()
     {
         IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
@@ -43,8 +51,10 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        R
     }
 
+    private void Update()
+    {
+    }
 
 }

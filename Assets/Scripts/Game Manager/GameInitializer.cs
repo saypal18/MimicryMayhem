@@ -78,17 +78,10 @@ public class GameInitializer : MonoBehaviour
         {
             grid.RandomizeSize();
         }
-
-        // // ── Grid Size ────────────────────────────────────────────────────────
-        // if (shouldRandomize)
-        // {
-        //     int sizeValue = playerUI.GridSize;
-        //     grid.SetSize(new Vector2Int(sizeValue, sizeValue));
-        // }
-        // else
-        // {
-        //     grid.RandomizeSize();
-        // }
+        else
+        {
+            grid.SetSize(new Vector2Int(playerUI.GridSize, playerUI.GridSize));
+        }
 
         grid.Initialize();
 
@@ -118,40 +111,39 @@ public class GameInitializer : MonoBehaviour
         // ── 1. Walls first (so entities/pickups avoid wall tiles) ─────────────
         wallPlacer.PlaceWalls(totalArea);
 
-        // ── 2. Entities ───────────────────────────────────────────────────────
-        if (playerUI != null && !playerUI.ShouldRandomize)
+        if (shouldRandomize)
         {
-            // If not randomizing, spawn specified count from UI
-            entitySpawner.SpawnCount(playerUI.EnemyCount + 1); // +1 for the player
+            entitySpawner.SetEntityCountByArea(totalArea);
         }
         else
         {
-            entitySpawner.SpawnInitialEntities(totalArea);
+            entitySpawner.SetEntityCount(playerUI.EnemyCount + 1); // +1 for the player
         }
+        entitySpawner.SpawnInitialEntities();
 
         // ── 3. Pickups ────────────────────────────────────────────────────────
         pickupPlacer.SpawnInitialPickups(totalArea);
 
-        // ── 4. Predict-mode behaviour assignment ──────────────────────────────
-        if (predict)
-        {
-            IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
-            for (int i = 0; i < activeEntities.Count; i++)
-            {
-                if (!activeEntities[i].TryGetComponent(out BehaviorParameters bp)) continue;
+        // // ── 4. Predict-mode behaviour assignment ──────────────────────────────
+        // if (predict)
+        // {
+        //     IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
+        //     for (int i = 0; i < activeEntities.Count; i++)
+        //     {
+        //         if (!activeEntities[i].TryGetComponent(out BehaviorParameters bp)) continue;
 
-                if (i == 0)
-                {
-                    bp.BehaviorType = BehaviorType.HeuristicOnly;
-                    if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
-                        inputManager.InitializeMove(handler);
-                }
-                else
-                {
-                    bp.BehaviorType = BehaviorType.InferenceOnly;
-                }
-            }
-        }
+        //         if (i == 0)
+        //         {
+        //             bp.BehaviorType = BehaviorType.HeuristicOnly;
+        //             if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
+        //                 inputManager.InitializeMove(handler);
+        //         }
+        //         else
+        //         {
+        //             bp.BehaviorType = BehaviorType.InferenceOnly;
+        //         }
+        //     }
+        // }
     }
 
 

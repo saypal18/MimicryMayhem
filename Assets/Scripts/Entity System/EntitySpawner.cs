@@ -14,6 +14,7 @@ public class EntitySpawner
 
     [Header("Entity Settings")]
     [SerializeField] private float entityPercentage = 2f;
+    private int entitiesCount;
 
     private readonly List<Entity> activeEntities = new List<Entity>();
 
@@ -68,13 +69,28 @@ public class EntitySpawner
         }
     }
 
-    public void SpawnInitialEntities(int totalArea)
+    // public void SpawnInitialEntities(int totalArea)
+    // {
+    //     int count = Mathf.Max(2, Mathf.RoundToInt(totalArea * (entityPercentage / 100f)));
+    //     SpawnCount(count);
+    // }
+
+    public void SetEntityCountByArea(int totalArea)
     {
-        int count = Mathf.Max(2, Mathf.RoundToInt(totalArea * (entityPercentage / 100f)));
-        SpawnCount(count);
+        entitiesCount = Mathf.Max(2, Mathf.RoundToInt(totalArea * (entityPercentage / 100f)));
+    }
+    public void SetEntityCount(int count)
+    {
+        entitiesCount = count;
     }
 
-    public void SpawnCount(int count)
+
+    public void SpawnInitialEntities()
+    {
+        SpawnCount(entitiesCount);
+    }
+
+    private void SpawnCount(int count)
     {
         List<Vector2Int> randomPositions = grid.GetRandomEmptyPositions(count);
         for (int i = 0; i < randomPositions.Count; i++)
