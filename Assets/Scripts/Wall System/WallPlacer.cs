@@ -6,6 +6,17 @@ namespace WallSystem
     [System.Serializable]
     public class WallPlacer
     {
+        public enum WallMode { Random, PerlinNoise, RandomEachReset }
+
+        [Header("Wall Settings")]
+        [SerializeField] private WallMode wallMode = WallMode.RandomEachReset;
+        [Tooltip("When WallMode is RandomEachReset: probability (0–1) that a given reset uses Perlin noise instead of scatter.")]
+        [Range(0f, 1f)]
+        [SerializeField] private float perlinNoiseProbability = 0.5f;
+        [SerializeField] private PerlinWallConfig perlinConfig = new PerlinWallConfig();
+        [SerializeField] private float wallPercentage = 10f;
+
+        [Header("References")]
         [SerializeField] private GridPlaceable wallPrefab;
         [SerializeField] private Transform wallParent;
         private Grid grid;
@@ -28,6 +39,21 @@ namespace WallSystem
         {
             GridPlaceable wall = PoolingEntity.Spawn(wallPrefab, wallParent);
             wall.Initialize(grid, position);
+        }
+
+        // ── Main Placement method ──────────────────────────────────────────────────
+        public void PlaceWalls(int totalArea)
+        {
+            int scatterWallCount = Mathf.RoundToInt(totalArea * (wallPercentage / 100f));
+            WallMode activeMode = wallMode;
+
+            if (wallMode == WallMode.RandomEachReset)
+                activeMode = (Random.value < perlinNoiseProbability) ? WallMode.PerlinNoise : WallMode.Random;
+
+            if (activeMode == WallMode.PerlinNoise)
+                SpawnPerlinNoise(perlinConfig);
+            else
+                SpawnAtRandomPositions(scatterWallCount);
         }
 
         // ── Scatter mode (no post-processing) ───────────────────────────────

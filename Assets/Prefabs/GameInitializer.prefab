@@ -141,44 +141,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 837aefe91f64a8c42a41607e39901353, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameInitializer
-  wallMode: 2
-  perlinNoiseProbability: 0.9
-  perlinConfig:
-    scaleXMin: 0.15
-    scaleXMax: 0.15
-    scaleYMin: 0.15
-    scaleYMax: 0.75
-    rotationAngleMin: 0
-    rotationAngleMax: 90
-    threshold: 0.5
-    minConnectedCoveragePercent: 0.9
-    maxWallPercentEarlyStop: 0.1
-    maxWallCapPercent: 0.5
-  minGridSize: 5
-  maxGridSize: 20
-  entityPercentage: 2
-  pickupPercentage: 25
-  wallPercentage: 10
   grid:
     startingTilePosition: {fileID: 3509958387582530915}
     tileSize: {x: 1, y: 1}
-    size: {x: 20, y: 20}
+    minGridSize: 5
+    maxGridSize: 80
   entitySpawner:
     entityPrefab: {fileID: 5104670366954836522, guid: 742511a84c67a2442afd660b5637f50b, type: 3}
     entityParent: {fileID: 7031706749203332148}
     movementFactory:
       movementCooldown: 0.2
+    colorize: 1
+    entityPercentage: 2
   inputManager: {fileID: 0}
   pickupPlacer:
     pickupPrefab: {fileID: 2655546045923351145, guid: 87d6ea1ca96318745b6ec673b2f6ea46, type: 3}
     pickupParent: {fileID: 7199370050930525759}
     spawnInterval: 10
+    pickupPercentage: 25
   wallPlacer:
+    wallMode: 2
+    perlinNoiseProbability: 0.9
+    perlinConfig:
+      scaleXMin: 0.15
+      scaleXMax: 0.15
+      scaleYMin: 0.15
+      scaleYMax: 0.75
+      rotationAngleMin: 0
+      rotationAngleMax: 90
+      threshold: 0.5
+      minConnectedCoveragePercent: 0.9
+      maxWallPercentEarlyStop: 0.1
+      maxWallCapPercent: 0.4
+    wallPercentage: 10
     wallPrefab: {fileID: 8216846165915037334, guid: 276f3e55d6572654a9b67a7949f30397, type: 3}
     wallParent: {fileID: 3209620099225721577}
-  maxStepsMultiplier: 1000
+  maxStepsMultiplier: 100
   pickupSpawnIntervalConstant: 8000
-  MaxSteps: 0
   predict: 0
 --- !u!1 &7782477435353402049
 GameObject:

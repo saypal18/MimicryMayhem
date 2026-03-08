@@ -5,7 +5,11 @@ public class Grid
 {
     [SerializeField] private Transform startingTilePosition;
     [SerializeField] private Vector2 tileSize;
-    [SerializeField] private Vector2Int size;
+    private Vector2Int size;
+
+    [Header("Grid Size Settings")]
+    [SerializeField] private int minGridSize = 5;
+    [SerializeField] private int maxGridSize = 80;
 
     public Vector2Int Size => size;
     public Vector2 TileSize => tileSize;
@@ -14,6 +18,13 @@ public class Grid
     public void SetSize(Vector2Int newSize)
     {
         size = newSize;
+    }
+
+    public void RandomizeSize()
+    {
+        int newX = Random.Range(minGridSize, maxGridSize + 1);
+        int newY = Random.Range(minGridSize, maxGridSize + 1);
+        SetSize(new Vector2Int(newX, newY));
     }
 
     public void Initialize()

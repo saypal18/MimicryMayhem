@@ -10,6 +10,10 @@ public class EntitySpawner
     private InputManager inputManager;
     [SerializeField] private MovementFactory movementFactory;
     private GameInitializer gameInitializer;
+    [SerializeField] private bool colorize = true;
+
+    [Header("Entity Settings")]
+    [SerializeField] private float entityPercentage = 2f;
 
     private readonly List<Entity> activeEntities = new List<Entity>();
 
@@ -53,19 +57,34 @@ public class EntitySpawner
         {
             bp.TeamId = teamId;
         }
-    }
 
-    public void SpawnAtRandomPositions(int count)
-    {
-        List<Vector2Int> randomPositions = grid.GetRandomEmptyPositions(count);
-        int currentTeamId = 0;
-        foreach (Vector2Int randomPosition in randomPositions)
+        if (colorize)
         {
-            // Each agent gets a unique team ID so they see each other as opponents
-            SpawnAtPosition(randomPosition, currentTeamId);
-            currentTeamId++;
+            Color agentColor = Color.HSVToRGB((teamId * 0.618033988749895f) % 1.0f, 0.8f, 0.9f);
+            foreach (var r in entity.GetComponentsInChildren<Renderer>())
+            {
+                r.material.color = agentColor;
+            }
         }
     }
+
+    public void SpawnInitialEntities(int totalArea)
+    {
+        int count = Mathf.Max(2, Mathf.RoundToInt(totalArea * (entityPercentage / 100f)));
+        SpawnCount(count);
+    }
+
+    public void SpawnCount(int count)
+    {
+        List<Vector2Int> randomPositions = grid.GetRandomEmptyPositions(count);
+        for (int i = 0; i < randomPositions.Count; i++)
+        {
+            // Alternate between Team 0 and Team 1
+            int teamId = i % 2;
+            SpawnAtPosition(randomPositions[i], teamId);
+        }
+    }
+
 
     /// <summary>
     /// Returns a self-removing handler: removes the entity from activeEntities

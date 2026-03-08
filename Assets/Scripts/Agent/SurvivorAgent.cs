@@ -93,7 +93,7 @@ public class SurvivorAgent : Agent, IMoveInputHandler
 
     private void HandleDamageTaken()
     {
-        AddReward(-0.5f);
+        AddReward(-1f);
         EndEpisode();
         // Trigger the full despawn chain: OnDespawning → GridPlaceable.RemoveFromGrid
         // → EntitySpawner.activeEntities auto-remove via CreateDespawnHandler
@@ -107,7 +107,7 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         // Check win condition: are we the last entity on the grid?
         if (entitySpawner != null && entitySpawner.IsLastEntity(thisEntity))
         {
-            AddReward(2f);
+            // AddReward(1f);
             EndEpisode();
             if (gameInitializer != null)
             {
@@ -118,7 +118,7 @@ public class SurvivorAgent : Agent, IMoveInputHandler
 
     private void HandlePickupCollected(Pickup pickup)
     {
-        AddReward(0.1f);
+        AddReward(0.2f);
     }
 
     // ---- action masking ----
