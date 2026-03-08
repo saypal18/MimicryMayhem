@@ -188,7 +188,7 @@ MonoBehaviour:
       type: 0
       movementCooldown: 0.2
     colorize: 1
-    entityPercentage: 2
+    entityPercentage: 1
   pickupPlacer:
     pickupPrefab: {fileID: 2655546045923351145, guid: 87d6ea1ca96318745b6ec673b2f6ea46, type: 3}
     pickupParent: {fileID: 7199370050930525759}

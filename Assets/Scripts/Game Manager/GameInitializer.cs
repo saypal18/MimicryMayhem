@@ -23,17 +23,9 @@ public class GameInitializer : MonoBehaviour
     [HideInInspector]public int MaxSteps = 1000;
     // [SerializeField] private bool predict = true;
     [HideInInspector]public bool shouldRandomize = true;
-    Vector2Int gridSize;
-    int entityCount;
     public Action onEnvironmentReset;
 
     private int stepCount = 0;
-
-    // private void Start()
-    // {
-    //     if (predict)
-    //         ResetEnvironment();
-    // }
 
     private void FixedUpdate()
     {
@@ -54,24 +46,6 @@ public class GameInitializer : MonoBehaviour
         }
     }
 
-    // private void Update()
-    // {
-    //     if (playerUI != null)
-    //     {
-    //         IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
-    //         int aliveCount = activeEntities.Count;
-    //         int playerPower = 0;
-
-    //         if (aliveCount > 0)
-    //         {
-    //             // Assuming the first entity is the player
-    //             playerPower = activeEntities[0].damageResolver.power;
-    //         }
-
-    //         playerUI.UpdateStats(aliveCount, playerPower);
-    //     }
-    // }
-
     public void ResetEnvironment()
     {
         stepCount = 0;
@@ -79,10 +53,6 @@ public class GameInitializer : MonoBehaviour
         {
             grid.RandomizeSize();
         }
-        // else
-        // {
-        //     grid.SetSize(new Vector2Int(playerUI.GridSize, playerUI.GridSize));
-        // }
 
         grid.Initialize();
 
@@ -108,10 +78,6 @@ public class GameInitializer : MonoBehaviour
         {
             entitySpawner.SetEntityCountByArea(totalArea);
         }
-        // else
-        // {
-        //     entitySpawner.SetEntityCount(playerUI.EnemyCount + 1); // +1 for the player
-        // }
         entitySpawner.SpawnInitialEntities();
 
         // ── 3. Pickups ────────────────────────────────────────────────────────
