@@ -26,4 +26,8 @@ public class SnapMovement : IMovement
         lastMoveTime = Time.time;
         return true;
     }
+    public void Snap(Vector3 position)
+    {
+        transform.position = position;
+    }
 }

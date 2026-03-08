@@ -6,4 +6,5 @@ public interface IMovement
     bool CanMove();
 
     bool Move(Vector3 initialPosition, Vector3 finalPosition);
+    void Snap(Vector3 position);
 }

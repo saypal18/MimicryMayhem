@@ -9,7 +9,7 @@ public class InputManager : MonoBehaviour
     }
     public void MovePlayer(InputAction.CallbackContext context)
     {
-        moveInputHandler.Move(context);
+        moveInputHandler?.Move(context);
     }
 
 }

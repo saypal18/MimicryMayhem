@@ -119,6 +119,7 @@ MonoBehaviour:
     power: 0
   sizeHandler:
     initialScale: {x: 0.5, y: 0.5, z: 0.5}
+  spriteRenderer: {fileID: 3424982107745104638}
 --- !u!114 &-7865425547269084357
 MonoBehaviour:
   m_ObjectHideFlags: 0

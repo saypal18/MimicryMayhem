@@ -40,7 +40,10 @@ public sealed class GridPlaceable : MonoBehaviour
         if (startTile != null)
         {
             startTile.Add(this);
-            transform.position = grid.GetWorldPosition(position);
+            if(movement != null)
+                movement.Snap(grid.GetWorldPosition(position));
+            else
+                transform.position = grid.GetWorldPosition(position);
         }
     }
 

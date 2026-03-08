@@ -7,10 +7,10 @@ public class EntitySpawner
     [SerializeField] private Entity entityPrefab;
     [SerializeField] private Transform entityParent;
     private Grid grid;
-    private InputManager inputManager;
+    // private InputManager inputManager;
     [SerializeField] private MovementFactory movementFactory;
     private GameInitializer gameInitializer;
-    [SerializeField] private bool colorize = true;
+    [SerializeField] public bool colorize = true;
 
     [Header("Entity Settings")]
     [SerializeField] private float entityPercentage = 2f;
@@ -28,13 +28,20 @@ public class EntitySpawner
     /// <summary>Returns a snapshot of all currently active entities.</summary>
     public IReadOnlyList<Entity> GetActiveEntities() => activeEntities;
 
-    public void Initialize(Grid grid, InputManager inputManager, GameInitializer gameInitializer)
+    public void Initialize(Grid grid, GameInitializer gameInitializer)
     {
         this.grid = grid;
-        this.inputManager = inputManager;
         this.gameInitializer = gameInitializer;
         activeEntities.Clear();
     }
+
+    // public void Initialize(Grid grid, InputManager inputManager, GameInitializer gameInitializer)
+    // {
+    //     this.grid = grid;
+    //     this.inputManager = inputManager;
+    //     this.gameInitializer = gameInitializer;
+    //     activeEntities.Clear();
+    // }
 
     public void SpawnAtPosition(Vector2Int position, int teamId = 0)
     {
@@ -48,10 +55,10 @@ public class EntitySpawner
             poolingEntity.OnDespawning += CreateDespawnHandler(entity, poolingEntity);
         }
 
-        if (entity.TryGetComponent(out IMoveInputHandler moveHandler))
-        {
-            inputManager.InitializeMove(moveHandler);
-        }
+        // if (entity.TryGetComponent(out IMoveInputHandler moveHandler))
+        // {
+        //     inputManager.InitializeMove(moveHandler);
+        // }
 
         // Apply dynamic Team ID for free-for-all Self-Play
         if (entity.TryGetComponent(out Unity.MLAgents.Policies.BehaviorParameters bp))

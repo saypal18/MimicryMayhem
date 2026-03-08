@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WallSystem;
 using Unity.MLAgents.Policies;
+using System;
 
 public class GameInitializer : MonoBehaviour
 {
@@ -9,30 +10,30 @@ public class GameInitializer : MonoBehaviour
 
     // ── Core references ───────────────────────────────────────────────────────
     [Header("References")]
-    [SerializeField] private Grid grid;
-    [SerializeField] private EntitySpawner entitySpawner;
-    [SerializeField] public InputManager inputManager;
+    [SerializeField] public Grid grid;
+    [SerializeField] public EntitySpawner entitySpawner;
+    // [SerializeField] public InputManager inputManager;
     [SerializeField] private PickupPlacer pickupPlacer;
     [SerializeField] private WallPlacer wallPlacer;
-    [SerializeField] private PlayerUI playerUI;
 
     // ── Episode settings ──────────────────────────────────────────────────────
     [Header("Episode Settings")]
     [SerializeField] private float maxStepsMultiplier = 40f;
     [SerializeField] private float pickupSpawnIntervalConstant = 4000f;
-    private int MaxSteps = 1000;
-    [SerializeField] private bool predict = true;
-    bool shouldRandomize;
+    [HideInInspector]public int MaxSteps = 1000;
+    // [SerializeField] private bool predict = true;
+    [HideInInspector]public bool shouldRandomize = true;
     Vector2Int gridSize;
     int entityCount;
+    public Action onEnvironmentReset;
 
     private int stepCount = 0;
 
-    private void Start()
-    {
-        if (predict)
-            ResetEnvironment();
-    }
+    // private void Start()
+    // {
+    //     if (predict)
+    //         ResetEnvironment();
+    // }
 
     private void FixedUpdate()
     {
@@ -53,23 +54,23 @@ public class GameInitializer : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (playerUI != null)
-        {
-            IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
-            int aliveCount = activeEntities.Count;
-            int playerPower = 0;
+    // private void Update()
+    // {
+    //     if (playerUI != null)
+    //     {
+    //         IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
+    //         int aliveCount = activeEntities.Count;
+    //         int playerPower = 0;
 
-            if (aliveCount > 0)
-            {
-                // Assuming the first entity is the player
-                playerPower = activeEntities[0].damageResolver.power;
-            }
+    //         if (aliveCount > 0)
+    //         {
+    //             // Assuming the first entity is the player
+    //             playerPower = activeEntities[0].damageResolver.power;
+    //         }
 
-            playerUI.UpdateStats(aliveCount, playerPower);
-        }
-    }
+    //         playerUI.UpdateStats(aliveCount, playerPower);
+    //     }
+    // }
 
     public void ResetEnvironment()
     {
@@ -78,10 +79,10 @@ public class GameInitializer : MonoBehaviour
         {
             grid.RandomizeSize();
         }
-        else
-        {
-            grid.SetSize(new Vector2Int(playerUI.GridSize, playerUI.GridSize));
-        }
+        // else
+        // {
+        //     grid.SetSize(new Vector2Int(playerUI.GridSize, playerUI.GridSize));
+        // }
 
         grid.Initialize();
 
@@ -89,22 +90,14 @@ public class GameInitializer : MonoBehaviour
         int totalArea = grid.Size.x * grid.Size.y;
 
         // Dynamic MaxSteps and Pickup Interval based on size
-        if (playerUI != null)
-        {
-            // User: Player also sets max steps = 0
-            // This disables the time-based reset in FixedUpdate
-            MaxSteps = 0;
-        }
-        else
-        {
-            float averageDimension = (grid.Size.x + grid.Size.y) / 2f;
-            MaxSteps = Mathf.RoundToInt(maxStepsMultiplier * averageDimension);
-        }
+        
+        float averageDimension = (grid.Size.x + grid.Size.y) / 2f;
+        MaxSteps = Mathf.RoundToInt(maxStepsMultiplier * averageDimension);
 
         pickupPlacer.SetInterval(pickupSpawnIntervalConstant / (float)totalArea);
 
         // Initialise subsystems before spawning anything.
-        entitySpawner.Initialize(grid, inputManager, this);
+        entitySpawner.Initialize(grid, this);
         pickupPlacer.Initialize(grid);
         wallPlacer.Initialize(grid);
 
@@ -115,36 +108,15 @@ public class GameInitializer : MonoBehaviour
         {
             entitySpawner.SetEntityCountByArea(totalArea);
         }
-        else
-        {
-            entitySpawner.SetEntityCount(playerUI.EnemyCount + 1); // +1 for the player
-        }
+        // else
+        // {
+        //     entitySpawner.SetEntityCount(playerUI.EnemyCount + 1); // +1 for the player
+        // }
         entitySpawner.SpawnInitialEntities();
 
         // ── 3. Pickups ────────────────────────────────────────────────────────
         pickupPlacer.SpawnInitialPickups(totalArea);
-
-        // // ── 4. Predict-mode behaviour assignment ──────────────────────────────
-        // if (predict)
-        // {
-        //     IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
-        //     for (int i = 0; i < activeEntities.Count; i++)
-        //     {
-        //         if (!activeEntities[i].TryGetComponent(out BehaviorParameters bp)) continue;
-
-        //         if (i == 0)
-        //         {
-        //             bp.BehaviorType = BehaviorType.HeuristicOnly;
-        //             if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
-        //                 inputManager.InitializeMove(handler);
-        //         }
-        //         else
-        //         {
-        //             bp.BehaviorType = BehaviorType.InferenceOnly;
-        //         }
-        //     }
-        // }
+        onEnvironmentReset?.Invoke();
     }
-
 
 }

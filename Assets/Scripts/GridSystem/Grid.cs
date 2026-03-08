@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 [System.Serializable]
 public class Grid
 {
@@ -10,14 +11,16 @@ public class Grid
     [Header("Grid Size Settings")]
     [SerializeField] private int minGridSize = 5;
     [SerializeField] private int maxGridSize = 80;
-
+    private Vector2Int sizeForNextMatch;
     public Vector2Int Size => size;
     public Vector2 TileSize => tileSize;
     public List<GridPlaceable>[,] tiles;
 
+    [SerializeField] private GridBorder border;
+
     public void SetSize(Vector2Int newSize)
     {
-        size = newSize;
+        sizeForNextMatch = newSize;
     }
 
     public void RandomizeSize()
@@ -29,6 +32,7 @@ public class Grid
 
     public void Initialize()
     {
+        size = sizeForNextMatch;
         PurgeGrid();
         tiles = new List<GridPlaceable>[size.x, size.y];
         for (int x = 0; x < size.x; x++)
@@ -38,7 +42,8 @@ public class Grid
                 tiles[x, y] = new List<GridPlaceable>();
             }
         }
-    }
+        border.CreateGridBorder(tileSize, size);
+    }    
 
     public void PurgeGrid()
     {

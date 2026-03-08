@@ -8,7 +8,8 @@ public class Entity : MonoBehaviour
     [SerializeField] private PickupHandler pickupHandler;
     [SerializeField] public DamageResolver damageResolver;
     [SerializeField] private SizeHandler sizeHandler;
-    private IMovement movement;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    public IMovement movement { get; private set; }
     public void Initialize(Grid grid, Vector2Int startPosition, MovementFactory movementFactory, EntitySpawner entitySpawner, GameInitializer gameInitializer)
     {
         movement = movementFactory.GetMovement(this);
@@ -29,6 +30,14 @@ public class Entity : MonoBehaviour
         {
             // survivorAgent.EpisodeInterrupted();
             survivorAgent.EndEpisode();
+        }
+    }
+
+    public void SetColor(Color color)
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = color;
         }
     }
 }
