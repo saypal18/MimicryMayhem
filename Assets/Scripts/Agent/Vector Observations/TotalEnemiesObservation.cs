@@ -26,8 +26,8 @@ public class TotalEnemiesObservation : SensorComponent
         if (pendingSpawner != null && pendingGrid != null)
         {
             sensor.SetAgentReferences(pendingSpawner, pendingGrid);
-            pendingSpawner = null;
-            pendingGrid = null;
+            // pendingSpawner = null;
+            // pendingGrid = null;
         }
         return new ISensor[] { sensor };
     }

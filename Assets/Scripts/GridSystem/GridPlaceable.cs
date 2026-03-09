@@ -23,8 +23,14 @@ public sealed class GridPlaceable : MonoBehaviour
     public void Initialize(Grid grid, Vector2Int startPosition, IMovement movement = null)
     {
         this.movement = movement;
-        if (poolingEntity == null && TryGetComponent(out poolingEntity))
+        if (poolingEntity == null)
         {
+            TryGetComponent(out poolingEntity);
+        }
+
+        if (poolingEntity != null)
+        {
+            poolingEntity.OnDespawning -= HandleDespawning;
             poolingEntity.OnDespawning += HandleDespawning;
         }
 

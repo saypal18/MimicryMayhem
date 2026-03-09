@@ -230,8 +230,8 @@ MonoBehaviour:
   pickupPlacer:
     pickupPrefab: {fileID: 2655546045923351145, guid: 87d6ea1ca96318745b6ec673b2f6ea46, type: 3}
     pickupParent: {fileID: 7199370050930525759}
-    spawnInterval: 0
-    pickupPercentage: 0
+    spawnInterval: 10
+    pickupPercentage: 25
   wallPlacer:
     wallMode: 2
     perlinNoiseProbability: 0.9
@@ -260,7 +260,7 @@ MonoBehaviour:
       rotationAngleMin: 0
       rotationAngleMax: 45
       threshold: 0.7
-  maxStepsMultiplier: 500
+  maxStepsMultiplier: 100
   pickupSpawnIntervalConstant: 8000
   MaxSteps: 1000
   shouldRandomize: 1

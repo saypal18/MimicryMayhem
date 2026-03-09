@@ -27,7 +27,7 @@ public class BasicBushCurriculum : ICurriculum
         // Reward curriculum
         rewardSettings.pickupReward = envParams.GetWithDefault("pickup_reward", 0.1f);
         rewardSettings.stepReward = envParams.GetWithDefault("step_reward", -0.002f);
-        rewardSettings.stepReward = envParams.GetWithDefault("bush_reward", 0.01f);
+        rewardSettings.bushReward = envParams.GetWithDefault("bush_reward", 0.01f);
         // rewardSettings.deathReward = envParams.GetWithDefault("death_reward", -0.5f);
 
         // Grid curriculum

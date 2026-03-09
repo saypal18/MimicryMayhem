@@ -26,8 +26,8 @@ public class PositionObservation : SensorComponent
         if (pendingPlaceable != null && pendingGrid != null)
         {
             sensor.SetAgentReferences(pendingPlaceable, pendingGrid);
-            pendingPlaceable = null;
-            pendingGrid = null;
+            // pendingPlaceable = null;
+            // pendingGrid = null;
         }
         return new ISensor[] { sensor };
     }

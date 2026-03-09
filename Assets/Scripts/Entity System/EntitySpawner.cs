@@ -105,7 +105,7 @@ public class EntitySpawner
         for (int i = 0; i < randomPositions.Count; i++)
         {
             // Assign a unique Team ID to each agent for a Free-For-All game
-            int teamId = i;
+            int teamId = 0;
             SpawnAtPosition(randomPositions[i], teamId);
         }
     }

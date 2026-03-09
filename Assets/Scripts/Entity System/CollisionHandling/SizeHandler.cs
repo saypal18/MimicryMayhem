@@ -15,7 +15,7 @@ public class SizeHandler
     }
     private void IncreaseSize(Pickup pickup)
     {
-        entity.localScale += Vector3.one * 0.001f;
+        // entity.localScale += Vector3.one * 0.001f;
     }
 
 }

@@ -19,10 +19,10 @@ GameObject:
   - component: {fileID: -6301446809717054083}
   - component: {fileID: 2114149191688670333}
   - component: {fileID: -1320314435333344690}
-  - component: {fileID: 12939468941754814}
-  - component: {fileID: -4695624220006141960}
-  - component: {fileID: -6956280403317870844}
-  - component: {fileID: 802767430494719562}
+  - component: {fileID: 2798837416786205791}
+  - component: {fileID: -6068677719235475663}
+  - component: {fileID: 8907513899038437448}
+  - component: {fileID: -9048565712272594558}
   m_Layer: 0
   m_Name: Entity
   m_TagString: Agent
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CustomGridSensorComponent
   viewRadius: 5
   showGizmos: 0
---- !u!114 &12939468941754814
+--- !u!114 &2798837416786205791
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -298,31 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5a18b4e1ad061c4f82663311d392907, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PositionObservation
---- !u!114 &-4695624220006141960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593017720766107119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f27500aa1677ccf4692939460d59abfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalEnemiesObservation
---- !u!114 &-6956280403317870844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593017720766107119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 406c14fa46a9f95448fea47e1ee108e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalPickupObservation
---- !u!114 &802767430494719562
+--- !u!114 &-6068677719235475663
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -334,3 +310,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2568d1acc520c914caf24cb5ded68dd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerObservation
+--- !u!114 &8907513899038437448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4593017720766107119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f27500aa1677ccf4692939460d59abfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalEnemiesObservation
+--- !u!114 &-9048565712272594558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4593017720766107119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 406c14fa46a9f95448fea47e1ee108e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TotalPickupObservation

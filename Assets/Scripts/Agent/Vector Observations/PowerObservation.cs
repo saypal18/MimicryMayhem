@@ -26,8 +26,8 @@ public class PowerObservation : SensorComponent
         if (pendingDamageResolver != null && pendingGrid != null)
         {
             sensor.SetAgentReferences(pendingDamageResolver, pendingGrid);
-            pendingDamageResolver = null;
-            pendingGrid = null;
+            // pendingDamageResolver = null;
+            // pendingGrid = null;
         }
         return new ISensor[] { sensor };
     }
@@ -45,7 +45,7 @@ public class PowerObservation : SensorComponent
 
         public string GetName() => "PowerObservation";
         public ObservationSpec GetObservationSpec() => ObservationSpec.Vector(1);
-        
+
         public int Write(ObservationWriter writer)
         {
             if (damageResolver != null && grid != null && grid.Size.x > 0 && grid.Size.y > 0)
