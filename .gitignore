@@ -10,6 +10,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/[Aa]ssets/_[Rr]ecovery*
 *.log
 
 # MemoryCaptures can get excessive in size.
@@ -99,6 +100,6 @@ fmod_editor.log
 #useless checkpoints
 ML-Agents/
 
-training_build/
-html_build/
-build/
+# training_build/
+# html_build/
+# build/

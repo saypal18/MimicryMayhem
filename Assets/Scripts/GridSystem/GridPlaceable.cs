@@ -3,7 +3,7 @@ using UnityEngine;
 
 public sealed class GridPlaceable : MonoBehaviour
 {
-    public enum PlaceableType { Unassigned, Entity, Pickup, Wall }
+    public enum PlaceableType { Unassigned, Entity, Pickup, Wall, Bush }
     [SerializeField] private PlaceableType type;
     public PlaceableType Type => type;
 
@@ -40,7 +40,7 @@ public sealed class GridPlaceable : MonoBehaviour
         if (startTile != null)
         {
             startTile.Add(this);
-            if(movement != null)
+            if (movement != null)
                 movement.Snap(grid.GetWorldPosition(position));
             else
                 transform.position = grid.GetWorldPosition(position);
@@ -96,6 +96,18 @@ public sealed class GridPlaceable : MonoBehaviour
         {
             currentTile.Remove(this);
         }
+    }
+
+    public bool IsStandingOn(PlaceableType type)
+    {
+        List<GridPlaceable> tile = grid.GetTile(position);
+        if (tile == null) return false;
+        foreach (GridPlaceable gridPlaceable in tile)
+        {
+            if (gridPlaceable.Type == type)
+                return true;
+        }
+        return false;
     }
 
 }

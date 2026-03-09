@@ -10,7 +10,7 @@ public class Entity : MonoBehaviour
     [SerializeField] private SizeHandler sizeHandler;
     [SerializeField] private SpriteRenderer spriteRenderer;
     public IMovement movement { get; private set; }
-    public void Initialize(Grid grid, Vector2Int startPosition, MovementFactory movementFactory, EntitySpawner entitySpawner, GameInitializer gameInitializer)
+    public void Initialize(Grid grid, Vector2Int startPosition, MovementFactory movementFactory, EntitySpawner entitySpawner, GameInitializer gameInitializer, RewardSettings rewardSettings)
     {
         movement = movementFactory.GetMovement(this);
         gridPlaceable.Initialize(grid, startPosition, movement);
@@ -20,7 +20,7 @@ public class Entity : MonoBehaviour
         damageResolver.Initialize(collisionResolver, pickupHandler);
         sizeHandler.Initialize(transform, pickupHandler);
 
-        survivorAgent.Initialize(gridPlaceable, damageResolver, pickupHandler, entitySpawner, this, gameInitializer);
+        survivorAgent.Initialize(gridPlaceable, damageResolver, pickupHandler, entitySpawner, this, gameInitializer, rewardSettings);
     }
 
     /// <summary>Ends the ML-Agents episode for this entity. Called externally (e.g. on step-limit timeout).</summary>

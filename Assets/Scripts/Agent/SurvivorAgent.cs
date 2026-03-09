@@ -16,10 +16,11 @@ enum MoveAction
 
 public class SurvivorAgent : Agent, IMoveInputHandler
 {
+    private RewardSettings rewardSettings;
     // ---- references ----
     private GridPlaceable gridPlaceable;
-    private DamageResolver damageResolver;
-    private PickupHandler pickupHandler;
+    // private DamageResolver damageResolver;
+    // private PickupHandler pickupHandler;
     private EntitySpawner entitySpawner;
     private Entity thisEntity;
     private GameInitializer gameInitializer;
@@ -52,14 +53,16 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         PickupHandler pickupHandler,
         EntitySpawner entitySpawner,
         Entity thisEntity,
-        GameInitializer gameInitializer)
+        GameInitializer gameInitializer,
+        RewardSettings rewardSettings)
     {
         this.gridPlaceable = gridPlaceable;
-        this.damageResolver = damageResolver;
-        this.pickupHandler = pickupHandler;
+        // this.damageResolver = damageResolver;
+        // this.pickupHandler = pickupHandler;
         this.entitySpawner = entitySpawner;
         this.thisEntity = thisEntity;
         this.gameInitializer = gameInitializer;
+        this.rewardSettings = rewardSettings;
 
         // Wire reward events
         damageResolver.OnDamageTaken += HandleDamageTaken;
@@ -70,6 +73,26 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         if (TryGetComponent(out CustomGridSensorComponent sensorComponent))
         {
             sensorComponent.SetAgentReferences(gridPlaceable, damageResolver, gridPlaceable.CurrentGrid);
+        }
+
+        if (TryGetComponent(out PositionObservation posObs))
+        {
+            posObs.SetAgentReferences(gridPlaceable, gridPlaceable.CurrentGrid);
+        }
+
+        if (TryGetComponent(out TotalEnemiesObservation enemiesObs))
+        {
+            enemiesObs.SetAgentReferences(entitySpawner, gridPlaceable.CurrentGrid);
+        }
+
+        if (TryGetComponent(out TotalPickupObservation pickupObs))
+        {
+            pickupObs.SetAgentReferences(gameInitializer.pickupPlacer, gridPlaceable.CurrentGrid);
+        }
+
+        if (TryGetComponent(out PowerObservation powerObs))
+        {
+            powerObs.SetAgentReferences(damageResolver, gridPlaceable.CurrentGrid);
         }
 
         // ResetActionHistory();
@@ -93,7 +116,7 @@ public class SurvivorAgent : Agent, IMoveInputHandler
 
     private void HandleDamageTaken()
     {
-        AddReward(-1f);
+        AddReward(rewardSettings.deathReward);
         EndEpisode();
         // Trigger the full despawn chain: OnDespawning → GridPlaceable.RemoveFromGrid
         // → EntitySpawner.activeEntities auto-remove via CreateDespawnHandler
@@ -102,12 +125,12 @@ public class SurvivorAgent : Agent, IMoveInputHandler
 
     private void HandleDamageDealt()
     {
-        AddReward(1.0f);
+        AddReward(rewardSettings.damageReward);
 
         // Check win condition: are we the last entity on the grid?
         if (entitySpawner != null && entitySpawner.IsLastEntity(thisEntity))
         {
-            // AddReward(1f);
+            AddReward(rewardSettings.damageReward);
             EndEpisode();
             if (gameInitializer != null)
             {
@@ -118,7 +141,7 @@ public class SurvivorAgent : Agent, IMoveInputHandler
 
     private void HandlePickupCollected(Pickup pickup)
     {
-        AddReward(0.2f);
+        AddReward(rewardSettings.pickupReward);
     }
 
     // ---- action masking ----
@@ -187,7 +210,16 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         {
             gridPlaceable.Move(direction);
         }
-        AddReward(-0.002f); // small step penalty to encourage efficiency
+        AddReward(rewardSettings.stepReward); // curriculum-aware step reward
+        AddBushReward();
+    }
+
+    private void AddBushReward()
+    {
+        if (gridPlaceable.IsStandingOn(GridPlaceable.PlaceableType.Bush))
+        {
+            AddReward(rewardSettings.bushReward);
+        }
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)

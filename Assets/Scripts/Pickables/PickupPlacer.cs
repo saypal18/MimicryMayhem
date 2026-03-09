@@ -8,14 +8,19 @@ public class PickupPlacer
     [SerializeField] private Transform pickupParent;
     [SerializeField] private float spawnInterval = 2.0f;
     [Header("Pickup Settings")]
-    [SerializeField] private float pickupPercentage = 25f;
+    [SerializeField] public float pickupPercentage = 25f;
     private Grid grid;
     private float timer;
+    private readonly List<GrowPickup> activePickups = new List<GrowPickup>();
+
+    /// <summary>Number of pickups currently active on the grid.</summary>
+    public int ActivePickupCount => activePickups.Count;
 
     public void Initialize(Grid grid)
     {
         this.grid = grid;
         timer = 0;
+        activePickups.Clear();
     }
 
     public void Tick(float deltaTime)
@@ -26,7 +31,13 @@ public class PickupPlacer
         if (timer >= spawnInterval)
         {
             timer = 0;
-            SpawnAtRandomPositions(1);
+
+            // Limit the total possible pickups to prevent memory bloat and infinite farming CPU stalls
+            int maxPickups = Mathf.RoundToInt((grid.Size.x * grid.Size.y) * (pickupPercentage / 100f));
+            if (ActivePickupCount < maxPickups)
+            {
+                SpawnAtRandomPositions(1);
+            }
         }
     }
 
@@ -39,6 +50,23 @@ public class PickupPlacer
     {
         GrowPickup pickup = PoolingEntity.Spawn(pickupPrefab, pickupParent);
         pickup.Initialize(grid, position);
+
+        activePickups.Add(pickup);
+        if (pickup.TryGetComponent(out PoolingEntity poolingEntity))
+        {
+            poolingEntity.OnDespawning += CreateDespawnHandler(pickup, poolingEntity);
+        }
+    }
+
+    private System.Action CreateDespawnHandler(GrowPickup pickup, PoolingEntity poolingEntity)
+    {
+        System.Action handler = null;
+        handler = () =>
+        {
+            activePickups.Remove(pickup);
+            // poolingEntity.OnDespawning -= handler;
+        };
+        return handler;
     }
 
     public void SpawnInitialPickups(int totalArea)

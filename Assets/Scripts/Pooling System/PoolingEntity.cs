@@ -297,6 +297,7 @@ public class PoolingEntity : MonoBehaviour
 
         // Raise the OnDespawning event to notify subscribers
         OnDespawning?.Invoke();
+        OnDespawning = null;
 
         // Deactivate GameObject
         gameObject.SetActive(false);

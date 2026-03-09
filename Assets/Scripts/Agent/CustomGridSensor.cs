@@ -3,20 +3,21 @@ using UnityEngine;
 
 /// <summary>
 /// Custom ISensor that provides a 11x11 ego-centric view centered on the agent.
-/// 
-/// Channel layout (5 channels):
+///
+/// Channel layout (6 channels):
 ///   [0] Enemy exists (1.0)
 ///   [1] Enemy is stronger than agent (1.0)
 ///   [2] Enemy is weaker than agent (1.0)
 ///   [3] Pickup present (1.0)
 ///   [4] Wall or out-of-bounds (1.0)
+///   [5] Bush present (1.0)
 /// </summary>
 public class CustomGridSensor : ISensor
 {
     // ---- configuration ----
     private int viewRadius;
     private int viewSize;
-    private const int Channels = 5;
+    private const int Channels = 6;
 
     // ---- references set externally ----
     private Grid grid;
@@ -83,6 +84,7 @@ public class CustomGridSensor : ISensor
                     writer[2, row, col] = 0f; // enemy is weaker
                     writer[3, row, col] = 0f; // pickup
                     writer[4, row, col] = 1f; // out-of-bounds treated as wall
+                    writer[5, row, col] = 0f; // bush
                     continue;
                 }
 
@@ -91,16 +93,32 @@ public class CustomGridSensor : ISensor
                 float enemyIsWeaker = 0f;
                 float pickupChannel = 0f;
                 float wallChannel = 0f;
+                float bushChannel = 0f;
+
+                bool hasBush = false;
+                foreach (GridPlaceable gp in tile)
+                {
+                    if (gp.Type == GridPlaceable.PlaceableType.Bush)
+                    {
+                        hasBush = true;
+                        break;
+                    }
+                }
 
                 foreach (GridPlaceable gp in tile)
                 {
                     switch (gp.Type)
                     {
+                        case GridPlaceable.PlaceableType.Bush:
+                            bushChannel = 1f;
+                            break;
+
                         case GridPlaceable.PlaceableType.Wall:
                             wallChannel = 1f;
                             break;
 
                         case GridPlaceable.PlaceableType.Entity:
+                            if (hasBush) break;
                             if (gp != agentPlaceable && gp.Entity != null)
                             {
                                 enemyExists = 1f;
@@ -113,6 +131,7 @@ public class CustomGridSensor : ISensor
                             break;
 
                         case GridPlaceable.PlaceableType.Pickup:
+                            if (hasBush) break;
                             pickupChannel = 1f;
                             break;
                     }
@@ -123,6 +142,7 @@ public class CustomGridSensor : ISensor
                 writer[2, row, col] = enemyIsWeaker;
                 writer[3, row, col] = pickupChannel;
                 writer[4, row, col] = wallChannel;
+                writer[5, row, col] = bushChannel;
             }
         }
 
@@ -155,6 +175,7 @@ public class CustomGridSensor : ISensor
                 float enemyIsWeaker = 0f;
                 float pickupChannel = 0f;
                 float wallChannel = 0f;
+                float bushChannel = 0f;
 
                 var tile = grid.GetTile(worldCell);
                 if (tile == null)
@@ -163,17 +184,32 @@ public class CustomGridSensor : ISensor
                 }
                 else
                 {
+                    bool hasBush = false;
+                    foreach (GridPlaceable gp in tile)
+                    {
+                        if (gp.Type == GridPlaceable.PlaceableType.Bush)
+                        {
+                            hasBush = true;
+                            break;
+                        }
+                    }
+
                     foreach (GridPlaceable gp in tile)
                     {
                         switch (gp.Type)
                         {
+                            case GridPlaceable.PlaceableType.Bush:
+                                bushChannel = 1f;
+                                break;
                             case GridPlaceable.PlaceableType.Wall:
                                 wallChannel = 1f;
                                 break;
                             case GridPlaceable.PlaceableType.Pickup:
+                                if (hasBush) break;
                                 pickupChannel = 1f;
                                 break;
                             case GridPlaceable.PlaceableType.Entity:
+                                if (hasBush) break;
                                 if (gp != agentPlaceable && gp.Entity != null)
                                 {
                                     enemyExists = 1f;
@@ -188,7 +224,7 @@ public class CustomGridSensor : ISensor
                     }
                 }
 
-                // Draw cell: Red=Threat, Yellow=Prey, Orange=Equal, Green=Pickup, Blue=Wall
+                // Draw cell: Red=Threat, Yellow=Prey, Orange=Equal, Green=Pickup, Blue=Wall, Cyan=Bush
                 float r = 0, g = 0, b = 0;
 
                 if (enemyExists > 0)
@@ -200,9 +236,10 @@ public class CustomGridSensor : ISensor
 
                 if (pickupChannel > 0) { g = 1f; } // Green (Additive if overlapping)
                 if (wallChannel > 0) { b = 1f; }   // Blue (Additive)
+                if (bushChannel > 0) { r = 0f; g = 1f; b = 1f; } // Cyan (Bush overrides)
 
                 Color color = new Color(r, g, b, 0.3f);
-                if (enemyExists == 0 && pickupChannel == 0 && wallChannel == 0)
+                if (enemyExists == 0 && pickupChannel == 0 && wallChannel == 0 && bushChannel == 0)
                     color.a = 0.05f;
 
                 Gizmos.color = color;

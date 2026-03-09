@@ -23,6 +23,8 @@ public class CustomGridSensorComponent : SensorComponent
 
     public override ISensor[] CreateSensors()
     {
+        if (sensor != null)
+            return new ISensor[] { sensor };
         // Create sensor with null grid — it will be set via SetAgentReferences
         sensor = new CustomGridSensor(null, viewRadius);
 

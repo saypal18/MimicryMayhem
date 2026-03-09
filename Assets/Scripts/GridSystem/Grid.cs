@@ -9,8 +9,8 @@ public class Grid
     private Vector2Int size;
 
     [Header("Grid Size Settings")]
-    [SerializeField] private int minGridSize = 5;
-    [SerializeField] private int maxGridSize = 80;
+    [SerializeField] public int minGridSize = 5;
+    [SerializeField] public int maxGridSize = 80;
     private Vector2Int sizeForNextMatch;
     public Vector2Int Size => size;
     public Vector2 TileSize => tileSize;
@@ -21,6 +21,12 @@ public class Grid
     public void SetSize(Vector2Int newSize)
     {
         sizeForNextMatch = newSize;
+    }
+
+    public void SetSizeRange(int min, int max)
+    {
+        minGridSize = min;
+        maxGridSize = max;
     }
 
     public void RandomizeSize()
@@ -43,7 +49,7 @@ public class Grid
             }
         }
         border.CreateGridBorder(tileSize, size);
-    }    
+    }
 
     public void PurgeGrid()
     {
@@ -82,7 +88,7 @@ public class Grid
 
         foreach (GridPlaceable gridPlaceable in tile)
         {
-            if (gridPlaceable.CompareTag("Wall"))
+            if (gridPlaceable.Type == GridPlaceable.PlaceableType.Wall)
                 return false;
         }
         return true;

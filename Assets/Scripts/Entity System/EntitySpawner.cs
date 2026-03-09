@@ -6,6 +6,8 @@ public class EntitySpawner
 {
     [SerializeField] private Entity entityPrefab;
     [SerializeField] private Transform entityParent;
+    [SerializeField] public RewardSettings rewardSettings;
+
     private Grid grid;
     // private InputManager inputManager;
     [SerializeField] private MovementFactory movementFactory;
@@ -13,7 +15,7 @@ public class EntitySpawner
     [SerializeField] public bool colorize = true;
 
     [Header("Entity Settings")]
-    [SerializeField] private float entityPercentage = 2f;
+    [SerializeField] public float entityPercentage = 2f;
     private int entitiesCount;
 
     private readonly List<Entity> activeEntities = new List<Entity>();
@@ -46,7 +48,7 @@ public class EntitySpawner
     public void SpawnAtPosition(Vector2Int position, int teamId = 0)
     {
         Entity entity = PoolingEntity.Spawn(entityPrefab, entityParent);
-        entity.Initialize(grid, position, movementFactory, this, gameInitializer);
+        entity.Initialize(grid, position, movementFactory, this, gameInitializer, rewardSettings);
 
         // Track active entities and auto-remove when despawned
         activeEntities.Add(entity);
@@ -102,8 +104,8 @@ public class EntitySpawner
         List<Vector2Int> randomPositions = grid.GetRandomEmptyPositions(count);
         for (int i = 0; i < randomPositions.Count; i++)
         {
-            // Alternate between Team 0 and Team 1
-            int teamId = i % 2;
+            // Assign a unique Team ID to each agent for a Free-For-All game
+            int teamId = i;
             SpawnAtPosition(randomPositions[i], teamId);
         }
     }
@@ -120,7 +122,7 @@ public class EntitySpawner
         handler = () =>
         {
             activeEntities.Remove(entity);
-            poolingEntity.OnDespawning -= handler;
+            // poolingEntity.OnDespawning -= handler;
         };
         return handler;
     }
