@@ -26,8 +26,8 @@ public class TotalPickupObservation : SensorComponent
         if (pendingPlacer != null && pendingGrid != null)
         {
             sensor.SetAgentReferences(pendingPlacer, pendingGrid);
-            pendingPlacer = null;
-            pendingGrid = null;
+            // pendingPlacer = null;
+            // pendingGrid = null;
         }
         return new ISensor[] { sensor };
     }

@@ -209,9 +209,9 @@ public class SurvivorAgent : Agent, IMoveInputHandler
         if (direction != Vector2Int.zero)
         {
             gridPlaceable.Move(direction);
+            AddReward(rewardSettings.stepReward); // curriculum-aware step reward
+            AddBushReward();
         }
-        AddReward(rewardSettings.stepReward); // curriculum-aware step reward
-        AddBushReward();
     }
 
     private void AddBushReward()

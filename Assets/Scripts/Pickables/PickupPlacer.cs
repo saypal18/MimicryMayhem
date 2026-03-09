@@ -40,7 +40,6 @@ public class PickupPlacer
             }
         }
     }
-
     public void SetInterval(float interval)
     {
         spawnInterval = interval;

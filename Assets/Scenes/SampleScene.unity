@@ -299,7 +299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Trainer
   gameInitializerPrefab: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
-  n: 20
+  n: 16
   initialPosition: {x: 0, y: 0, z: 0}
   gridSize: {x: 80, y: 80}
   fieldLength: 4

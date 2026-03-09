@@ -23,8 +23,14 @@ public sealed class GridPlaceable : MonoBehaviour
     public void Initialize(Grid grid, Vector2Int startPosition, IMovement movement = null)
     {
         this.movement = movement;
-        if (poolingEntity == null && TryGetComponent(out poolingEntity))
+        if (poolingEntity == null)
         {
+            TryGetComponent(out poolingEntity);
+        }
+
+        if (poolingEntity != null)
+        {
+            poolingEntity.OnDespawning -= HandleDespawning;
             poolingEntity.OnDespawning += HandleDespawning;
         }
 
@@ -36,10 +42,9 @@ public sealed class GridPlaceable : MonoBehaviour
         this.grid = grid;
         this.position = startPosition;
 
-        List<GridPlaceable> startTile = grid.GetTile(position);
-        if (startTile != null)
+        if (grid.GetTile(position) != null)
         {
-            startTile.Add(this);
+            grid.AddToTile(position, this);
             if (movement != null)
                 movement.Snap(grid.GetWorldPosition(position));
             else
@@ -84,18 +89,13 @@ public sealed class GridPlaceable : MonoBehaviour
         RemoveFromGrid();
 
         position = newPosition;
-        newTile.Add(this);
+        grid.AddToTile(newPosition, this);
     }
 
     public void RemoveFromGrid()
     {
         if (grid == null) return;
-
-        List<GridPlaceable> currentTile = grid.GetTile(position);
-        if (currentTile != null)
-        {
-            currentTile.Remove(this);
-        }
+        grid.RemoveFromTile(position, this);
     }
 
     public bool IsStandingOn(PlaceableType type)

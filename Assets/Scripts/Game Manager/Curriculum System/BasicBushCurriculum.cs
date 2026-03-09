@@ -25,9 +25,9 @@ public class BasicBushCurriculum : ICurriculum
         // bushConfig.threshold = 1 - envParams.GetWithDefault("bush_density", 0.3f);
 
         // Reward curriculum
-        rewardSettings.pickupReward = envParams.GetWithDefault("pickup_reward", 0.1f);
-        rewardSettings.stepReward = envParams.GetWithDefault("step_reward", -0.002f);
-        rewardSettings.stepReward = envParams.GetWithDefault("bush_reward", 0.01f);
+        rewardSettings.pickupReward = envParams.GetWithDefault("pickup_reward", 0f);
+        rewardSettings.stepReward = envParams.GetWithDefault("step_reward", 0f);
+        rewardSettings.bushReward = envParams.GetWithDefault("bush_reward", 0f);
         // rewardSettings.deathReward = envParams.GetWithDefault("death_reward", -0.5f);
 
         // Grid curriculum
@@ -36,5 +36,6 @@ public class BasicBushCurriculum : ICurriculum
 
         // Entity curriculum
         entitySpawner.entityPercentage = envParams.GetWithDefault("entity_percentage", entitySpawner.entityPercentage);
+        entitySpawner.teamsEnabled = envParams.GetWithDefault("teams", entitySpawner.teamsEnabled ? 1f : 0f) > 0.5f;
     }
 }

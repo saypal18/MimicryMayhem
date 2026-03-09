@@ -23,8 +23,6 @@ public class CustomGridSensorComponent : SensorComponent
 
     public override ISensor[] CreateSensors()
     {
-        if (sensor != null)
-            return new ISensor[] { sensor };
         // Create sensor with null grid — it will be set via SetAgentReferences
         sensor = new CustomGridSensor(null, viewRadius);
 
@@ -32,9 +30,9 @@ public class CustomGridSensorComponent : SensorComponent
         if (pendingPlaceable != null)
         {
             sensor.SetAgentReferences(pendingPlaceable, pendingDamageResolver, pendingGrid);
-            pendingPlaceable = null;
-            pendingDamageResolver = null;
-            pendingGrid = null;
+            // pendingPlaceable = null;
+            // pendingDamageResolver = null;
+            // pendingGrid = null;
         }
 
         return new ISensor[] { sensor };
