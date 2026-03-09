@@ -209,7 +209,7 @@ MonoBehaviour:
     startingTilePosition: {fileID: 3509958387582530915}
     tileSize: {x: 1, y: 1}
     minGridSize: 5
-    maxGridSize: 15
+    maxGridSize: 60
     border:
       borderPrefab: {fileID: 7778688139210919124, guid: 37d760a4e9101b446b6c175f8a514290, type: 3}
       borderParent: {fileID: 2335819374844696575}
@@ -220,13 +220,13 @@ MonoBehaviour:
       deathReward: -1
       damageReward: 1
       pickupReward: 0
-      stepReward: -0.002
-      bushReward: 0.001
+      stepReward: 0
+      bushReward: 0
     movementFactory:
       type: 0
       movementCooldown: 0.2
     colorize: 1
-    entityPercentage: 5
+    entityPercentage: 1
   pickupPlacer:
     pickupPrefab: {fileID: 2655546045923351145, guid: 87d6ea1ca96318745b6ec673b2f6ea46, type: 3}
     pickupParent: {fileID: 7199370050930525759}
@@ -258,7 +258,7 @@ MonoBehaviour:
       scaleYMin: 0.35
       scaleYMax: 0.55
       rotationAngleMin: 0
-      rotationAngleMax: 45
+      rotationAngleMax: 90
       threshold: 0.7
   maxStepsMultiplier: 100
   pickupSpawnIntervalConstant: 8000

@@ -16,6 +16,7 @@ public class EntitySpawner
 
     [Header("Entity Settings")]
     [SerializeField] public float entityPercentage = 2f;
+    [SerializeField] public bool teamsEnabled = false;
     private int entitiesCount;
 
     private readonly List<Entity> activeEntities = new List<Entity>();
@@ -105,7 +106,7 @@ public class EntitySpawner
         for (int i = 0; i < randomPositions.Count; i++)
         {
             // Assign a unique Team ID to each agent for a Free-For-All game
-            int teamId = 0;
+            int teamId = teamsEnabled ? i : 0;
             SpawnAtPosition(randomPositions[i], teamId);
         }
     }
