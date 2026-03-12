@@ -9,8 +9,9 @@ public class EntitySpawner
     [SerializeField] public RewardSettings rewardSettings;
 
     private Grid grid;
-    // private InputManager inputManager;
-    [SerializeField] private MovementFactory movementFactory;
+    [SerializeField] private InterfaceReference<ITick> _tick;
+    [SerializeField] private EntityMovementFactory movementFactory = new();
+    private ITick tick => _tick.Value;
     private GameInitializer gameInitializer;
     [SerializeField] public bool colorize = true;
 
@@ -49,7 +50,7 @@ public class EntitySpawner
     public void SpawnAtPosition(Vector2Int position, int teamId = 0)
     {
         Entity entity = PoolingEntity.Spawn(entityPrefab, entityParent);
-        entity.Initialize(grid, position, movementFactory, this, gameInitializer, rewardSettings);
+        entity.Initialize(grid, position, movementFactory, tick);
 
         // Track active entities and auto-remove when despawned
         activeEntities.Add(entity);

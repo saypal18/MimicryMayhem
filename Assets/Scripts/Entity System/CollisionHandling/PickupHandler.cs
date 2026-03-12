@@ -14,7 +14,7 @@ public class PickupHandler
     {
         if (other.TryGetComponent(out Pickup pickup))
         {
-            pickup.Collected();
+            pickup.Collected(other);
             OnPickupCollected?.Invoke(pickup);
         }
     }

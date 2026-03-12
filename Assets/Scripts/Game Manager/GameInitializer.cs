@@ -43,8 +43,8 @@ public class GameInitializer : MonoBehaviour
             IReadOnlyList<Entity> active = entitySpawner.GetActiveEntities();
             Entity[] snapshot = new Entity[active.Count];
             for (int i = 0; i < active.Count; i++) snapshot[i] = active[i];
-            foreach (Entity entity in snapshot)
-                entity.ForceEndEpisode();
+            //foreach (Entity entity in snapshot)
+            //    entity.ForceEndEpisode();
 
             ResetEnvironment();
         }

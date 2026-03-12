@@ -10,7 +10,7 @@ public sealed class GridPlaceable : MonoBehaviour
     private Vector2Int position;
     private Grid grid;
     private PoolingEntity poolingEntity;
-    private IMovement movement;
+    //private IMovement movement;
 
     public Entity Entity { get; private set; }
 
@@ -18,11 +18,11 @@ public sealed class GridPlaceable : MonoBehaviour
     public Grid CurrentGrid => grid;
 
     /// <summary>Returns true when the movement system is ready to accept a new move.</summary>
-    public bool CanMove() => movement != null && movement.CanMove();
+    //public bool CanMove() => movement != null && movement.CanMove();
 
     public void Initialize(Grid grid, Vector2Int startPosition, IMovement movement = null)
     {
-        this.movement = movement;
+        //this.movement = movement;
         if (poolingEntity == null)
         {
             TryGetComponent(out poolingEntity);
@@ -57,7 +57,7 @@ public sealed class GridPlaceable : MonoBehaviour
         RemoveFromGrid();
     }
 
-
+    ////// do not use ////////////////////////
     public void Move(Vector2Int direction)
     {
         Vector2Int clampedDirection = new Vector2Int(
@@ -75,22 +75,33 @@ public sealed class GridPlaceable : MonoBehaviour
         );
         MoveTo(position + discreteDirection);
     }
-
-    public void MoveTo(Vector2Int newPosition)
+    public void Move(Vector2Int direction, int blocks)
     {
-        if (grid == null || movement == null) return;
+        Vector2Int clampedDirection = new Vector2Int(
+            Mathf.Clamp(direction.x, -1, 1),
+            Mathf.Clamp(direction.y, -1, 1)
+        );
+        MoveTo(position + clampedDirection * blocks);
+    }
+    //////////////////////////////////////
+
+    public bool MoveTo(Vector2Int newPosition)
+    {
+        //if (grid == null || movement == null) return;
 
         List<GridPlaceable> newTile = grid.GetTile(newPosition);
 
-        if (newTile == null || !grid.IsMovable(newPosition)) return;
+        if (newTile == null || !grid.IsMovable(newPosition)) return false;
 
-        if (!movement.Move(transform.position, grid.GetWorldPosition(newPosition))) return;
+        //if (!movement.Move(transform.position, grid.GetWorldPosition(newPosition))) return;
 
         RemoveFromGrid();
 
         position = newPosition;
         grid.AddToTile(newPosition, this);
+        return true;
     }
+
 
     public void RemoveFromGrid()
     {

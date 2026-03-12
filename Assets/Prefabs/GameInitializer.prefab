@@ -165,6 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5084263085645196711}
   - component: {fileID: 2424751851155101755}
+  - component: {fileID: -2000951295553197937}
   m_Layer: 0
   m_Name: GameInitializer
   m_TagString: Untagged
@@ -222,11 +223,11 @@ MonoBehaviour:
       pickupReward: 0
       stepReward: 0
       bushReward: 0
-    movementFactory:
-      type: 0
-      movementCooldown: 0.2
+    _tick:
+      underlyingValue: {fileID: -2000951295553197937}
     colorize: 1
     entityPercentage: 1
+    teamsEnabled: 0
   pickupPlacer:
     pickupPrefab: {fileID: 2655546045923351145, guid: 87d6ea1ca96318745b6ec673b2f6ea46, type: 3}
     pickupParent: {fileID: 7199370050930525759}
@@ -264,6 +265,19 @@ MonoBehaviour:
   pickupSpawnIntervalConstant: 8000
   MaxSteps: 1000
   shouldRandomize: 1
+--- !u!114 &-2000951295553197937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4934599878771539894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4393e9fd224c9694f96391aaa7c83842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimedTick
+  tickInterval: 0.05
 --- !u!1 &7782477435353402049
 GameObject:
   m_ObjectHideFlags: 0

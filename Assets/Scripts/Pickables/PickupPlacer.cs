@@ -4,14 +4,14 @@ using UnityEngine;
 [System.Serializable]
 public class PickupPlacer
 {
-    [SerializeField] private GrowPickup pickupPrefab;
+    [SerializeField] private Pickup pickupPrefab;
     [SerializeField] private Transform pickupParent;
     [SerializeField] private float spawnInterval = 2.0f;
     [Header("Pickup Settings")]
     [SerializeField] public float pickupPercentage = 25f;
     private Grid grid;
     private float timer;
-    private readonly List<GrowPickup> activePickups = new List<GrowPickup>();
+    private readonly List<Pickup> activePickups = new List<Pickup>();
 
     /// <summary>Number of pickups currently active on the grid.</summary>
     public int ActivePickupCount => activePickups.Count;
@@ -47,7 +47,7 @@ public class PickupPlacer
 
     public void SpawnAtPosition(Vector2Int position)
     {
-        GrowPickup pickup = PoolingEntity.Spawn(pickupPrefab, pickupParent);
+        Pickup pickup = PoolingEntity.Spawn(pickupPrefab, pickupParent);
         pickup.Initialize(grid, position);
 
         activePickups.Add(pickup);
@@ -57,7 +57,7 @@ public class PickupPlacer
         }
     }
 
-    private System.Action CreateDespawnHandler(GrowPickup pickup, PoolingEntity poolingEntity)
+    private System.Action CreateDespawnHandler(Pickup pickup, PoolingEntity poolingEntity)
     {
         System.Action handler = null;
         handler = () =>

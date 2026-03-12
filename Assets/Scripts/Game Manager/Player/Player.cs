@@ -11,14 +11,15 @@ public class Player : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     [SerializeField] private PlayerUI playerUI;
     [SerializeField] private Camera mainCamera;
+    [SerializeField] private InventoryUI inventoryUI;
     private Entity player;
     private int points;
     void UpdatePlayerPower()
     {
-        int aliveCount = entitySpawner.ActiveEntityCount;
-        int playerPower = player.damageResolver.power;
+        //int aliveCount = entitySpawner.ActiveEntityCount;
+        //int playerPower = player.damageResolver.power;
 
-        playerUI.UpdateStats(aliveCount, playerPower, points);
+        //playerUI.UpdateStats(aliveCount, playerPower, points);
     }
 
     // enemy will be 3 distinct shades of red / blue whether 
@@ -26,47 +27,47 @@ public class Player : MonoBehaviour
     // - lighter = closer to player power. == player power means white
     void UpdateEnemyPowerDisplay()
     {
-        if (entitySpawner == null || player == null || player.damageResolver == null)
-            return;
+        //if (entitySpawner == null || player == null || player.damageResolver == null)
+        //    return;
 
-        IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
-        int playerPower = player.damageResolver.power;
+        //IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
+        //int playerPower = player.damageResolver.power;
 
-        for (int i = 0; i < activeEntities.Count; i++)
-        {
-            Entity entity = activeEntities[i];
-            if (entity == null || entity == player || entity.damageResolver == null)
-                continue;
+        //for (int i = 0; i < activeEntities.Count; i++)
+        //{
+        //    Entity entity = activeEntities[i];
+        //    if (entity == null || entity == player || entity.damageResolver == null)
+        //        continue;
 
-            int diff = entity.damageResolver.power - playerPower;
-            Color targetColor;
-            diff = Mathf.Clamp(diff, -3, 3); // Cap the difference for color tiers
-            switch(diff)
-            {
-                case 3:
-                    targetColor = new Color(0.75f, 0f, 0f); // Strongly stronger - dark red
-                    break;
-                case 2:
-                    targetColor = new Color(1f, 0.45f, 0.45f); // Moderately stronger - medium red
-                    break;
-                case 1:
-                    targetColor = new Color(1f, 0.75f, 0.75f); // Slightly stronger - light red
-                    break;
-                case -1:
-                    targetColor = new Color(0.75f, 0.85f, 1f); // Slightly weaker - light blue
-                    break;
-                case -2:
-                    targetColor = new Color(0.45f, 0.65f, 1f); // Moderately weaker - medium blue
-                    break;
-                case -3:
-                    targetColor = new Color(0f, 0.3f, 0.8f); // Strongly weaker - dark blue
-                    break;
-                default:
-                    targetColor = Color.white; // Equal power
-                    break;
-            }
-            entity.SetColor(targetColor);
-        }
+        //    int diff = entity.damageResolver.power - playerPower;
+        //    Color targetColor;
+        //    diff = Mathf.Clamp(diff, -3, 3); // Cap the difference for color tiers
+        //    switch(diff)
+        //    {
+        //        case 3:
+        //            targetColor = new Color(0.75f, 0f, 0f); // Strongly stronger - dark red
+        //            break;
+        //        case 2:
+        //            targetColor = new Color(1f, 0.45f, 0.45f); // Moderately stronger - medium red
+        //            break;
+        //        case 1:
+        //            targetColor = new Color(1f, 0.75f, 0.75f); // Slightly stronger - light red
+        //            break;
+        //        case -1:
+        //            targetColor = new Color(0.75f, 0.85f, 1f); // Slightly weaker - light blue
+        //            break;
+        //        case -2:
+        //            targetColor = new Color(0.45f, 0.65f, 1f); // Moderately weaker - medium blue
+        //            break;
+        //        case -3:
+        //            targetColor = new Color(0f, 0.3f, 0.8f); // Strongly weaker - dark blue
+        //            break;
+        //        default:
+        //            targetColor = Color.white; // Equal power
+        //            break;
+        //    }
+        //    entity.SetColor(targetColor);
+        //}
     }
 
     void CreatePvEScenario()
@@ -82,6 +83,7 @@ public class Player : MonoBehaviour
                 bp.BehaviorType = BehaviorType.HeuristicOnly;
                 if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                     inputManager.InitializeMove(handler);
+                inventoryUI.AssignInventory(player.inventory);
             }
             else
             {
@@ -90,11 +92,11 @@ public class Player : MonoBehaviour
         }
         gameInitializer.MaxSteps = 0; // Disable time-based reset for player control mode
         points = 0;
-        player.damageResolver.OnDamageDealt += () => points++;
+        //player.damageResolver.OnDamageDealt += () => points++;
         mainCamera.transform.parent = player.transform;
         mainCamera.transform.localPosition = new Vector3(-12, 0, -10);
-        player.damageResolver.OnDamageTaken += () => mainCamera.transform.parent = null;
-        player.SetColor(Color.white);
+        //player.damageResolver.OnDamageTaken += () => mainCamera.transform.parent = null;
+        //player.SetColor(Color.white);
     }
 
     private void StartEnvironment()

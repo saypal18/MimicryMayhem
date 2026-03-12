@@ -122,7 +122,7 @@ public class CustomGridSensor : ISensor
                             if (gp != agentPlaceable && gp.Entity != null)
                             {
                                 enemyExists = 1f;
-                                int enemyPow = gp.Entity.damageResolver.power;
+                                int enemyPow = gp.Entity.inventory.highestTier;
                                 if (enemyPow > agentPow)
                                     enemyIsStronger = 1f;
                                 else if (enemyPow < agentPow)
@@ -213,7 +213,7 @@ public class CustomGridSensor : ISensor
                                 if (gp != agentPlaceable && gp.Entity != null)
                                 {
                                     enemyExists = 1f;
-                                    int enemyPow = gp.Entity.damageResolver.power;
+                                    int enemyPow = gp.Entity.inventory.highestTier;
                                     if (enemyPow > agentPow)
                                         enemyIsStronger = 1f;
                                     else if (enemyPow < agentPow)

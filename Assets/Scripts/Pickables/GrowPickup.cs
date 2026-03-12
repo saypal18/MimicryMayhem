@@ -1,13 +1,9 @@
 using UnityEngine;
 
-public class GrowPickup : MonoBehaviour, Pickup
+
+public class GrowPickup : Pickup
 {
-    [SerializeField] private GridPlaceable gridPlaceable;
-    public void Initialize(Grid grid, Vector2Int position)
-    {
-        gridPlaceable.Initialize(grid, position);
-    }
-    public void Collected()
+    public override void Collected(GameObject picker)
     {
         PoolingEntity.Despawn(gameObject);
     }

@@ -1,43 +1,82 @@
 using UnityEngine;
-
 public class Entity : MonoBehaviour
 {
     [SerializeField] private GridPlaceable gridPlaceable;
-    [SerializeField] private SurvivorAgent survivorAgent;
+    [SerializeField] private AttackerAgent agent;
+    [SerializeField] private ActiveAbility activeAbility;
+    [SerializeField] private MoveAbility moveAbility;
+    [SerializeField] private AbilityController abilityController;
+    // damage resolvers
+
     [SerializeField] private CollisionResolver collisionResolver;
-    [SerializeField] private PickupHandler pickupHandler;
-    [SerializeField] public DamageResolver damageResolver;
-    [SerializeField] private SizeHandler sizeHandler;
-    [SerializeField] private SpriteRenderer spriteRenderer;
-    public IMovement movement { get; private set; }
-    public void Initialize(Grid grid, Vector2Int startPosition, MovementFactory movementFactory, EntitySpawner entitySpawner, GameInitializer gameInitializer, RewardSettings rewardSettings)
+    [SerializeField] public UnifiedDamageResolver damageResolver;
+    [SerializeField] public PickupHandler pickupHandler;
+    public SortedInventory inventory;
+    //[SerializeField] private PickupHandler pickupHandler;
+    //[SerializeField] private UnifiedDamageResolver _damageResolver;
+    //public DamageResolver damageResolver => _damageResolver; // Expose as DamageResolver for easier access, while allowing UnifiedDamageResolver to have its own internal state and logic.
+    //[SerializeField] private SizeHandler sizeHandler;
+    //[SerializeField] private SpriteRenderer spriteRenderer;
+    //public AbilityController action;
+    //[SerializeField] public MeleeAttack[] attacks;
+    //public IMovement movement { get; private set; }
+    public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick)
     {
-        movement = movementFactory.GetMovement(this);
-        gridPlaceable.Initialize(grid, startPosition, movement);
+        gridPlaceable.Initialize(grid, startPosition);
+        moveAbility.Initialize(movementFactory, gridPlaceable);
+        agent.Initialize(tick, abilityController, activeAbility, moveAbility);
+        inventory.Initialize();
+
 
         collisionResolver.Initialize();
         pickupHandler.Initialize(collisionResolver);
-        damageResolver.Initialize(collisionResolver, pickupHandler);
-        sizeHandler.Initialize(transform, pickupHandler);
-
-        survivorAgent.Initialize(gridPlaceable, damageResolver, pickupHandler, entitySpawner, this, gameInitializer, rewardSettings);
-    }
-
-    /// <summary>Ends the ML-Agents episode for this entity. Called externally (e.g. on step-limit timeout).</summary>
-    public void ForceEndEpisode()
-    {
-        if (survivorAgent != null)
-        {
-            // survivorAgent.EpisodeInterrupted();
-            survivorAgent.EndEpisode();
-        }
-    }
-
-    public void SetColor(Color color)
-    {
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = color;
-        }
+        damageResolver.Initialize(collisionResolver, inventory);
     }
 }
+
+//public class Entity : MonoBehaviour
+//{
+//    [SerializeField] private GridPlaceable gridPlaceable;
+//    [SerializeField] private SurvivorAgent survivorAgent;
+//    [SerializeField] private CollisionResolver collisionResolver;
+//    [SerializeField] private PickupHandler pickupHandler;
+//    [SerializeField] private UnifiedDamageResolver _damageResolver;
+//    public DamageResolver damageResolver => _damageResolver; // Expose as DamageResolver for easier access, while allowing UnifiedDamageResolver to have its own internal state and logic.
+//    [SerializeField] private SizeHandler sizeHandler;
+//    [SerializeField] private SpriteRenderer spriteRenderer;
+//    public AbilityController action;
+//    [SerializeField] public MeleeAttack[] attacks;
+//    public IMovement movement { get; private set; }
+//    public void Initialize(Grid grid, Vector2Int startPosition, MovementFactory movementFactory, EntitySpawner entitySpawner, GameInitializer gameInitializer, RewardSettings rewardSettings)
+//    {
+//        movement = movementFactory.GetMovement(this);
+//        gridPlaceable.Initialize(grid, startPosition, movement);
+
+//        collisionResolver.Initialize();
+//        pickupHandler.Initialize(collisionResolver);
+//        damageResolver.Initialize(collisionResolver, pickupHandler);
+//        sizeHandler.Initialize(transform, pickupHandler);
+
+//        survivorAgent.Initialize(gridPlaceable, damageResolver, pickupHandler, entitySpawner, this, gameInitializer, rewardSettings);
+//        //action = new(1);
+//        attacks[0].Initialize(grid);
+//    }
+
+//    /// <summary>Ends the ML-Agents episode for this entity. Called externally (e.g. on step-limit timeout).</summary>
+//    public void ForceEndEpisode()
+//    {
+//        if (survivorAgent != null)
+//        {
+//            // survivorAgent.EpisodeInterrupted();
+//            survivorAgent.EndEpisode();
+//        }
+//    }
+
+//    public void SetColor(Color color)
+//    {
+//        if (spriteRenderer != null)
+//        {
+//            spriteRenderer.color = color;
+//        }
+//    }
+//}

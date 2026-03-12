@@ -118,7 +118,7 @@ public class Grid
 
         foreach (GridPlaceable gridPlaceable in tile)
         {
-            if (gridPlaceable.Type == GridPlaceable.PlaceableType.Wall)
+            if (gridPlaceable.Type == GridPlaceable.PlaceableType.Wall || gridPlaceable.Type == GridPlaceable.PlaceableType.Entity)
                 return false;
         }
         return true;
