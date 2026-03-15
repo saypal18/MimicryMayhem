@@ -23,6 +23,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
     private int lastHeuristicMoveAction = (int)MoveAction.Right; // Default direction
     private Vector2Int previousDirection = Vector2Int.zero;
     private bool useAttack = false;
+    private Vector2 mousePosition;
 
     private AbilityController controller;
     private ActiveAbility activeAbility;
@@ -37,7 +38,8 @@ public class AttackerAgent : Agent, IMoveInputHandler
         Vector2Int.right  // Right
     };
     private GridPlaceable gridPlaceable;
-    IAbility moveAbility;
+    private IAbility moveAbility;
+    private EquippedItemObservation equippedItemObservation;
     ////
 
     /// <summary>
@@ -52,7 +54,8 @@ public class AttackerAgent : Agent, IMoveInputHandler
         UnifiedDamageResolver damageResolver,
         DamageDealer damageDealer,
         GridPlaceable gridPlaceable,
-        Grid grid
+        Grid grid,
+        EquippedItem equippedItem
         )
     {
         this.controller = controller;
@@ -63,6 +66,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
         damageResolver.OnDamageTaken += HandleDamageTaken;
         damageDealer.OnDamageDealt += HandleDamageDealt;
         customGridSensorComponent.SetAgentReferences(gridPlaceable, damageDealer, grid);
+        this.equippedItemObservation = new EquippedItemObservation(equippedItem);
     }
 
     private void ActOnCooldown()
@@ -125,8 +129,21 @@ public class AttackerAgent : Agent, IMoveInputHandler
         var discreteActions = actionsOut.DiscreteActions;
         if (useAttack)
         {
-            // Attack in the last pressed WASD direction
-            discreteActions[0] = lastHeuristicMoveAction + 4;
+            // Calculate direction from player to mouse
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -Camera.main.transform.position.z));
+            Vector3 directionVector = mouseWorldPos - transform.position;
+
+            // Find cardinal direction with smallest angle
+            if (Mathf.Abs(directionVector.x) > Mathf.Abs(directionVector.y))
+            {
+                if (directionVector.x > 0) discreteActions[0] = 8; // Attack Right
+                else discreteActions[0] = 7; // Attack Left
+            }
+            else
+            {
+                if (directionVector.y > 0) discreteActions[0] = 5; // Attack Up
+                else discreteActions[0] = 6; // Attack Down
+            }
         }
         else
         {
@@ -172,9 +189,14 @@ public class AttackerAgent : Agent, IMoveInputHandler
         }
     }
 
+    public void OnMouseMove(Vector2 mousePosition)
+    {
+        this.mousePosition = mousePosition;
+    }
+
     private void HandleDamageTaken()
     {
-        AddReward(-1);
+        // AddReward(-1);
     }
 
     private void HandleDamageDealt()
@@ -290,19 +312,10 @@ public class AttackerAgent : Agent, IMoveInputHandler
     //    }
     //}
 
-    ////public override void CollectObservations(VectorSensor sensor)
-    ////{
-    ////    // Emit 16 one-hot encoded previous actions.
-    ////    // Each action occupies 4 floats: [Up, Down, Left, Right]
-    ////    // NoAction = (0, 0, 0, 0)
-    ////    foreach (int action in actionHistory)
-    ////    {
-    ////        sensor.AddObservation(action == (int)MoveAction.Up ? 1f : 0f);
-    ////        sensor.AddObservation(action == (int)MoveAction.Down ? 1f : 0f);
-    ////        sensor.AddObservation(action == (int)MoveAction.Left ? 1f : 0f);
-    ////        sensor.AddObservation(action == (int)MoveAction.Right ? 1f : 0f);
-    ////    }
-    ////}
+    public override void CollectObservations(VectorSensor sensor)
+    {
+        equippedItemObservation?.CollectObservations(sensor);
+    }
 
     //// ---- ML-Agents overrides ----
 

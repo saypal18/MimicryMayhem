@@ -12,7 +12,7 @@ public class Entity : MonoBehaviour
     [SerializeField] public UnifiedDamageResolver damageResolver;
     [SerializeField] public PickupHandler pickupHandler;
     [SerializeField] public DamageDealer damageDealer;
-    public EquippedItem equippedItem = new();
+    public EquippedItem equippedItem;
     public SortedInventory inventory;
     //[SerializeField] private PickupHandler pickupHandler;
     //[SerializeField] private UnifiedDamageResolver _damageResolver;
@@ -33,7 +33,7 @@ public class Entity : MonoBehaviour
         damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory);
         activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable);
         damageDealer.Initialize();
-        agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid);
+        agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem);
     }
 }
 

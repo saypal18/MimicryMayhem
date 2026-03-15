@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f56603b1b4f14c4d9e613f7dd8dfb87, type: 3}
   m_Name: sword 3
   m_EditorClassIdentifier: Assembly-CSharp::WeaponItem
-  itemType: 0
-  itemName: Sword
+  itemType: 2
+  itemName: Shield
   itemIcon: {fileID: -7930412975403539187, guid: 584c7a4f86bd36b449d8a74eeae545fd, type: 3}
-  description: Sword
+  description: Shield
   maxStackSize: 1
   tier: 3
   currentGrip: 0

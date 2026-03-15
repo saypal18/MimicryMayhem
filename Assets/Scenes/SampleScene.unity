@@ -479,7 +479,7 @@ MonoBehaviour:
   m_MinValue: 2
   m_MaxValue: 50
   m_WholeNumbers: 1
-  m_Value: 50
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -908,7 +908,7 @@ Camera:
   far clip plane: 100
   field of view: 34
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1459,7 +1459,7 @@ MonoBehaviour:
   m_MinValue: 5
   m_MaxValue: 80
   m_WholeNumbers: 1
-  m_Value: 27
+  m_Value: 8
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2715,6 +2715,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 4105c1d2-fb31-4eab-980a-0184d549aa49
     m_ActionName: 'Player/Scroll[/Mouse/scroll/y]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1588366680}
+        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_MethodName: MouseMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 38ac7757-8104-449f-9a34-9ead37319f1f
+    m_ActionName: 'Player/mouseMove[/Mouse/position]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -3138,6 +3154,18 @@ PrefabInstance:
     - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: entitySpawner.initialScale.z
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: pickupPlacer.pickupPercentage
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: bushPlacer.perlinConfig.threshold
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: wallPlacer.perlinConfig.threshold
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: entitySpawner.movementFactory.type

@@ -24,7 +24,8 @@ public class InputManager : MonoBehaviour
     public void MouseMove(InputAction.CallbackContext context)
     {
         mousePosition = context.ReadValue<Vector2>();
-        //inputHandler?.OnMouseMove(context);
+        moveInputHandler?.OnMouseMove(mousePosition);
+        // Debug.Log(mousePosition);
     }
     public void Scroll(InputAction.CallbackContext context)
     {

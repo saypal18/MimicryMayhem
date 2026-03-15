@@ -248,7 +248,7 @@ MonoBehaviour:
     - {fileID: 2279582224576281527, guid: 487244d0ba6e7844cb873539e04bc881, type: 3}
     pickupParent: {fileID: 7199370050930525759}
     spawnInterval: 10
-    pickupPercentage: 25
+    pickupPercentage: 5
   wallPlacer:
     wallMode: 2
     perlinNoiseProbability: 0.9
