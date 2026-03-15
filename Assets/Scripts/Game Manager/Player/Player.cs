@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.MLAgents.Policies;
-
+using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
 
@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerUI playerUI;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private InventoryUI inventoryUI;
+    [SerializeField] private Image cooldownImage;
     private Entity player;
     private int points;
     void UpdatePlayerPower()
@@ -84,6 +85,8 @@ public class Player : MonoBehaviour
                 if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                     inputManager.InitializeMove(handler);
                 inputManager.InitializeScroll(player.equippedItem);
+                inputManager.agentTransform = player.transform;
+                player.abilityController.cooldownImage = cooldownImage;
                 inventoryUI.AssignInventory(player.inventory);
                 inventoryUI.AssignEquippedItem(player.equippedItem);
             }

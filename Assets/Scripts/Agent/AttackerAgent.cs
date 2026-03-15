@@ -287,17 +287,17 @@ public class AttackerAgent : Agent, IMoveInputHandler
             }
 
             // Block move if there's a wall or an entity (can't walk into them)
-            if (hasWall || hasEnemy)
+            if (hasWall)
             {
                 actionMask.SetActionEnabled(0, i, false);
             }
 
             // Block attack if there's a wall (can't attack through walls) or if there's NO enemy
             // (Requirement: if there is an enemy... only then ability use allowed)
-            if (hasWall || !hasEnemy)
-            {
-                actionMask.SetActionEnabled(0, i + 4, false);
-            }
+            // if (hasWall || !hasEnemy)
+            // {
+            //     actionMask.SetActionEnabled(0, i + 4, false);
+            // }
         }
     }
 

@@ -5,7 +5,7 @@ public class Entity : MonoBehaviour
     [SerializeField] public AttackerAgent agent;
     [SerializeField] private ActiveAbility activeAbility;
     [SerializeField] private MoveAbility moveAbility;
-    [SerializeField] private AbilityController abilityController;
+    public AbilityController abilityController;
     // damage resolvers
 
     [SerializeField] private CollisionResolver collisionResolver;
@@ -30,10 +30,15 @@ public class Entity : MonoBehaviour
         equippedItem.Initialize(inventory);
         collisionResolver.Initialize();
         pickupHandler.Initialize(collisionResolver);
-        damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory);
         activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable);
+        damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory, abilityController);
         damageDealer.Initialize();
         agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem);
+    }
+
+    void Update()
+    {
+        abilityController.Update();
     }
 }
 

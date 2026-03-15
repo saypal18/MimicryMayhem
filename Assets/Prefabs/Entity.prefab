@@ -561,29 +561,31 @@ MonoBehaviour:
       damageBlocks: 1
     rangeAttack:
       rangeColliderPrefab: {fileID: 900539291618904675, guid: 8bf95beecb0ef2c40a301e1ed8c9a378, type: 3}
-      travelDuration: 0.5
-      stopDuration: 1
+      travelDuration: 0.8
+      stopDuration: 0.5
       gridPlaceable: {fileID: 4431915713241691728}
       maxDistanceBlocks: 3
       _animation:
         underlyingValue: {fileID: -2084096311762261891}
     dashAttack:
-      dashTime: 0.5
+      dashTime: 0.8
       blocksToMove: 3
       dashDamageCollider: {fileID: 2306746926988245977}
   moveAbility:
     moveTime: 0.2
     blocksToMove: 1
   abilityController:
-    cooldown: 0.5
+    cooldown: 1
+    controlTime: 0.1
   collisionResolver: {fileID: -7865425547269084357}
   damageResolver:
+    cooldownTime: 0.5
     knockbackTime: 0.1
     knockbackBlocks: 1
   damageDealer: {fileID: 59241930918860346}
   equippedItem: {fileID: -3726688000211129029}
   inventory:
-    slotCount: 1
+    slotCount: 2
     slotType: 0
     slots: []
     OnItemAdded:
@@ -639,7 +641,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 86606bae782834e47af1d4196a93d4e8, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 8c63adfa3660bff4285e231cab806d01, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: SurvivorAgent
