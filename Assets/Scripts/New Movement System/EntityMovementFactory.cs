@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 public class  EntityMovementFactory
@@ -6,6 +6,14 @@ public class  EntityMovementFactory
     public IEntityMovement GetMovement(Type type)
     {
         if (type == typeof(MoveAbility))
+        {
+            return new SmoothEntityMovement();
+        }
+        else if (type == typeof(UnifiedDamageResolver))
+        {
+            return new SmoothEntityMovement();
+        }
+        else if (type == typeof(DashAttack))
         {
             return new SmoothEntityMovement();
         }

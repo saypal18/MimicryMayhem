@@ -9,6 +9,7 @@ using UnityEngine.UI;
 /// Handles item storage, stacking, compatibility checking, effect application, and transfers.
 /// Usage: Created programmatically by <see cref="Inventory"/> and <see cref="StorageInventory"/> classes.
 /// </summary>
+[System.Serializable]
 public class InventorySlot
 {
     /// <summary>The type of slot, determining what items can be placed here (e.g., Helmet, Armor, MainHand, etc.).</summary>

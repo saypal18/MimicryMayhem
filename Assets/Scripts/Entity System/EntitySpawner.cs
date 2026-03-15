@@ -18,6 +18,7 @@ public class EntitySpawner
     [Header("Entity Settings")]
     [SerializeField] public float entityPercentage = 2f;
     [SerializeField] public bool teamsEnabled = false;
+    [SerializeField] private Vector3 initialScale = Vector3.one;
     private int entitiesCount;
 
     private readonly List<Entity> activeEntities = new List<Entity>();
@@ -78,6 +79,7 @@ public class EntitySpawner
                 r.material.color = agentColor;
             }
         }
+        entity.transform.localScale = initialScale;
     }
 
     // public void SpawnInitialEntities(int totalArea)

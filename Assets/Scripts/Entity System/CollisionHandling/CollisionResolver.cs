@@ -10,7 +10,7 @@ public class CollisionResolver : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out Root root) && root != gameObject)
+        if (collision.TryGetComponent(out Root root) && root != gameObject && root.GO != gameObject)
         {
             OnCollision?.Invoke(root.GO);
         }

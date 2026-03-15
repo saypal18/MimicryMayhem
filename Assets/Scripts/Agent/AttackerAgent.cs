@@ -20,11 +20,13 @@ public class AttackerAgent : Agent, IMoveInputHandler
 
     ////
     private int currentHeuristicAction = 0;
+    private int lastHeuristicMoveAction = (int)MoveAction.Right; // Default direction
     private Vector2Int previousDirection = Vector2Int.zero;
     private bool useAttack = false;
 
     private AbilityController controller;
     private ActiveAbility activeAbility;
+    [SerializeField] private CustomGridSensorComponent customGridSensorComponent;
     // ---- direction helpers ----
     private static readonly Vector2Int[] Directions = new[]
     {
@@ -34,6 +36,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
         Vector2Int.left,  // Left
         Vector2Int.right  // Right
     };
+    private GridPlaceable gridPlaceable;
     IAbility moveAbility;
     ////
 
@@ -44,16 +47,22 @@ public class AttackerAgent : Agent, IMoveInputHandler
         ITick tick,
         AbilityController controller,
         ActiveAbility ability,
-        IAbility moveAbility
+        IAbility moveAbility,
 
-
+        UnifiedDamageResolver damageResolver,
+        DamageDealer damageDealer,
+        GridPlaceable gridPlaceable,
+        Grid grid
         )
     {
         this.controller = controller;
         tick.OnTick += ActOnCooldown;
         this.activeAbility = ability;
         this.moveAbility = moveAbility;
-
+        this.gridPlaceable = gridPlaceable;
+        damageResolver.OnDamageTaken += HandleDamageTaken;
+        damageDealer.OnDamageDealt += HandleDamageDealt;
+        customGridSensorComponent.SetAgentReferences(gridPlaceable, damageDealer, grid);
     }
 
     private void ActOnCooldown()
@@ -68,22 +77,42 @@ public class AttackerAgent : Agent, IMoveInputHandler
     // if no attack action then just move in the direction received if there is one. If there is no direction received, do not move.
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        int moveAction = actionBuffers.DiscreteActions[0];
-        Vector2Int direction = Directions[moveAction];
-        int attackAction = actionBuffers.DiscreteActions[1];
+        int action = actionBuffers.DiscreteActions[0];
+        if (action == (int)MoveAction.NoAction) return;
+
+        Vector2Int direction = Vector2Int.zero;
+        bool isAttack = false;
+
+        // Action space:
+        // 0: NoAction
+        // 1-4: Move (Up, Down, Left, Right)
+        // 5-8: Attack (Up, Down, Left, Right)
+        if (action >= 1 && action <= 4)
+        {
+            direction = Directions[action];
+            isAttack = false;
+        }
+        else if (action >= 5 && action <= 8)
+        {
+            direction = Directions[action - 4];
+            isAttack = true;
+        }
+
         if (direction != Vector2Int.zero)
         {
             previousDirection = direction;
         }
-        IAbility abilityToUse = null;
-        if (attackAction == 0 && direction != Vector2Int.zero)
+        IAbility abilityToUse;
+        if (isAttack)
+        {
+            activeAbility.UpdateActiveAbility();
+            abilityToUse = activeAbility.ability;
+        }
+        else
         {
             abilityToUse = moveAbility;
         }
-        else if (previousDirection != Vector2Int.zero && attackAction == 1)
-        {
-            abilityToUse = activeAbility.ability;
-        }
+
         if (abilityToUse != null)
         {
             abilityToUse.SetDirection(previousDirection);
@@ -94,8 +123,16 @@ public class AttackerAgent : Agent, IMoveInputHandler
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActions = actionsOut.DiscreteActions;
-        discreteActions[0] = currentHeuristicAction;
-        discreteActions[1] = useAttack ? 1 : 0;
+        if (useAttack)
+        {
+            // Attack in the last pressed WASD direction
+            discreteActions[0] = lastHeuristicMoveAction + 4;
+        }
+        else
+        {
+            // Move in the currently held WASD direction
+            discreteActions[0] = currentHeuristicAction;
+        }
     }
 
     // ---- IMoveInputHandler ----
@@ -111,6 +148,11 @@ public class AttackerAgent : Agent, IMoveInputHandler
             else if (inputDirection.x < -0.5f) currentHeuristicAction = (int)MoveAction.Left;
             else if (inputDirection.x > 0.5f) currentHeuristicAction = (int)MoveAction.Right;
             else currentHeuristicAction = (int)MoveAction.NoAction;
+
+            if (currentHeuristicAction != (int)MoveAction.NoAction)
+            {
+                lastHeuristicMoveAction = currentHeuristicAction;
+            }
         }
         else if (context.canceled)
         {
@@ -128,6 +170,16 @@ public class AttackerAgent : Agent, IMoveInputHandler
         {
             useAttack = false;
         }
+    }
+
+    private void HandleDamageTaken()
+    {
+        AddReward(-1);
+    }
+
+    private void HandleDamageDealt()
+    {
+        AddReward(1);
     }
     ////
 
@@ -177,27 +229,55 @@ public class AttackerAgent : Agent, IMoveInputHandler
     //    AddReward(rewardSettings.pickupReward);
     //}
 
-    //// ---- action masking ----
+    // ---- action masking ----
 
-    //public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
-    //{
-    //    if (gridPlaceable == null) return;
+    public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
+    {
+        if (gridPlaceable == null) return;
 
-    //    Grid grid = gridPlaceable.CurrentGrid;
-    //    if (grid == null) return;
+        Grid grid = gridPlaceable.CurrentGrid;
+        if (grid == null) return;
 
-    //    Vector2Int pos = gridPlaceable.Position;
+        Vector2Int pos = gridPlaceable.Position;
 
-    //    // MoveAction indices: 0=NoAction,1=Up,2=Down,3=Left,4=Right
-    //    for (int action = 1; action <= 4; action++)
-    //    {
-    //        Vector2Int neighbor = pos + Directions[action];
-    //        if (!grid.IsMovable(neighbor))
-    //        {
-    //            actionMask.SetActionEnabled(0, action, false);
-    //        }
-    //    }
-    //}
+        // Action indices: 0=NoAction, 1-4=Move (U,D,L,R), 5-8=Attack (U,D,L,R)
+        for (int i = 1; i <= 4; i++)
+        {
+            Vector2Int direction = Directions[i];
+            Vector2Int neighbor = pos + direction;
+
+            bool hasWall = false;
+            bool hasEnemy = false;
+
+            var tile = grid.GetTile(neighbor);
+            if (tile == null)
+            {
+                // Out of bounds is treated as a wall
+                hasWall = true;
+            }
+            else
+            {
+                foreach (var p in tile)
+                {
+                    if (p.Type == GridPlaceable.PlaceableType.Wall) hasWall = true;
+                    if (p.Type == GridPlaceable.PlaceableType.Entity && p != gridPlaceable) hasEnemy = true;
+                }
+            }
+
+            // Block move if there's a wall or an entity (can't walk into them)
+            if (hasWall || hasEnemy)
+            {
+                actionMask.SetActionEnabled(0, i, false);
+            }
+
+            // Block attack if there's a wall (can't attack through walls) or if there's NO enemy
+            // (Requirement: if there is an enemy... only then ability use allowed)
+            if (hasWall || !hasEnemy)
+            {
+                actionMask.SetActionEnabled(0, i + 4, false);
+            }
+        }
+    }
 
     //// ---- decision loop ----
 

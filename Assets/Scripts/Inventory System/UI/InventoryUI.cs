@@ -93,11 +93,15 @@ public class InventoryUI : MonoBehaviour
         }
 
     }
+    public void AssignEquippedItem(EquippedItem item)
+    {
+        item.OnScroll += UpdateSelectedItem;
+    }
 
-    //public void UpdateSelectedItem(int index)
-    //{
-    //    selectedItemHighlight.transform.position = slotUis[index].transform.position;
-    //}
+    public void UpdateSelectedItem(int index)
+    {
+        selectedItemHighlight.transform.position = slotUis[index].transform.position;
+    }
 
     //private System.Collections.IEnumerator UpdateSelectedItemNextFrame()
     //{

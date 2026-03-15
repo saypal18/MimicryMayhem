@@ -6,6 +6,7 @@ using UnityEngine.Events;
 /// Abstract base class for any component that holds and manages a collection of InventorySlots.
 /// Examples: GearSlots (equipment), StorageSlots (backpack/storage).
 /// </summary>
+[System.Serializable]
 public abstract class InventorySlotHolder
 {
     public int slotCount;
@@ -13,6 +14,7 @@ public abstract class InventorySlotHolder
     /// <summary>
     /// The collection of slots managed by this holder.
     /// </summary>
+    [SerializeField]
     protected List<InventorySlot> slots = new List<InventorySlot>();
 
     /// <summary>

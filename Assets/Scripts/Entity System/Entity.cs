@@ -2,7 +2,7 @@ using UnityEngine;
 public class Entity : MonoBehaviour
 {
     [SerializeField] private GridPlaceable gridPlaceable;
-    [SerializeField] private AttackerAgent agent;
+    [SerializeField] public AttackerAgent agent;
     [SerializeField] private ActiveAbility activeAbility;
     [SerializeField] private MoveAbility moveAbility;
     [SerializeField] private AbilityController abilityController;
@@ -11,6 +11,8 @@ public class Entity : MonoBehaviour
     [SerializeField] private CollisionResolver collisionResolver;
     [SerializeField] public UnifiedDamageResolver damageResolver;
     [SerializeField] public PickupHandler pickupHandler;
+    [SerializeField] public DamageDealer damageDealer;
+    public EquippedItem equippedItem = new();
     public SortedInventory inventory;
     //[SerializeField] private PickupHandler pickupHandler;
     //[SerializeField] private UnifiedDamageResolver _damageResolver;
@@ -24,13 +26,14 @@ public class Entity : MonoBehaviour
     {
         gridPlaceable.Initialize(grid, startPosition);
         moveAbility.Initialize(movementFactory, gridPlaceable);
-        agent.Initialize(tick, abilityController, activeAbility, moveAbility);
         inventory.Initialize();
-
-
+        equippedItem.Initialize(inventory);
         collisionResolver.Initialize();
         pickupHandler.Initialize(collisionResolver);
-        damageResolver.Initialize(collisionResolver, inventory);
+        damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory);
+        activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable);
+        damageDealer.Initialize();
+        agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid);
     }
 }
 

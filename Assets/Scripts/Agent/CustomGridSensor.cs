@@ -22,7 +22,7 @@ public class CustomGridSensor : ISensor
     // ---- references set externally ----
     private Grid grid;
     private GridPlaceable agentPlaceable;
-    private DamageResolver agentDamageResolver;
+    private DamageDealer agentDamageResolver;
 
     // ---- cached spec ----
     private ObservationSpec observationSpec;
@@ -36,7 +36,7 @@ public class CustomGridSensor : ISensor
     }
 
     // Called by SurvivorAgent.Initialize() so each agent instance has its own POV
-    public void SetAgentReferences(GridPlaceable placeable, DamageResolver damageResolver, Grid grid)
+    public void SetAgentReferences(GridPlaceable placeable, DamageDealer damageResolver, Grid grid)
     {
         this.grid = grid;
         agentPlaceable = placeable;
@@ -64,7 +64,7 @@ public class CustomGridSensor : ISensor
         }
 
         Vector2Int center = agentPlaceable.Position;
-        int agentPow = agentDamageResolver.power;
+        int agentPow = agentDamageResolver.tier;
 
         for (int dy = -viewRadius; dy <= viewRadius; dy++)
         {
@@ -122,11 +122,14 @@ public class CustomGridSensor : ISensor
                             if (gp != agentPlaceable && gp.Entity != null)
                             {
                                 enemyExists = 1f;
-                                int enemyPow = gp.Entity.inventory.highestTier;
-                                if (enemyPow > agentPow)
-                                    enemyIsStronger = 1f;
-                                else if (enemyPow < agentPow)
-                                    enemyIsWeaker = 1f;
+                                if (gp.Entity.damageDealer != null)
+                                {
+                                    int enemyPow = gp.Entity.damageDealer.tier;
+                                    if (enemyPow > agentPow)
+                                        enemyIsStronger = 1f;
+                                    else if (enemyPow < agentPow)
+                                        enemyIsWeaker = 1f;
+                                }
                             }
                             break;
 
@@ -161,7 +164,7 @@ public class CustomGridSensor : ISensor
         }
 
         Vector2Int center = agentPlaceable.Position;
-        int agentPow = Mathf.Max(1, agentDamageResolver.power);
+        int agentPow = Mathf.Max(0, agentDamageResolver.tier);
 
         for (int dy = -viewRadius; dy <= viewRadius; dy++)
         {
@@ -213,11 +216,14 @@ public class CustomGridSensor : ISensor
                                 if (gp != agentPlaceable && gp.Entity != null)
                                 {
                                     enemyExists = 1f;
-                                    int enemyPow = gp.Entity.inventory.highestTier;
-                                    if (enemyPow > agentPow)
-                                        enemyIsStronger = 1f;
-                                    else if (enemyPow < agentPow)
-                                        enemyIsWeaker = 1f;
+                                    if (gp.Entity.damageDealer != null)
+                                    {
+                                        int enemyPow = gp.Entity.damageDealer.tier;
+                                        if (enemyPow > agentPow)
+                                            enemyIsStronger = 1f;
+                                        else if (enemyPow < agentPow)
+                                            enemyIsWeaker = 1f;
+                                    }
                                 }
                                 break;
                         }

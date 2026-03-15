@@ -80,6 +80,11 @@ public class Grid
     {
         if (gridPosition.x < 0 || gridPosition.x >= size.x || gridPosition.y < 0 || gridPosition.y >= size.y)
             return null;
+        if (gridPosition.x >= tiles.GetLength(0) || gridPosition.y >= tiles.GetLength(1))
+        {
+            Debug.LogWarning("can't observe this tile");
+            return null;
+        }
 
         return tiles[gridPosition.x, gridPosition.y];
     }
@@ -118,7 +123,7 @@ public class Grid
 
         foreach (GridPlaceable gridPlaceable in tile)
         {
-            if (gridPlaceable.Type == GridPlaceable.PlaceableType.Wall || gridPlaceable.Type == GridPlaceable.PlaceableType.Entity)
+            if (gridPlaceable.Type == GridPlaceable.PlaceableType.Wall)// || gridPlaceable.Type == GridPlaceable.PlaceableType.Entity)
                 return false;
         }
         return true;

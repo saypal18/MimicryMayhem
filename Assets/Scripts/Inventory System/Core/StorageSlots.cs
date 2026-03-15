@@ -4,6 +4,7 @@ using UnityEngine;
 /// Manages a collection of general-purpose storage slots.
 /// Replaces the old StorageInventory class.
 /// </summary>
+[System.Serializable]
 public class StorageSlots : InventorySlotHolder
 {
     public int maxSlots { get; private set; }

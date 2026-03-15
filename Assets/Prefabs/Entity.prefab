@@ -152,6 +152,148 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Root
   obj: {fileID: 4593017720766107119}
+--- !u!1 &2306746926988245977
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2179172306954680591}
+  - component: {fileID: 7308426810880279921}
+  - component: {fileID: 7575839581476127067}
+  - component: {fileID: 6364099547859210607}
+  m_Layer: 6
+  m_Name: DamageDealerDash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2179172306954680591
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2306746926988245977}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6306993136484929041}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &7308426810880279921
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2306746926988245977}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!58 &7575839581476127067
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2306746926988245977}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
+--- !u!114 &6364099547859210607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2306746926988245977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cc21117709dae24985395ef0082cac9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Root
+  obj: {fileID: 4593017720766107119}
 --- !u!1 &2357872713652603406
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,14 +342,11 @@ GameObject:
   - component: {fileID: -2021946009688161316}
   - component: {fileID: 8434931516410452327}
   - component: {fileID: -6301446809717054083}
-  - component: {fileID: -1320314435333344690}
-  - component: {fileID: 2798837416786205791}
-  - component: {fileID: -6068677719235475663}
-  - component: {fileID: 8907513899038437448}
-  - component: {fileID: -9048565712272594558}
   - component: {fileID: 59241930918860346}
   - component: {fileID: 3009800038909816238}
   - component: {fileID: 885055075436070136}
+  - component: {fileID: 2646492905618568468}
+  - component: {fileID: -2084096311762261891}
   m_Layer: 7
   m_Name: Entity
   m_TagString: Agent
@@ -229,6 +368,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 970877790850963895}
+  - {fileID: 2179172306954680591}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3424982107745104638
@@ -308,27 +448,44 @@ MonoBehaviour:
     meleeAttack:
       swordDamageParent: {fileID: 970877790850963895}
       swordDamageCollider: {fileID: 1542353427624950557}
-      duration: 0.1
+      animationDuration: 0.1
+      stopDuration: 0.1
       gridPlaceable: {fileID: 4431915713241691728}
       _animation:
         underlyingValue: {fileID: 3009800038909816238}
       damageBlocks: 1
+    rangeAttack:
+      rangeColliderPrefab: {fileID: 900539291618904675, guid: 8bf95beecb0ef2c40a301e1ed8c9a378, type: 3}
+      travelDuration: 0.5
+      stopDuration: 0.5
+      gridPlaceable: {fileID: 4431915713241691728}
+      maxDistanceBlocks: 3
+      _animation:
+        underlyingValue: {fileID: -2084096311762261891}
+    dashAttack:
+      dashTime: 0.5
+      blocksToMove: 3
+      dashDamageCollider: {fileID: 2306746926988245977}
   moveAbility:
     moveTime: 0.2
     blocksToMove: 1
   abilityController:
-    cooldown: 1
+    cooldown: 0.5
   collisionResolver: {fileID: -7865425547269084357}
+  damageResolver:
+    knockbackTime: 0.1
+    knockbackBlocks: 1
+  damageDealer: {fileID: 59241930918860346}
   inventory:
     slotCount: 7
     slotType: 0
+    slots: []
     OnItemAdded:
       m_PersistentCalls:
         m_Calls: []
     OnItemRemoved:
       m_PersistentCalls:
         m_Calls: []
-    highestTier: 0
 --- !u!114 &-7865425547269084357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,15 +525,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.ML-Agents::Unity.MLAgents.Policies.BehaviorParameters
   m_BrainParameters:
     VectorObservationSize: 0
-    NumStackedVectorObservations: 8
+    NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 0500000002000000
-    VectorActionSize: 0500000002000000
+      BranchSizes: 09000000
+    VectorActionSize: 09000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 6ae6c62a65e4e904f8a4046a06599d1c, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: SurvivorAgent
@@ -448,68 +605,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-1320314435333344690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593017720766107119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd8f518e83647bb4588e49a55dbdc80b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CustomGridSensorComponent
-  viewRadius: 5
-  showGizmos: 0
---- !u!114 &2798837416786205791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593017720766107119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5a18b4e1ad061c4f82663311d392907, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PositionObservation
---- !u!114 &-6068677719235475663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593017720766107119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2568d1acc520c914caf24cb5ded68dd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PowerObservation
---- !u!114 &8907513899038437448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593017720766107119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f27500aa1677ccf4692939460d59abfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalEnemiesObservation
---- !u!114 &-9048565712272594558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593017720766107119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 406c14fa46a9f95448fea47e1ee108e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TotalPickupObservation
 --- !u!114 &59241930918860346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -524,6 +619,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageDealer
   tier: 1
   direction: {x: 1, y: 1}
+  applyKnockback: 1
 --- !u!114 &3009800038909816238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -552,3 +648,30 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
+  customGridSensorComponent: {fileID: 2646492905618568468}
+--- !u!114 &2646492905618568468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4593017720766107119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd8f518e83647bb4588e49a55dbdc80b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CustomGridSensorComponent
+  viewRadius: 5
+  showGizmos: 0
+--- !u!114 &-2084096311762261891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4593017720766107119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aac8f0b4e7277704596edf68afdf18d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmoothRangeDamageColliderAnimation

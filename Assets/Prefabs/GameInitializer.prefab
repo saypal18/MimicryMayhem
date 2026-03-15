@@ -228,8 +228,24 @@ MonoBehaviour:
     colorize: 1
     entityPercentage: 1
     teamsEnabled: 0
+    initialScale: {x: 1, y: 1, z: 1}
   pickupPlacer:
-    pickupPrefab: {fileID: 2655546045923351145, guid: 87d6ea1ca96318745b6ec673b2f6ea46, type: 3}
+    pickupPrefabs:
+    - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
+    - {fileID: 2279582224576281527, guid: 0732882f54b923345908b517e76e161e, type: 3}
+    - {fileID: 2279582224576281527, guid: ed1b1f90a4e07e24b98428229f39be6b, type: 3}
+    - {fileID: 2279582224576281527, guid: 77e0568456120124ea94c87328266551, type: 3}
+    - {fileID: 2279582224576281527, guid: ec814e5744fa1714ea0f54cf673d099d, type: 3}
+    - {fileID: 2279582224576281527, guid: 2f4824a3662631d4fa4ff5640fb82fe1, type: 3}
+    - {fileID: 2279582224576281527, guid: 707c9f4dbc43f3d4c842e3bc41cebc44, type: 3}
+    - {fileID: 2279582224576281527, guid: 83beccc8ba6994e41ac92eba1e144586, type: 3}
+    - {fileID: 2279582224576281527, guid: 6e9fd59b54c13fc4b927bc3eb74d5d10, type: 3}
+    - {fileID: 2279582224576281527, guid: 4b03c97795c12794e83ad09a53aa82c7, type: 3}
+    - {fileID: 2279582224576281527, guid: 7373fa2bc024db0468820b0974ebc7ae, type: 3}
+    - {fileID: 2279582224576281527, guid: 3ff4a2f570e3a344ab59e0d6c4f4ffa0, type: 3}
+    - {fileID: 2279582224576281527, guid: 3475a4424a37e5c4786e2f54f74c79ca, type: 3}
+    - {fileID: 2279582224576281527, guid: 53eff3995a64b8948beca4dba8d57801, type: 3}
+    - {fileID: 2279582224576281527, guid: 487244d0ba6e7844cb873539e04bc881, type: 3}
     pickupParent: {fileID: 7199370050930525759}
     spawnInterval: 10
     pickupPercentage: 25

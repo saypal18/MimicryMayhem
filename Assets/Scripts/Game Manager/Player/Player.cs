@@ -83,7 +83,9 @@ public class Player : MonoBehaviour
                 bp.BehaviorType = BehaviorType.HeuristicOnly;
                 if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                     inputManager.InitializeMove(handler);
+                inputManager.InitializeScroll(player.equippedItem);
                 inventoryUI.AssignInventory(player.inventory);
+                inventoryUI.AssignEquippedItem(player.equippedItem);
             }
             else
             {
@@ -94,7 +96,7 @@ public class Player : MonoBehaviour
         points = 0;
         //player.damageResolver.OnDamageDealt += () => points++;
         mainCamera.transform.parent = player.transform;
-        mainCamera.transform.localPosition = new Vector3(-12, 0, -10);
+        mainCamera.transform.localPosition = new Vector3(-5, 0, -10);
         //player.damageResolver.OnDamageTaken += () => mainCamera.transform.parent = null;
         //player.SetColor(Color.white);
     }

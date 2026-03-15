@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class PickupPlacer
 {
-    [SerializeField] private Pickup pickupPrefab;
+    [SerializeField] private List<Pickup> pickupPrefabs;
     [SerializeField] private Transform pickupParent;
     [SerializeField] private float spawnInterval = 2.0f;
     [Header("Pickup Settings")]
@@ -47,7 +47,7 @@ public class PickupPlacer
 
     public void SpawnAtPosition(Vector2Int position)
     {
-        Pickup pickup = PoolingEntity.Spawn(pickupPrefab, pickupParent);
+        Pickup pickup = PoolingEntity.Spawn(pickupPrefabs[Random.Range(0, pickupPrefabs.Count)], pickupParent);
         pickup.Initialize(grid, position);
 
         activePickups.Add(pickup);

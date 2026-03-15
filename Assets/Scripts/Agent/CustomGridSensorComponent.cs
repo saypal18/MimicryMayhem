@@ -12,7 +12,7 @@ public class CustomGridSensorComponent : SensorComponent
 
     // Pending refs if SetAgentReferences is called before CreateSensors
     private GridPlaceable pendingPlaceable;
-    private DamageResolver pendingDamageResolver;
+    private DamageDealer pendingDamageResolver;
     private Grid pendingGrid;
 
     [Header("Settings")]
@@ -41,7 +41,7 @@ public class CustomGridSensorComponent : SensorComponent
     /// <summary>
     /// Called by SurvivorAgent.Initialize() to inject the runtime grid and per-agent refs.
     /// </summary>
-    public void SetAgentReferences(GridPlaceable agentPlaceable, DamageResolver agentDamageResolver, Grid grid)
+    public void SetAgentReferences(GridPlaceable agentPlaceable, DamageDealer agentDamageResolver, Grid grid)
     {
         if (sensor != null)
         {

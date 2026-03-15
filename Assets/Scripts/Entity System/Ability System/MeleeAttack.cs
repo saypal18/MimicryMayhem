@@ -2,15 +2,16 @@ using UnityEngine;
 using System.Collections;
 using System;
 [Serializable]
-public class MeleeAttack :IAbility
+public class MeleeAttack : IAbility
 {
     [SerializeField] private Transform swordDamageParent;
     [SerializeField] private GameObject swordDamageCollider;
-    [SerializeField] private float duration;
+    [SerializeField] private float animationDuration;
+    [SerializeField] private float stopDuration;
     [SerializeField] private GridPlaceable gridPlaceable;
     [SerializeField] private InterfaceReference<IDamageColliderAnimation> _animation;
     private IDamageColliderAnimation animation => _animation.Value;
-    [SerializeField] private int damageBlocks;
+    [SerializeField] private int damageBlocks; //
     private DamageDealer damageDealer;
 
     private Vector2Int currentDirection = Vector2Int.zero;
@@ -31,11 +32,11 @@ public class MeleeAttack :IAbility
             return false;
         }
 
-        if (gridPlaceable != null && gridPlaceable.CurrentGrid != null)
-        {
-            animation.Initialize(gridPlaceable.CurrentGrid);
-        }
-        animation.Play(duration, gridPlaceable.Position, currentDirection, damageBlocks, swordDamageCollider);
+        //if (gridPlaceable != null && gridPlaceable.CurrentGrid != null)
+        //{
+        //    animation.Initialize(gridPlaceable.CurrentGrid);
+        //}
+        animation.Play(gridPlaceable.Position, currentDirection);
 
         //StartCoroutine(AttackRoutine());
         return true;
@@ -51,7 +52,7 @@ public class MeleeAttack :IAbility
     public void Initialize(Grid grid, DamageDealer meleeDamageDealer)
     {
         swordDamageCollider.SetActive(false);
-        animation.Initialize(grid);
+        animation.Initialize(grid, swordDamageCollider, animationDuration, stopDuration, damageBlocks);
         damageDealer = meleeDamageDealer;
     }
 

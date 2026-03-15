@@ -4,13 +4,21 @@ using DG.Tweening;
 public class SmoothColliderAnimation : MonoBehaviour, IDamageColliderAnimation
 {
     private Grid grid;
+    private float animationDuration;
+    private float stopDuration;
+    private int damageBlocks;
+    private GameObject swordDamageCollider;
 
-    public void Initialize(Grid grid)
+    public void Initialize(Grid grid, GameObject swordDamageCollider, float animationDuration, float stopDuration, int damageBlocks)
     {
         this.grid = grid;
+        this.swordDamageCollider = swordDamageCollider;
+        this.animationDuration = animationDuration;
+        this.stopDuration = stopDuration;
+        this.damageBlocks = damageBlocks;
     }
 
-    public void Play(float duration, Vector2Int position, Vector2Int direction, int damageBlocks, GameObject swordDamageCollider)
+    public void Play(Vector2Int position, Vector2Int direction)
     {
         if (grid == null)
         {
@@ -25,9 +33,10 @@ public class SmoothColliderAnimation : MonoBehaviour, IDamageColliderAnimation
         swordDamageCollider.transform.position = startPos;
 
         // Animate to end position
-        swordDamageCollider.transform.DOMove(endPos, duration)
-            .SetEase(Ease.OutQuad)
-            .OnComplete(() => { swordDamageCollider.SetActive(false); })
-            .OnKill(() => { swordDamageCollider.SetActive(false); });
+        Sequence seq = DOTween.Sequence();
+        seq.Append(swordDamageCollider.transform.DOMove(endPos, animationDuration).SetEase(Ease.OutQuad));
+        seq.AppendInterval(stopDuration);
+        seq.OnComplete(() => { swordDamageCollider.SetActive(false); });
+        seq.OnKill(() => { swordDamageCollider.SetActive(false); });
     }
 }

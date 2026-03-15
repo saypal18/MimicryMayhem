@@ -6,44 +6,76 @@ using System;
 public class SortedInventory : InventorySlotHolder
 {
 
-    public int highestTier = 0;
+    //public int highestTier = 0;
 
-    //public SortedInventory(int slotCount, SlotType slotType)
-    //{
-    //    this.slotCount = slotCount;
-    //    this.slotType = slotType;
+    ////public SortedInventory(int slotCount, SlotType slotType)
+    ////{
+    ////    this.slotCount = slotCount;
+    ////    this.slotType = slotType;
 
-    //    for (int i = 0; i < slotCount; i++)
-    //    {
-    //        AddSlot(new InventorySlot(slotType, 1));
-    //    }
-    //}
+    ////    for (int i = 0; i < slotCount; i++)
+    ////    {
+    ////        AddSlot(new InventorySlot(slotType, 1));
+    ////    }
+    ////}
+    private bool isReorganizing = false;
+
     public void Initialize()
     {
+        slots.Clear();
         for (int i = 0; i < slotCount; i++)
         {
             AddSlot(new InventorySlot(slotType, 1));
         }
 
-        // Update highest tier whenever an item is added or removed
-        OnItemAdded.AddListener((item, amount, index) => UpdateHighestTier());
-        OnItemRemoved.AddListener((item, amount, index) => UpdateHighestTier());
+        // // Update highest tier whenever an item is added or removed
+        // OnItemAdded.AddListener((item, amount, index) => UpdateHighestTier());
+        // OnItemRemoved.AddListener((item, amount, index) => UpdateHighestTier());
     }
 
-    public void UpdateHighestTier()
+    public void ShiftUp()
     {
-        highestTier = 0;
+        if (isReorganizing) return;
+        isReorganizing = true;
+
+        List<WeaponItem> currentItems = new List<WeaponItem>();
         foreach (var slot in slots)
         {
-            if (slot.item != null && slot.item is WeaponItem weaponItem)
+            if (slot.item != null && slot.item is WeaponItem w)
             {
-                if (weaponItem.tier > highestTier)
-                {
-                    highestTier = weaponItem.tier;
-                }
+                currentItems.Add(w);
+                slot.Remove();
             }
         }
+
+        for (int i = 0; i < currentItems.Count; i++)
+        {
+            if (i < slotCount)
+            {
+                slots[i].Add(currentItems[i], 1);
+            }
+        }
+
+        isReorganizing = false;
     }
+
+    //public void UpdateHighestTier()
+    //{
+    //    int newHighestTier = 0;
+    //    try
+    //    {
+    //        newHighestTier = ((WeaponItem)slots[0].item).tier;
+    //    }
+    //    catch
+    //    {
+    //        newHighestTier = 0;
+    //    }
+    //    if (newHighestTier != highestTier)
+    //    {
+    //        highestTier = newHighestTier;
+    //        OnHighestTierChanged?.Invoke(highestTier);
+    //    }
+    //}
 
     public override bool AddItem(InventoryItem item, int amount)
     {
@@ -103,6 +135,7 @@ public class SortedInventory : InventorySlotHolder
             return false;
         }
 
+        isReorganizing = true;
         // Clear existing slots safely before adding new logic
         foreach (var slot in slots)
         {
@@ -118,8 +151,9 @@ public class SortedInventory : InventorySlotHolder
                 currentSlotIdx++;
             }
         }
+        isReorganizing = false;
 
-        UpdateHighestTier();
+        //UpdateHighestTier();
 
         return true;
     }
