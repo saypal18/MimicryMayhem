@@ -33,6 +33,7 @@ public class Entity : MonoBehaviour
         activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable);
         damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory, abilityController);
         damageDealer.Initialize();
+        abilityController.Initialize();
         agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem);
     }
 

@@ -32,7 +32,10 @@ public class AbilityController
         lastActionTime = Time.time;
         return true;
     }
-
+    public void Initialize()
+    {
+        cooldownImage = null;
+    }
     public void Update()
     {
         if (cooldownImage == null) return;
