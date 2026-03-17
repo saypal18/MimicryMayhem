@@ -17,6 +17,10 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] public PickupPlacer pickupPlacer;
     [SerializeField] private WallPlacer wallPlacer;
     [SerializeField] public PerlinBushPlacer bushPlacer;
+    
+    [Header("Team Settings")]
+    [SerializeField] public int numTeams = 2;
+    [SerializeField] public TeamAssignmentStrategy teamAssignmentStrategy = TeamAssignmentStrategy.Alternate;
 
     // ── Episode settings ──────────────────────────────────────────────────────
     [Header("Episode Settings")]
@@ -57,6 +61,10 @@ public class GameInitializer : MonoBehaviour
 
     public void ResetEnvironment()
     {
+        numTeams = Mathf.Max(1, numTeams);
+        turnManager.TeamsCount = numTeams;
+        entitySpawner.teamAssignmentStrategy = teamAssignmentStrategy;
+        
         turnManager.Initialize();
         if (curriculum == null)
         {

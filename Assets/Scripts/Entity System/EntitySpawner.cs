@@ -2,6 +2,13 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 [System.Serializable]
+public enum TeamAssignmentStrategy
+{
+    Alternate,
+    DistinctThenLast
+}
+
+[System.Serializable]
 public class EntitySpawner
 {
     [SerializeField] private Entity entityPrefab;
@@ -18,6 +25,7 @@ public class EntitySpawner
     [Header("Entity Settings")]
     [SerializeField] public float entityPercentage = 2f;
     [SerializeField] public bool teamsEnabled = false;
+    [SerializeField] public TeamAssignmentStrategy teamAssignmentStrategy = TeamAssignmentStrategy.Alternate;
     [SerializeField] private Vector3 initialScale = Vector3.one;
     private int entitiesCount;
     private List<ITick> turnTicks;
@@ -110,11 +118,19 @@ public class EntitySpawner
     private void SpawnCount(int count)
     {
         List<Vector2Int> randomPositions = grid.GetRandomEmptyPositions(count);
+        int numTeams = turnManager.GetTeamCount();
         for (int i = 0; i < randomPositions.Count; i++)
         {
-            // Assign a unique Team ID to each agent for a Free-For-All game
-            //int teamId = teamsEnabled ? i : 0;
-            int teamId = i % 2;
+            int teamId = 0;
+            if (teamAssignmentStrategy == TeamAssignmentStrategy.Alternate)
+            {
+                teamId = i % numTeams;
+            }
+            else if (teamAssignmentStrategy == TeamAssignmentStrategy.DistinctThenLast)
+            {
+                teamId = (i < numTeams) ? i : numTeams - 1;
+            }
+            
             SpawnAtPosition(randomPositions[i], teamId);
         }
     }

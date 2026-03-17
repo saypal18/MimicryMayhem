@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class TurnManager : MonoBehaviour, ITurnManager
 {
-    [SerializeField] private int teamsCount = 2;
+    private int teamsCount = 2;
+    public int TeamsCount { get => teamsCount; set => teamsCount = value; }
     [SerializeField] private float turnTime = 0.2f;
 
     private int currentTeamIndex = -1;

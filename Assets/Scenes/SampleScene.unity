@@ -3438,6 +3438,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1588366680}
     - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: teamAssignmentStrategy
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: entitySpawner.initialScale.x
       value: 0.5
       objectReference: {fileID: 0}
