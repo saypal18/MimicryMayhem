@@ -17,6 +17,10 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] public PickupPlacer pickupPlacer;
     [SerializeField] private WallPlacer wallPlacer;
     [SerializeField] public PerlinBushPlacer bushPlacer;
+    
+    [Header("Team Settings")]
+    [SerializeField] public int numTeams = 2;
+    [SerializeField] public TeamAssignmentStrategy teamAssignmentStrategy = TeamAssignmentStrategy.Alternate;
 
     // ── Episode settings ──────────────────────────────────────────────────────
     [Header("Episode Settings")]
@@ -26,6 +30,7 @@ public class GameInitializer : MonoBehaviour
     // [SerializeField] private bool predict = true;
     [HideInInspector] public bool shouldRandomize = true;
     [SerializeField] public ICurriculum curriculum;
+    [SerializeField] public TurnManager turnManager;
 
     public Action onEnvironmentReset;
 
@@ -44,7 +49,11 @@ public class GameInitializer : MonoBehaviour
             Entity[] snapshot = new Entity[active.Count];
             for (int i = 0; i < active.Count; i++) snapshot[i] = active[i];
             foreach (Entity entity in snapshot)
-                entity.ForceEndEpisode();
+            {
+
+                // entity.agent.EpisodeInterrupted();
+                entity.agent.EndEpisode();
+            }
 
             ResetEnvironment();
         }
@@ -52,6 +61,11 @@ public class GameInitializer : MonoBehaviour
 
     public void ResetEnvironment()
     {
+        numTeams = Mathf.Max(1, numTeams);
+        turnManager.TeamsCount = numTeams;
+        entitySpawner.teamAssignmentStrategy = teamAssignmentStrategy;
+        
+        turnManager.Initialize();
         if (curriculum == null)
         {
             curriculum = new BasicBushCurriculum();
@@ -78,7 +92,7 @@ public class GameInitializer : MonoBehaviour
         pickupPlacer.SetInterval(pickupSpawnIntervalConstant / (float)totalArea);
 
         // Initialise subsystems before spawning anything.
-        entitySpawner.Initialize(grid, this);
+        entitySpawner.Initialize(grid, turnManager);
         bushPlacer.Initialize(grid);
         pickupPlacer.Initialize(grid);
         wallPlacer.Initialize(grid);

@@ -9,4 +9,9 @@ public class Root : MonoBehaviour
     {
         child.AddComponent<Root>().obj = parent;
     }
+
+    public void Assign(GameObject parent)
+    {
+        obj = parent;
+    }
 }

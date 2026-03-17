@@ -165,6 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5084263085645196711}
   - component: {fileID: 2424751851155101755}
+  - component: {fileID: -5087976263453988065}
   m_Layer: 0
   m_Name: GameInitializer
   m_TagString: Untagged
@@ -209,7 +210,7 @@ MonoBehaviour:
     startingTilePosition: {fileID: 3509958387582530915}
     tileSize: {x: 1, y: 1}
     minGridSize: 5
-    maxGridSize: 60
+    maxGridSize: 20
     border:
       borderPrefab: {fileID: 7778688139210919124, guid: 37d760a4e9101b446b6c175f8a514290, type: 3}
       borderParent: {fileID: 2335819374844696575}
@@ -222,16 +223,32 @@ MonoBehaviour:
       pickupReward: 0
       stepReward: 0
       bushReward: 0
-    movementFactory:
-      type: 0
-      movementCooldown: 0.2
+    _tick:
+      underlyingValue: {fileID: 0}
     colorize: 1
-    entityPercentage: 1
+    entityPercentage: 2
+    teamsEnabled: 0
+    initialScale: {x: 0.5, y: 0.5, z: 0.5}
   pickupPlacer:
-    pickupPrefab: {fileID: 2655546045923351145, guid: 87d6ea1ca96318745b6ec673b2f6ea46, type: 3}
+    pickupPrefabs:
+    - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
+    - {fileID: 2279582224576281527, guid: 0732882f54b923345908b517e76e161e, type: 3}
+    - {fileID: 2279582224576281527, guid: ed1b1f90a4e07e24b98428229f39be6b, type: 3}
+    - {fileID: 2279582224576281527, guid: 77e0568456120124ea94c87328266551, type: 3}
+    - {fileID: 2279582224576281527, guid: ec814e5744fa1714ea0f54cf673d099d, type: 3}
+    - {fileID: 2279582224576281527, guid: 2f4824a3662631d4fa4ff5640fb82fe1, type: 3}
+    - {fileID: 2279582224576281527, guid: 707c9f4dbc43f3d4c842e3bc41cebc44, type: 3}
+    - {fileID: 2279582224576281527, guid: 83beccc8ba6994e41ac92eba1e144586, type: 3}
+    - {fileID: 2279582224576281527, guid: 6e9fd59b54c13fc4b927bc3eb74d5d10, type: 3}
+    - {fileID: 2279582224576281527, guid: 4b03c97795c12794e83ad09a53aa82c7, type: 3}
+    - {fileID: 2279582224576281527, guid: 7373fa2bc024db0468820b0974ebc7ae, type: 3}
+    - {fileID: 2279582224576281527, guid: 3ff4a2f570e3a344ab59e0d6c4f4ffa0, type: 3}
+    - {fileID: 2279582224576281527, guid: 3475a4424a37e5c4786e2f54f74c79ca, type: 3}
+    - {fileID: 2279582224576281527, guid: 53eff3995a64b8948beca4dba8d57801, type: 3}
+    - {fileID: 2279582224576281527, guid: 487244d0ba6e7844cb873539e04bc881, type: 3}
     pickupParent: {fileID: 7199370050930525759}
     spawnInterval: 10
-    pickupPercentage: 25
+    pickupPercentage: 5
   wallPlacer:
     wallMode: 2
     perlinNoiseProbability: 0.9
@@ -260,10 +277,26 @@ MonoBehaviour:
       rotationAngleMin: 0
       rotationAngleMax: 90
       threshold: 0.7
-  maxStepsMultiplier: 100
-  pickupSpawnIntervalConstant: 8000
+  maxStepsMultiplier: 500
+  pickupSpawnIntervalConstant: 2000
   MaxSteps: 1000
   shouldRandomize: 1
+  turnManager: {fileID: -5087976263453988065}
+--- !u!114 &-5087976263453988065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4934599878771539894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9de3862254253bd43ace5a6a3c6ef0ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnManager
+  teamsCount: 2
+  turnTime: 0.3
+  log: 0
 --- !u!1 &7782477435353402049
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,7 +1,12 @@
 using UnityEngine;
 
-public interface Pickup
+public abstract class Pickup : MonoBehaviour
 {
-    public void Collected();
+    public abstract bool Collected(GameObject picker);
 
+    [SerializeField] private GridPlaceable gridPlaceable;
+    public virtual void Initialize(Grid grid, Vector2Int position)
+    {
+        gridPlaceable.Initialize(grid, position);
+    }
 }

@@ -8,9 +8,9 @@ public class CollisionResolver : MonoBehaviour
     {
         OnCollision = null;
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out Root root))
+        if (collision.TryGetComponent(out Root root) && root != gameObject && root.GO != gameObject)
         {
             OnCollision?.Invoke(root.GO);
         }

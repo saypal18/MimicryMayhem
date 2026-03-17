@@ -20,11 +20,11 @@ public class PerlinBushPlacer
 
     public void SpawnAtPosition(Vector2Int position)
     {
-        GridPlaceable bush = PoolingEntity.Spawn(bushPrefab, bushParent);
-        if (bush != null)
-        {
-            bush.Initialize(grid, position);
-        }
+        // GridPlaceable bush = PoolingEntity.Spawn(bushPrefab, bushParent);
+        // if (bush != null)
+        // {
+        //     bush.Initialize(grid, position);
+        // }
     }
 
     public void PlaceBushes()
