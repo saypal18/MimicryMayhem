@@ -4,17 +4,18 @@ using UnityEngine;
 /// <summary>
 /// Custom ISensor that provides an ego-centric view centered on the agent.
 ///
-/// Channel layout (4 channels):
-///   [0] Enemy exists (1.0)
-///   [1] Pickup present (1.0)
-///   [2] Bush present (1.0)
-///   [3] Wall or out-of-bounds (1.0)
+/// Channel layout (5 channels):
+///   [0] Self team (1.0)
+///   [1] Enemy team (1.0)
+///   [2] Pickup present (1.0)
+///   [3] Bush present (1.0)
+///   [4] Wall or out-of-bounds (1.0)
 /// </summary>
 public class EasyGridSensor : ISensor
 {
     private int viewRadius;
     private int viewSize;
-    private const int Channels = 4;
+    private const int Channels = 5;
 
     private Grid grid;
     private GridPlaceable agentPlaceable;
@@ -70,14 +71,16 @@ public class EasyGridSensor : ISensor
                 var tile = grid.GetTile(worldCell);
                 if (tile == null)
                 {
-                    writer[0, row, col] = 0f; // enemy
-                    writer[1, row, col] = 0f; // pickup
-                    writer[2, row, col] = 0f; // bush
-                    writer[3, row, col] = 1f; // out-of-bounds treated as wall
+                    writer[0, row, col] = 0f; // self team
+                    writer[1, row, col] = 0f; // enemy team
+                    writer[2, row, col] = 0f; // pickup
+                    writer[3, row, col] = 0f; // bush
+                    writer[4, row, col] = 1f; // wall
                     continue;
                 }
 
-                float enemyChannel = 0f;
+                float selfTeamChannel = 0f;
+                float enemyTeamChannel = 0f;
                 float pickupChannel = 0f;
                 float bushChannel = 0f;
                 float wallChannel = 0f;
@@ -104,9 +107,28 @@ public class EasyGridSensor : ISensor
                                 break;
 
                             case GridPlaceable.PlaceableType.Entity:
-                                if (gp != agentPlaceable)
+                                if (gp.Entity != null && agentPlaceable != null && agentPlaceable.Entity != null)
                                 {
-                                    enemyChannel = 1f;
+                                    bool gpHasTeam = gp.Entity.behaviorParameters != null;
+                                    bool agentHasTeam = agentPlaceable.Entity.behaviorParameters != null;
+
+                                    if (gpHasTeam && agentHasTeam)
+                                    {
+                                        if (gp.Entity.TeamId == agentPlaceable.Entity.TeamId)
+                                        {
+                                            selfTeamChannel = 1f;
+                                        }
+                                        else
+                                        {
+                                            enemyTeamChannel = 1f;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Fallback: if no team info, treat as enemy unless it's self
+                                        if (gp == agentPlaceable) selfTeamChannel = 1f;
+                                        else enemyTeamChannel = 1f;
+                                    }
                                 }
                                 break;
 
@@ -117,10 +139,11 @@ public class EasyGridSensor : ISensor
                     }
                 }
 
-                writer[0, row, col] = enemyChannel;
-                writer[1, row, col] = pickupChannel;
-                writer[2, row, col] = bushChannel;
-                writer[3, row, col] = wallChannel;
+                writer[0, row, col] = selfTeamChannel;
+                writer[1, row, col] = enemyTeamChannel;
+                writer[2, row, col] = pickupChannel;
+                writer[3, row, col] = bushChannel;
+                writer[4, row, col] = wallChannel;
             }
         }
 
@@ -146,7 +169,8 @@ public class EasyGridSensor : ISensor
                 Vector2Int worldCell = center + new Vector2Int(dx, dy);
                 Vector3 worldPos = grid.GetWorldPosition(worldCell);
 
-                float enemyChannel = 0f;
+                float selfTeamChannel = 0f;
+                float enemyTeamChannel = 0f;
                 float pickupChannel = 0f;
                 float bushChannel = 0f;
                 float wallChannel = 0f;
@@ -182,9 +206,27 @@ public class EasyGridSensor : ISensor
                                     pickupChannel = 1f;
                                     break;
                                 case GridPlaceable.PlaceableType.Entity:
-                                    if (gp != agentPlaceable)
+                                    if (gp.Entity != null && agentPlaceable != null && agentPlaceable.Entity != null)
                                     {
-                                        enemyChannel = 1f;
+                                        bool gpHasTeam = gp.Entity.behaviorParameters != null;
+                                        bool agentHasTeam = agentPlaceable.Entity.behaviorParameters != null;
+
+                                        if (gpHasTeam && agentHasTeam)
+                                        {
+                                            if (gp.Entity.TeamId == agentPlaceable.Entity.TeamId)
+                                            {
+                                                selfTeamChannel = 1f;
+                                            }
+                                            else
+                                            {
+                                                enemyTeamChannel = 1f;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (gp == agentPlaceable) selfTeamChannel = 1f;
+                                            else enemyTeamChannel = 1f;
+                                        }
                                     }
                                     break;
                             }
@@ -192,16 +234,17 @@ public class EasyGridSensor : ISensor
                     }
                 }
 
-                // Draw cell: Red=Threat, Green=Pickup, Blue=Wall, Cyan=Bush
+                // Draw cell: Blue=SelfTeam, Red=EnemyTeam, Green=Pickup, Cyan=Bush, White=Wall
                 float r = 0, g = 0, b = 0;
 
-                if (enemyChannel > 0) { r = 1f; g = 0f; } // Red
-                if (pickupChannel > 0) { g = 1f; } // Green (Additive if overlapping)
-                if (wallChannel > 0) { b = 1f; }   // Blue (Additive)
-                if (bushChannel > 0) { r = 0f; g = 1f; b = 1f; } // Cyan (Bush overrides)
+                if (selfTeamChannel > 0) { b = 1f; } // Blue
+                if (enemyTeamChannel > 0) { r = 1f; } // Red
+                if (pickupChannel > 0) { g = 1f; } // Green
+                if (wallChannel > 0) { r = 1f; g = 1f; b = 1f; }   // White
+                if (bushChannel > 0) { g = 1f; b = 1f; r = 0f; } // Cyan
 
                 Color color = new Color(r, g, b, 0.3f);
-                if (enemyChannel == 0 && pickupChannel == 0 && wallChannel == 0 && bushChannel == 0)
+                if (selfTeamChannel == 0 && enemyTeamChannel == 0 && pickupChannel == 0 && wallChannel == 0 && bushChannel == 0)
                     color.a = 0.05f;
 
                 Gizmos.color = color;

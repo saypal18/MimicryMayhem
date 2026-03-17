@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using DG.Tweening;
 public class SmoothEntityMovement : IEntityMovement
 {
@@ -18,11 +18,31 @@ public class SmoothEntityMovement : IEntityMovement
     // set gridplaceable move
     public void Move(Vector2Int direction)
     {
-        Vector2Int newPosition = gridPlaceable.Position + direction * blocksToMove;
-        Vector3 targetPosition = gridPlaceable.CurrentGrid.GetWorldPosition(newPosition);
-        if (!gridPlaceable.MoveTo(newPosition)) return;
-        transform.DOKill();
-        transform.DOMove(targetPosition, moveDuration).SetEase(Ease.Linear);
+        int furthestReachable = 0;
+        for (int i = 1; i <= blocksToMove; i++)
+        {
+            Vector2Int checkPosition = gridPlaceable.Position + direction * i;
+            if (gridPlaceable.CurrentGrid.IsMovable(checkPosition))
+            {
+                furthestReachable = i;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        if (furthestReachable > 0)
+        {
+            float adjustedDuration = (float)furthestReachable * moveDuration / blocksToMove;
+            Vector2Int newPosition = gridPlaceable.Position + direction * furthestReachable;
+            if (gridPlaceable.MoveTo(newPosition))
+            {
+                Vector3 targetPosition = gridPlaceable.CurrentGrid.GetWorldPosition(newPosition);
+                transform.DOKill();
+                transform.DOMove(targetPosition, adjustedDuration).SetEase(Ease.Linear);
+            }
+        }
     }
 
 }   

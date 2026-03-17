@@ -5,10 +5,8 @@ using UnityEngine.InputSystem.XR;
 [System.Serializable]
 public class UnifiedDamageResolver
 {
-    [SerializeField] private float cooldownTime = 1;
-    public Action OnDamageTaken;
+    public Action<Entity> OnDamageTaken;
 
-    private Dictionary<DamageDealer, float> damageCooldowns = new();
     GridPlaceable gridPlaceable;
     SortedInventory inventory;
 
@@ -32,27 +30,27 @@ public class UnifiedDamageResolver
     {
         if (other != null && other.TryGetComponent(out DamageDealer damageDealer))
         {
-            if (damageCooldowns.ContainsKey(damageDealer) && damageCooldowns[damageDealer] > Time.time - cooldownTime) return;
-            damageCooldowns[damageDealer] = Time.time;
-            AcceptDamage(damageDealer);
-            //Debug.Log("Damage of tier " + damageDealer.tier + " dealt in direction " + damageDealer.direction + " To tier: " + inventory.highestTier);
+            if (damageDealer.TryRegisterHit(gridPlaceable.Entity))
+            {
+                AcceptDamage(damageDealer);
+            }
         }
     }
 
     public void AcceptDamage(DamageDealer damageDealer)
     {
         InventoryItem item = equippedItem.Get();
-        controller.Control();
         if (item == null || !(item is WeaponItem))
         {
             return;
         }
 
 
-        damageDealer.OnDamageDealt?.Invoke();
-        OnDamageTaken?.Invoke();
+        damageDealer.OnDamageDealt?.Invoke(gridPlaceable.Entity);
+        OnDamageTaken?.Invoke(damageDealer.entity);
         if (damageDealer.applyKnockback)
         {
+            controller.Control(1);
             knockbackMovement.Move(damageDealer.direction);
         }
         WeaponItem weaponItem = (WeaponItem)item;

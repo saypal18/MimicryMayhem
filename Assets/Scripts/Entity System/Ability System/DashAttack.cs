@@ -19,7 +19,7 @@ public class DashAttack : IAbility
         {
             dashDamageCollider.SetActive(false);
         }
-            
+
         damageDealer = dashDamageDealer;
         movement = movementFactory.GetMovement(this.GetType());
         movement.Initialize(dashTime, blocksToMove, gridPlaceable);
@@ -41,19 +41,22 @@ public class DashAttack : IAbility
     {
         if (movement == null) return false;
 
+        damageDealer.ResetHitTargets();
+
         if (dashDamageCollider != null)
         {
             if (dashDamageCollider.activeSelf) return false; // Already dashing
             dashDamageCollider.SetActive(true);
-            
-            DOVirtual.DelayedCall(dashTime, () => {
+
+            DOVirtual.DelayedCall(dashTime, () =>
+            {
                 if (dashDamageCollider != null)
                 {
                     dashDamageCollider.SetActive(false);
                 }
             });
         }
-        
+
         movement.Move(currentDirection);
         return true;
     }

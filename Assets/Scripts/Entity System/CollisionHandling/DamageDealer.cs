@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
+using System.Collections.Generic;
 public class DamageDealer : MonoBehaviour
 {
     public int tier;
     public Vector2Int direction;
     public bool applyKnockback;
-    public Action OnDamageDealt;
-    
+    public Action<Entity> OnDamageDealt;
+    public Entity entity;
+
+    private HashSet<Entity> hitEntities = new();
 
     public void Initialize()
     {
@@ -14,6 +17,22 @@ public class DamageDealer : MonoBehaviour
         tier = 0;
         direction = Vector2Int.zero;
         applyKnockback = false;
+        hitEntities.Clear();
+    }
+
+    public bool TryRegisterHit(Entity target)
+    {
+        //Debug hit entities
+        if (target == null) return false;
+        if (hitEntities.Contains(target)) return false;
+
+        hitEntities.Add(target);
+        return true;
+    }
+
+    public void ResetHitTargets()
+    {
+        hitEntities.Clear();
     }
     // update tier on damage resolver and active ability change
 

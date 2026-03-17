@@ -37,7 +37,7 @@ public class WeaponPickup : Pickup
         }
     }
 
-    public override void Collected(GameObject picker)
+    public override bool Collected(GameObject picker)
     {
         if (picker.TryGetComponent(out Entity entity))
         {
@@ -49,12 +49,14 @@ public class WeaponPickup : Pickup
             if (entity.inventory.AddItem(instancedWeapon, 1))
             {
                 PoolingEntity.Despawn(gameObject);
+                return true;
             }
+            // else
+            // {
+            //     Destroy(instancedWeapon);
+            //     return false;
+            // }
         }
-        // else
-        // {
-        //     // If it's not an entity but something else that can pick up items
-        //     PoolingEntity.Despawn(gameObject);
-        // }
+        return false;
     }
 }

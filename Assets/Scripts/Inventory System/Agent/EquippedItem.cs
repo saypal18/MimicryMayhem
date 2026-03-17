@@ -51,25 +51,26 @@ public class EquippedItem : MonoBehaviour, IScrollHandler
             OnScroll?.Invoke(index);
         }
     }
-    void Update()
-    {
-        // // put the weapon name, tier and grip in the text
-        // WeaponItem item = (WeaponItem)Get();
-        // text.text = item.name + "\n" + item.tier + "\n" + item.currentGrip;
+    //////// apply during play //////////
+    //void Update()
+    //{
+    //    // // put the weapon name, tier and grip in the text
+    //    // WeaponItem item = (WeaponItem)Get();
+    //    // text.text = item.name + "\n" + item.tier + "\n" + item.currentGrip;
 
-        //for grip and tier, color will be based on the tier 
-        // for weapon icon, sprite will be based on the item
-        InventoryItem baseItem = Get();
-        if (baseItem == null)
-        {
-            tierSprite.color = Color.white;
-            gripSprite.color = Color.white;
-            weaponIcon.sprite = null;
-            return;
-        }
-        WeaponItem item = (WeaponItem)Get();
-        tierSprite.color = tierColors[Mathf.Clamp(item.tier - 1, 0, tierColors.Length - 1)];
-        gripSprite.color = tierColors[Mathf.Clamp(item.currentGrip - 1, 0, tierColors.Length - 1)];
-        weaponIcon.sprite = item.itemIcon;
-    }
+    //    //for grip and tier, color will be based on the tier 
+    //    // for weapon icon, sprite will be based on the item
+    //    InventoryItem baseItem = Get();
+    //    if (baseItem == null)
+    //    {
+    //        tierSprite.color = Color.white;
+    //        gripSprite.color = Color.white;
+    //        weaponIcon.sprite = null;
+    //        return;
+    //    }
+    //    WeaponItem item = (WeaponItem)Get();
+    //    tierSprite.color = tierColors[Mathf.Clamp(item.tier - 1, 0, tierColors.Length - 1)];
+    //    gripSprite.color = tierColors[Mathf.Clamp(item.currentGrip - 1, 0, tierColors.Length - 1)];
+    //    weaponIcon.sprite = item.itemIcon;
+    //}
 }

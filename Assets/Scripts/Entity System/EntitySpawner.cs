@@ -12,7 +12,7 @@ public class EntitySpawner
     [SerializeField] private InterfaceReference<ITick> _tick;
     [SerializeField] private EntityMovementFactory movementFactory = new();
     private ITick tick => _tick.Value;
-    private GameInitializer gameInitializer;
+    //private GameInitializer gameInitializer;
     [SerializeField] public bool colorize = true;
 
     [Header("Entity Settings")]
@@ -20,7 +20,8 @@ public class EntitySpawner
     [SerializeField] public bool teamsEnabled = false;
     [SerializeField] private Vector3 initialScale = Vector3.one;
     private int entitiesCount;
-
+    private List<ITick> turnTicks;
+    private ITurnManager turnManager;
     private readonly List<Entity> activeEntities = new List<Entity>();
 
     /// <summary>Number of entities currently alive on the grid.</summary>
@@ -33,10 +34,11 @@ public class EntitySpawner
     /// <summary>Returns a snapshot of all currently active entities.</summary>
     public IReadOnlyList<Entity> GetActiveEntities() => activeEntities;
 
-    public void Initialize(Grid grid, GameInitializer gameInitializer)
+    public void Initialize(Grid grid, ITurnManager turnManager)
     {
         this.grid = grid;
-        this.gameInitializer = gameInitializer;
+        this.turnManager = turnManager;
+        this.turnTicks = turnManager.GetTeams();
         activeEntities.Clear();
     }
 
@@ -51,13 +53,14 @@ public class EntitySpawner
     public void SpawnAtPosition(Vector2Int position, int teamId = 0)
     {
         Entity entity = PoolingEntity.Spawn(entityPrefab, entityParent);
-        entity.Initialize(grid, position, movementFactory, tick);
+        entity.Initialize(grid, position, movementFactory, turnTicks[teamId]);
 
         // Track active entities and auto-remove when despawned
         activeEntities.Add(entity);
+        turnManager.RegisterPlayer(teamId);
         if (entity.TryGetComponent(out PoolingEntity poolingEntity))
         {
-            poolingEntity.OnDespawning += CreateDespawnHandler(entity, poolingEntity);
+            poolingEntity.OnDespawning += CreateDespawnHandler(entity, poolingEntity, teamId);
         }
 
         // if (entity.TryGetComponent(out IMoveInputHandler moveHandler))
@@ -66,10 +69,11 @@ public class EntitySpawner
         // }
 
         // Apply dynamic Team ID for free-for-all Self-Play
-        if (entity.TryGetComponent(out Unity.MLAgents.Policies.BehaviorParameters bp))
-        {
-            bp.TeamId = teamId;
-        }
+        // if (entity.TryGetComponent(out Unity.MLAgents.Policies.BehaviorParameters bp))
+        // {
+        //     bp.TeamId = teamId;
+        // }
+        entity.TeamId = teamId;
 
         if (colorize)
         {
@@ -109,7 +113,8 @@ public class EntitySpawner
         for (int i = 0; i < randomPositions.Count; i++)
         {
             // Assign a unique Team ID to each agent for a Free-For-All game
-            int teamId = teamsEnabled ? i : 0;
+            //int teamId = teamsEnabled ? i : 0;
+            int teamId = i % 2;
             SpawnAtPosition(randomPositions[i], teamId);
         }
     }
@@ -120,12 +125,13 @@ public class EntitySpawner
     /// and unsubscribes itself from OnDespawning when the entity is despawned.
     /// This prevents stale delegate accumulation across pool reuse cycles.
     /// </summary>
-    private Action CreateDespawnHandler(Entity entity, PoolingEntity poolingEntity)
+    private Action CreateDespawnHandler(Entity entity, PoolingEntity poolingEntity, int teamId)
     {
         Action handler = null;
         handler = () =>
         {
             activeEntities.Remove(entity);
+            turnManager.UnregisterPlayer(teamId);
             // poolingEntity.OnDespawning -= handler;
         };
         return handler;

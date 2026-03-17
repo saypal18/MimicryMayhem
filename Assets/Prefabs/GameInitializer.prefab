@@ -165,7 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5084263085645196711}
   - component: {fileID: 2424751851155101755}
-  - component: {fileID: -2000951295553197937}
+  - component: {fileID: -5087976263453988065}
   m_Layer: 0
   m_Name: GameInitializer
   m_TagString: Untagged
@@ -209,7 +209,7 @@ MonoBehaviour:
   grid:
     startingTilePosition: {fileID: 3509958387582530915}
     tileSize: {x: 1, y: 1}
-    minGridSize: 5
+    minGridSize: 15
     maxGridSize: 60
     border:
       borderPrefab: {fileID: 7778688139210919124, guid: 37d760a4e9101b446b6c175f8a514290, type: 3}
@@ -224,11 +224,11 @@ MonoBehaviour:
       stepReward: 0
       bushReward: 0
     _tick:
-      underlyingValue: {fileID: -2000951295553197937}
+      underlyingValue: {fileID: 0}
     colorize: 1
     entityPercentage: 1
     teamsEnabled: 0
-    initialScale: {x: 1, y: 1, z: 1}
+    initialScale: {x: 0.5, y: 0.5, z: 0.5}
   pickupPlacer:
     pickupPrefabs:
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
@@ -277,11 +277,12 @@ MonoBehaviour:
       rotationAngleMin: 0
       rotationAngleMax: 90
       threshold: 0.7
-  maxStepsMultiplier: 100
-  pickupSpawnIntervalConstant: 8000
+  maxStepsMultiplier: 200
+  pickupSpawnIntervalConstant: 2000
   MaxSteps: 1000
   shouldRandomize: 1
---- !u!114 &-2000951295553197937
+  turnManager: {fileID: -5087976263453988065}
+--- !u!114 &-5087976263453988065
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -290,10 +291,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4934599878771539894}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4393e9fd224c9694f96391aaa7c83842, type: 3}
+  m_Script: {fileID: 11500000, guid: 9de3862254253bd43ace5a6a3c6ef0ca, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimedTick
-  tickInterval: 0.05
+  m_EditorClassIdentifier: Assembly-CSharp::TurnManager
+  teamsCount: 2
+  turnTime: 0.3
+  log: 0
 --- !u!1 &7782477435353402049
 GameObject:
   m_ObjectHideFlags: 0

@@ -33,7 +33,6 @@ public class EquippedItemObservation
                     break;
             }
         }
-
         sensor.AddObservation(isSword);
         sensor.AddObservation(isShield);
         sensor.AddObservation(isBow);

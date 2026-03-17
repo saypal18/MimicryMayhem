@@ -4,6 +4,7 @@ using UnityEngine;
 public class TimedTick : MonoBehaviour, ITick
 {
     public Action OnTick { get; set; }
+    public Action OnPlayed { get; set; }
     [SerializeField] private float tickInterval = 0.05f; // Time in seconds between ticks
     private float tickTimer;
     private void Update()

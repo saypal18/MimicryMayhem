@@ -26,6 +26,7 @@ public class GameInitializer : MonoBehaviour
     // [SerializeField] private bool predict = true;
     [HideInInspector] public bool shouldRandomize = true;
     [SerializeField] public ICurriculum curriculum;
+    [SerializeField] public TurnManager turnManager;
 
     public Action onEnvironmentReset;
 
@@ -52,6 +53,7 @@ public class GameInitializer : MonoBehaviour
 
     public void ResetEnvironment()
     {
+        turnManager.Initialize();
         if (curriculum == null)
         {
             curriculum = new BasicBushCurriculum();
@@ -78,7 +80,7 @@ public class GameInitializer : MonoBehaviour
         pickupPlacer.SetInterval(pickupSpawnIntervalConstant / (float)totalArea);
 
         // Initialise subsystems before spawning anything.
-        entitySpawner.Initialize(grid, this);
+        entitySpawner.Initialize(grid, turnManager);
         bushPlacer.Initialize(grid);
         pickupPlacer.Initialize(grid);
         wallPlacer.Initialize(grid);

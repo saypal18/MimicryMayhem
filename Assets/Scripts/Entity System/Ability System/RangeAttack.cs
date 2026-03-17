@@ -35,6 +35,8 @@ public class RangeAttack : IAbility
             return false;
         }
 
+        damageDealer.ResetHitTargets();
+
         GameObject spawnedCollider = PoolingEntity.Spawn(rangeColliderPrefab);
         if (spawnedCollider.TryGetComponent(out Root root))
         {

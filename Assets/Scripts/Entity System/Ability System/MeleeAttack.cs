@@ -32,6 +32,7 @@ public class MeleeAttack : IAbility
             return false;
         }
 
+        damageDealer.ResetHitTargets();
         //if (gridPlaceable != null && gridPlaceable.CurrentGrid != null)
         //{
         //    animation.Initialize(gridPlaceable.CurrentGrid);

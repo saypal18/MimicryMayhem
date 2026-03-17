@@ -7,6 +7,7 @@ public class AbilityController
     private float lastActionTime = -Mathf.Infinity;
     [SerializeField] private float controlTime;
     private float lastControlTime = -Mathf.Infinity;
+    private int controlTurns = 0;
 
     public Image cooldownImage;
     //public AbilityController(float cooldown)
@@ -17,13 +18,20 @@ public class AbilityController
 
     public bool CanAct()
     {
-        return Time.time - lastActionTime >= cooldown && Time.time - lastControlTime >= controlTime;
+        return Time.time - lastActionTime >= cooldown && Time.time - lastControlTime >= controlTime && controlTurns <= 0;
     }
 
-    public void Control()
+    public bool IsControlled() => controlTurns > 0;
+
+    public void ConsumeControlTurn()
+    {
+        if (controlTurns > 0) controlTurns--;
+    }
+
+    public void Control(int turns = 1)
     {
         lastControlTime = Time.time;
-
+        controlTurns = turns;
     }
     public bool Act(IAbility actionable)
     {

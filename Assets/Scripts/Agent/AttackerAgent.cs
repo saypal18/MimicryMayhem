@@ -2,6 +2,7 @@ using Unity.MLAgents;
 using UnityEngine;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using Unity.MLAgents.Policies;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 enum MoveAction
@@ -28,6 +29,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
     private AbilityController controller;
     private ActiveAbility activeAbility;
     [SerializeField] private CustomGridSensorComponent customGridSensorComponent;
+    [SerializeField] private BehaviorParameters behaviorParameters;
     // ---- direction helpers ----
     private static readonly Vector2Int[] Directions = new[]
     {
@@ -40,6 +42,9 @@ public class AttackerAgent : Agent, IMoveInputHandler
     private GridPlaceable gridPlaceable;
     private IAbility moveAbility;
     private EquippedItemObservation equippedItemObservation;
+    private ITick tick;
+    private EquippedItem equippedItem;
+    private Entity entity;
     ////
 
     /// <summary>
@@ -55,9 +60,12 @@ public class AttackerAgent : Agent, IMoveInputHandler
         DamageDealer damageDealer,
         GridPlaceable gridPlaceable,
         Grid grid,
-        EquippedItem equippedItem
+        EquippedItem equippedItem,
+        PickupHandler pickupHandler,
+        Entity entity
         )
     {
+        this.tick = tick;
         this.controller = controller;
         tick.OnTick += ActOnCooldown;
         this.activeAbility = ability;
@@ -65,15 +73,40 @@ public class AttackerAgent : Agent, IMoveInputHandler
         this.gridPlaceable = gridPlaceable;
         damageResolver.OnDamageTaken += HandleDamageTaken;
         damageDealer.OnDamageDealt += HandleDamageDealt;
+        pickupHandler.OnPickupCollected += HandlePickupCollected;
         customGridSensorComponent.SetAgentReferences(gridPlaceable, damageDealer, grid);
         this.equippedItemObservation = new EquippedItemObservation(equippedItem);
+        this.equippedItem = equippedItem;
+        this.entity = entity;
     }
+
+    private bool pendingDecision = false;
 
     private void ActOnCooldown()
     {
-        if (controller.CanAct())
+        if (controller.IsControlled())
         {
-            RequestDecision();
+            controller.ConsumeControlTurn();
+            tick.OnPlayed?.Invoke();
+            return;
+        }
+        pendingDecision = true;
+    }
+
+    private void Update()
+    {
+        if (pendingDecision)
+        {
+            if (controller.IsControlled())
+            {
+                controller.ConsumeControlTurn();
+                pendingDecision = false;
+                tick.OnPlayed?.Invoke();
+            }
+            else if (controller.CanAct())
+            {
+                RequestDecision();
+            }
         }
     }
     // whatever direction is received save it unless no input direction. This will be used for attack
@@ -81,6 +114,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
     // if no attack action then just move in the direction received if there is one. If there is no direction received, do not move.
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
+        AddReward(-0.002f);
         int action = actionBuffers.DiscreteActions[0];
         if (action == (int)MoveAction.NoAction) return;
 
@@ -121,7 +155,10 @@ public class AttackerAgent : Agent, IMoveInputHandler
         {
             abilityToUse.SetDirection(previousDirection);
             controller.Act(abilityToUse);
+            pendingDecision = false;
+            tick.OnPlayed?.Invoke();
         }
+
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -194,14 +231,37 @@ public class AttackerAgent : Agent, IMoveInputHandler
         this.mousePosition = mousePosition;
     }
 
-    private void HandleDamageTaken()
+    private void HandleDamageTaken(Entity attacker)
     {
-        // AddReward(-1);
+        //AddReward(0);
     }
 
-    private void HandleDamageDealt()
+    private void HandleDamageDealt(Entity victim)
     {
-        AddReward(1);
+        // AddReward(1f);
+
+        if (victim == null) return;
+
+        if (victim.behaviorParameters != null)
+        {
+            if (victim.TeamId == entity.TeamId)
+            {
+                AddReward(-1f);
+            }
+            else
+            {
+                AddReward(1f);
+            }
+        }
+        else
+        {
+            // Default to positive reward for hitting non-agent entities (if applicable)
+            AddReward(1f);
+        }
+    }
+    private void HandlePickupCollected(Pickup pickup)
+    {
+        AddReward(0.1f);
     }
     ////
 
@@ -294,10 +354,10 @@ public class AttackerAgent : Agent, IMoveInputHandler
 
             // Block attack if there's a wall (can't attack through walls) or if there's NO enemy
             // (Requirement: if there is an enemy... only then ability use allowed)
-            // if (hasWall || !hasEnemy)
-            // {
-            //     actionMask.SetActionEnabled(0, i + 4, false);
-            // }
+            if (hasWall)
+            {
+                actionMask.SetActionEnabled(0, i + 4, false);
+            }
         }
     }
 

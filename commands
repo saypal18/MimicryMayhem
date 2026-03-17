@@ -6,3 +6,21 @@ cd C:\Users\Sayantan Pal\Unity\ml-agents\
 mlagents-learn SurvivorAgent.yaml --run-id=run17 --initialize-from=run16 --force --env="..\..\training_build\Survival of The Fattest 2.exe" --num-envs=24 --no-graphics
 mlagents-learn SurvivorAgent.yaml --run-id=test --force --env="..\..\training_build\Survival of The Fattest 2.exe" --num-envs=20 --no-graphics
 tensorboard --logdir results
+
+
+on next run 
+    - add negative reward for team kill
+    - increase grid size
+    - decrease entity amount
+    - decrease total duration
+    - add self play
+
+
+
+
+
+during play - uncomment update in 3 places. 
+    - input manager
+    - equipped item
+    - (not needed) Player
+    - entity

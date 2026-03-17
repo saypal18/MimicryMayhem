@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.MLAgents.Policies;
 public class Entity : MonoBehaviour
 {
     [SerializeField] private GridPlaceable gridPlaceable;
@@ -12,6 +13,8 @@ public class Entity : MonoBehaviour
     [SerializeField] public UnifiedDamageResolver damageResolver;
     [SerializeField] public PickupHandler pickupHandler;
     [SerializeField] public DamageDealer damageDealer;
+    [SerializeField] public BehaviorParameters behaviorParameters;
+    public int TeamId;
     public EquippedItem equippedItem;
     public SortedInventory inventory;
     //[SerializeField] private PickupHandler pickupHandler;
@@ -34,13 +37,14 @@ public class Entity : MonoBehaviour
         damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory, abilityController);
         damageDealer.Initialize();
         abilityController.Initialize();
-        agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem);
+        agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem, pickupHandler, this);
     }
 
-    void Update()
-    {
-        abilityController.Update();
-    }
+    /////// apply during play //////
+    //void Update()
+    //{
+    //    abilityController.Update();
+    //}
 }
 
 //public class Entity : MonoBehaviour

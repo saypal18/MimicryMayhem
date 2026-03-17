@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 [Serializable]
 
@@ -16,8 +16,10 @@ public class PickupHandler
     {
         if (other != null && other.TryGetComponent(out Pickup pickup))
         {
-            pickup.Collected(thisObject);
-            OnPickupCollected?.Invoke(pickup);
+            if (pickup.Collected(thisObject))
+            {
+                OnPickupCollected?.Invoke(pickup);
+            }
         }
     }
 

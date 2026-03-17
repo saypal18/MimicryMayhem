@@ -78,7 +78,7 @@ public class Player : MonoBehaviour
         {
             if (!activeEntities[i].TryGetComponent(out BehaviorParameters bp)) continue;
 
-            if (i == 0)
+            if (i == 1)
             {
                 player = activeEntities[i];
                 bp.BehaviorType = BehaviorType.HeuristicOnly;
@@ -133,10 +133,10 @@ public class Player : MonoBehaviour
         StartEnvironment();
     }
 
-    private void Update()
-    {
-        UpdatePlayerPower();
-        UpdateEnemyPowerDisplay();
-    }
+    //private void Update()
+    //{
+    //    UpdatePlayerPower();
+    //    UpdateEnemyPowerDisplay();
+    //}
 
 }
