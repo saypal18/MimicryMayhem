@@ -244,6 +244,8 @@ public class AttackerAgent : Agent, IMoveInputHandler
 
         if (victim.behaviorParameters != null)
         {
+            //Debug.Log("victim team id: " + victim.TeamId + " entity team id: " + entity.TeamId);
+            //Debug.Log("behaviour teams: victim :" + victim.behaviorParameters.TeamId + " entity: " + entity.behaviorParameters.TeamId);
             if (victim.TeamId == entity.TeamId)
             {
                 AddReward(-1f);

@@ -17,6 +17,8 @@ public class EasyGridSensor : ISensor
     private int viewSize;
     private const int Channels = 5;
 
+    public bool LogObservations = false;
+
     private Grid grid;
     private GridPlaceable agentPlaceable;
 
@@ -58,6 +60,8 @@ public class EasyGridSensor : ISensor
 
         Vector2Int center = agentPlaceable.Position;
 
+        float[,,] logBuffer = LogObservations ? new float[Channels, viewSize, viewSize] : null;
+
         for (int dy = -viewRadius; dy <= viewRadius; dy++)
         {
             for (int dx = -viewRadius; dx <= viewRadius; dx++)
@@ -67,84 +71,92 @@ public class EasyGridSensor : ISensor
 
                 Vector2Int worldCell = center + new Vector2Int(dx, dy);
 
+                float[] channelValues = new float[Channels];
+
                 // Out-of-bounds?
                 var tile = grid.GetTile(worldCell);
                 if (tile == null)
                 {
-                    writer[0, row, col] = 0f; // self team
-                    writer[1, row, col] = 0f; // enemy team
-                    writer[2, row, col] = 0f; // pickup
-                    writer[3, row, col] = 0f; // bush
-                    writer[4, row, col] = 1f; // wall
-                    continue;
+                    channelValues[4] = 1f; // wall
                 }
-
-                float selfTeamChannel = 0f;
-                float enemyTeamChannel = 0f;
-                float pickupChannel = 0f;
-                float bushChannel = 0f;
-                float wallChannel = 0f;
-
-                bool hasBush = false;
-                foreach (GridPlaceable gp in tile)
+                else
                 {
-                    if (gp.Type == GridPlaceable.PlaceableType.Bush)
-                    {
-                        hasBush = true;
-                        bushChannel = 1f;
-                        break;
-                    }
-                }
-
-                if (!hasBush)
-                {
+                    bool hasBush = false;
                     foreach (GridPlaceable gp in tile)
                     {
-                        switch (gp.Type)
+                        if (gp.Type == GridPlaceable.PlaceableType.Bush)
                         {
-                            case GridPlaceable.PlaceableType.Wall:
-                                wallChannel = 1f;
-                                break;
+                            hasBush = true;
+                            channelValues[3] = 1f; // bush
+                            break;
+                        }
+                    }
 
-                            case GridPlaceable.PlaceableType.Entity:
-                                if (gp.Entity != null && agentPlaceable != null && agentPlaceable.Entity != null)
-                                {
-                                    bool gpHasTeam = gp.Entity.behaviorParameters != null;
-                                    bool agentHasTeam = agentPlaceable.Entity.behaviorParameters != null;
+                    if (!hasBush)
+                    {
+                        foreach (GridPlaceable gp in tile)
+                        {
+                            switch (gp.Type)
+                            {
+                                case GridPlaceable.PlaceableType.Wall:
+                                    channelValues[4] = 1f;
+                                    break;
 
-                                    if (gpHasTeam && agentHasTeam)
+                                case GridPlaceable.PlaceableType.Entity:
+                                    if (gp.Entity != null && agentPlaceable != null && agentPlaceable.Entity != null)
                                     {
-                                        if (gp.Entity.TeamId == agentPlaceable.Entity.TeamId)
+                                        bool gpHasTeam = gp.Entity.behaviorParameters != null;
+                                        bool agentHasTeam = agentPlaceable.Entity.behaviorParameters != null;
+
+                                        if (gpHasTeam && agentHasTeam)
                                         {
-                                            selfTeamChannel = 1f;
+                                            if (gp.Entity.TeamId == agentPlaceable.Entity.TeamId)
+                                                channelValues[0] = 1f;
+                                            else
+                                                channelValues[1] = 1f;
                                         }
                                         else
                                         {
-                                            enemyTeamChannel = 1f;
+                                            if (gp == agentPlaceable) channelValues[0] = 1f;
+                                            else channelValues[1] = 1f;
                                         }
                                     }
-                                    else
-                                    {
-                                        // Fallback: if no team info, treat as enemy unless it's self
-                                        if (gp == agentPlaceable) selfTeamChannel = 1f;
-                                        else enemyTeamChannel = 1f;
-                                    }
-                                }
-                                break;
+                                    break;
 
-                            case GridPlaceable.PlaceableType.Pickup:
-                                pickupChannel = 1f;
-                                break;
+                                case GridPlaceable.PlaceableType.Pickup:
+                                    channelValues[2] = 1f;
+                                    break;
+                            }
                         }
                     }
                 }
 
-                writer[0, row, col] = selfTeamChannel;
-                writer[1, row, col] = enemyTeamChannel;
-                writer[2, row, col] = pickupChannel;
-                writer[3, row, col] = bushChannel;
-                writer[4, row, col] = wallChannel;
+                for (int c = 0; c < Channels; c++)
+                {
+                    writer[c, row, col] = channelValues[c];
+                    if (LogObservations) logBuffer[c, row, col] = channelValues[c];
+                }
             }
+        }
+
+        if (LogObservations)
+        {
+            string[] channelNames = { "Self Team", "Enemy Team", "Pickup", "Bush", "Wall" };
+            string log = $"EasyGridSensor - {agentPlaceable.Entity.name} (Team {agentPlaceable.Entity.TeamId}) - {viewSize}x{viewSize}\n";
+            for (int c = 0; c < Channels; c++)
+            {
+                log += $"Channel {c} ({channelNames[c]}):\n";
+                for (int r = viewSize - 1; r >= 0; r--)
+                {
+                    for (int w = 0; w < viewSize; w++)
+                    {
+                        // Using # and . for better visual distinction in console
+                        log += logBuffer[c, r, w] > 0.5f ? "# " : "O ";
+                    }
+                    log += "\n";
+                }
+            }
+            Debug.Log(log);
         }
 
         return viewSize * viewSize * Channels;

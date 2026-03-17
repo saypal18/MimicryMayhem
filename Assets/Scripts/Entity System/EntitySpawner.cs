@@ -69,10 +69,10 @@ public class EntitySpawner
         // }
 
         // Apply dynamic Team ID for free-for-all Self-Play
-        // if (entity.TryGetComponent(out Unity.MLAgents.Policies.BehaviorParameters bp))
-        // {
-        //     bp.TeamId = teamId;
-        // }
+        //if (entity.TryGetComponent(out Unity.MLAgents.Policies.BehaviorParameters bp))
+        //{
+        //    bp.TeamId = teamId;
+        //}
         entity.TeamId = teamId;
 
         if (colorize)

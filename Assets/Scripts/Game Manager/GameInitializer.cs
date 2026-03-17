@@ -45,7 +45,11 @@ public class GameInitializer : MonoBehaviour
             Entity[] snapshot = new Entity[active.Count];
             for (int i = 0; i < active.Count; i++) snapshot[i] = active[i];
             foreach (Entity entity in snapshot)
-                entity.agent.EpisodeInterrupted();
+            {
+
+                // entity.agent.EpisodeInterrupted();
+                entity.agent.EndEpisode();
+            }
 
             ResetEnvironment();
         }

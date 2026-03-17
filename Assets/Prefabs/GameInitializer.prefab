@@ -209,8 +209,8 @@ MonoBehaviour:
   grid:
     startingTilePosition: {fileID: 3509958387582530915}
     tileSize: {x: 1, y: 1}
-    minGridSize: 15
-    maxGridSize: 60
+    minGridSize: 5
+    maxGridSize: 20
     border:
       borderPrefab: {fileID: 7778688139210919124, guid: 37d760a4e9101b446b6c175f8a514290, type: 3}
       borderParent: {fileID: 2335819374844696575}
@@ -226,7 +226,7 @@ MonoBehaviour:
     _tick:
       underlyingValue: {fileID: 0}
     colorize: 1
-    entityPercentage: 1
+    entityPercentage: 2
     teamsEnabled: 0
     initialScale: {x: 0.5, y: 0.5, z: 0.5}
   pickupPlacer:
@@ -277,7 +277,7 @@ MonoBehaviour:
       rotationAngleMin: 0
       rotationAngleMax: 90
       threshold: 0.7
-  maxStepsMultiplier: 200
+  maxStepsMultiplier: 500
   pickupSpawnIntervalConstant: 2000
   MaxSteps: 1000
   shouldRandomize: 1

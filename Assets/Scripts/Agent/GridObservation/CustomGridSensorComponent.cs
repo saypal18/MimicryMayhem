@@ -27,6 +27,7 @@ public class CustomGridSensorComponent : SensorComponent
 
     [Header("Debug")]
     public bool showGizmos = true;
+    public bool logObservations = false;
 
     public override ISensor[] CreateSensors()
     {
@@ -37,7 +38,9 @@ public class CustomGridSensorComponent : SensorComponent
         }
         else if (sensorType == GridSensorType.Easy)
         {
-            sensor = new EasyGridSensor(null, viewRadius);
+            var easySensor = new EasyGridSensor(null, viewRadius);
+            easySensor.LogObservations = logObservations;
+            sensor = easySensor;
         }
 
         // Apply any references that arrived before CreateSensors was called
@@ -134,4 +137,12 @@ public class CustomGridSensorComponent : SensorComponent
 #endif
         }
     }
+
+    // private void Update()
+    // {
+    //     if (sensor is EasyGridSensor easySensor)
+    //     {
+    //         easySensor.LogObservations = logObservations;
+    //     }
+    // }
 }

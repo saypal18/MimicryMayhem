@@ -31,6 +31,17 @@ public class TurnManager : MonoBehaviour, ITurnManager
         StopAllCoroutines();
         isTransitioning = false;
         currentTeamIndex = 0;
+
+        // Clear delegates from existing ticks to prevent leaks and phantom execution
+        foreach (var tick in turnTicks)
+        {
+            if (tick != null)
+            {
+                tick.OnTick = null;
+                tick.OnPlayed = null;
+            }
+        }
+
         turnTicks.Clear();
         teamPlayerCounts = new int[teamsCount];
         currentTeamActionsReceived = 0;

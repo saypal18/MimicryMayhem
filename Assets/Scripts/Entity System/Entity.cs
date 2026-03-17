@@ -41,10 +41,10 @@ public class Entity : MonoBehaviour
     }
 
     /////// apply during play //////
-    //void Update()
-    //{
-    //    abilityController.Update();
-    //}
+    void Update()
+    {
+        abilityController.Update();
+    }
 }
 
 //public class Entity : MonoBehaviour
