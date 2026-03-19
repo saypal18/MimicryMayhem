@@ -34,7 +34,7 @@ public class Entity : MonoBehaviour
         inventory.Initialize();
         equippedItem.Initialize(inventory);
         pickupHandler.Initialize();
-        entityCollisionKnockback.Initialize(movementFactory, gridPlaceable, moveInfo, abilityController);
+        entityCollisionKnockback.Initialize(movementFactory, gridPlaceable, moveInfo, abilityController, inventory);
         collisionResolver.Initialize(pickupHandler, damageResolver, entityCollisionKnockback, abilityController);
         activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable, moveInfo);
         damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory, abilityController, moveInfo);

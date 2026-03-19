@@ -7,13 +7,15 @@ public class EntityCollisionKnockback : MoveAbility
     private MoveInfo selfMoveInfo;
     private int damageDealerLayer;
     private GridPlaceable gridPlaceable;
+    private SortedInventory inventory;
 
-    public void Initialize(EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo, AbilityController abilityController)
+    public void Initialize(EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo, AbilityController abilityController, SortedInventory inventory)
     {
         base.Initialize(movementFactory, gridPlaceable, moveInfo);
         this.gridPlaceable = gridPlaceable;
         this.selfMoveInfo = moveInfo;
         this.abilityController = abilityController;
+        this.inventory = inventory;
         this.damageDealerLayer = LayerMask.NameToLayer("DamageDealer");
     }
 
@@ -41,7 +43,7 @@ public class EntityCollisionKnockback : MoveAbility
                 return;
             }
 
-            bool applyStun = (collidedLayer == damageDealerLayer) || attacker.moveInfo.IsDashing;
+            bool applyStun = ((collidedLayer == damageDealerLayer) || attacker.moveInfo.IsDashing) && inventory.HasAnyItem();
             if (applyStun)
             {
                 abilityController.Control(1);
