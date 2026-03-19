@@ -13,6 +13,7 @@ public class MeleeAttack : IAbility
     private IDamageColliderAnimation animation => _animation.Value;
     [SerializeField] private int damageBlocks; //
     private DamageDealer damageDealer;
+    public bool IsAttacking => swordDamageCollider != null && swordDamageCollider.activeSelf;
 
     private Vector2Int currentDirection = Vector2Int.zero;
     public void SetDirection(Vector2Int direction)

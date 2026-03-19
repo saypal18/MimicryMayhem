@@ -8,21 +8,18 @@ public class DashAttack : IAbility
     private IEntityMovement movement;
     [SerializeField] private float dashTime;
     [SerializeField] private int blocksToMove = 3;
-    [SerializeField] private GameObject dashDamageCollider;
-
     private DamageDealer damageDealer;
     private Vector2Int currentDirection = Vector2Int.zero;
+    private MoveInfo moveInfo;
 
-    public void Initialize(DamageDealer dashDamageDealer, EntityMovementFactory movementFactory, GridPlaceable gridPlaceable)
+    public bool IsDashing => moveInfo != null && moveInfo.IsDashing;
+
+    public void Initialize(DamageDealer dashDamageDealer, EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo)
     {
-        if (dashDamageCollider != null)
-        {
-            dashDamageCollider.SetActive(false);
-        }
-
         damageDealer = dashDamageDealer;
         movement = movementFactory.GetMovement(this.GetType());
-        movement.Initialize(dashTime, blocksToMove, gridPlaceable);
+        movement.Initialize(dashTime, blocksToMove, gridPlaceable, moveInfo);
+        this.moveInfo = moveInfo;
     }
 
     public void SetDirection(Vector2Int direction)
@@ -43,21 +40,22 @@ public class DashAttack : IAbility
 
         damageDealer.ResetHitTargets();
 
-        if (dashDamageCollider != null)
-        {
-            if (dashDamageCollider.activeSelf) return false; // Already dashing
-            dashDamageCollider.SetActive(true);
+        // Already performing a movement
+        if (moveInfo.IsMoving) return false;
 
-            DOVirtual.DelayedCall(dashTime, () =>
-            {
-                if (dashDamageCollider != null)
-                {
-                    dashDamageCollider.SetActive(false);
-                }
-            });
+        // If finished movement but still "dashing" (one-frame linger), clear it
+        if (moveInfo.IsDashing)
+        {
+            DOTween.Kill(moveInfo);
+            moveInfo.IsDashing = false;
         }
 
-        movement.Move(currentDirection);
-        return true;
+        if (movement.Move(currentDirection))
+        {
+            moveInfo.IsDashing = true;
+            return true;
+        }
+
+        return false;
     }
 }

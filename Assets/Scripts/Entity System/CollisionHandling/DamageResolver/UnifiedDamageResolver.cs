@@ -13,28 +13,20 @@ public class UnifiedDamageResolver
     EquippedItem equippedItem;
     private IEntityMovement knockbackMovement;
     private AbilityController controller;
+    private MoveInfo moveInfo;
     [SerializeField] private float knockbackTime = 0.1f;
     [SerializeField] private int knockbackBlocks = 1;
-    public void Initialize(CollisionResolver collisionResolver, SortedInventory inventory, EquippedItem equippedItem, EntityMovementFactory movementFactory, AbilityController controller)
+    public void Initialize(CollisionResolver collisionResolver, SortedInventory inventory, EquippedItem equippedItem, EntityMovementFactory movementFactory, AbilityController controller, MoveInfo moveInfo)
     {
-        collisionResolver.OnCollision += OnCollision;
+        // collisionResolver.OnCollision += OnCollision; // Removed action-subscriber
         gridPlaceable = collisionResolver.GetComponent<GridPlaceable>();
         this.inventory = inventory;
         this.equippedItem = equippedItem;
+        this.moveInfo = moveInfo;
         OnDamageTaken = null;
         knockbackMovement = movementFactory.GetMovement(this.GetType());
-        knockbackMovement.Initialize(knockbackTime, knockbackBlocks, gridPlaceable);
+        knockbackMovement.Initialize(knockbackTime, knockbackBlocks, gridPlaceable, moveInfo);
         this.controller = controller;
-    }
-    public void OnCollision(GameObject other)
-    {
-        if (other != null && other.TryGetComponent(out DamageDealer damageDealer))
-        {
-            if (damageDealer.TryRegisterHit(gridPlaceable.Entity))
-            {
-                AcceptDamage(damageDealer);
-            }
-        }
     }
 
     public void AcceptDamage(DamageDealer damageDealer)
@@ -48,11 +40,7 @@ public class UnifiedDamageResolver
 
         damageDealer.OnDamageDealt?.Invoke(gridPlaceable.Entity);
         OnDamageTaken?.Invoke(damageDealer.entity);
-        if (damageDealer.applyKnockback)
-        {
-            controller.Control(1);
-            knockbackMovement.Move(damageDealer.direction);
-        }
+        
         WeaponItem weaponItem = (WeaponItem)item;
         // if grip is < attacker tier, then weapon switches to attacker possession, grip is reset check WeaponPickup for more details
         // if grip is >= attacker tier, then decrease grip by 1
@@ -67,20 +55,10 @@ public class UnifiedDamageResolver
             }
             inventory.GetSlot(equippedItem.GetIndex()).Remove();
             inventory.ShiftUp();
-
-            //foreach (var slot in inventory.GetSlots())
-            //{
-            //    if (slot.item == weaponItem)
-            //    {
-            //        slot.Remove();
-            //        break;
-            //    }
-            //}
-            //inventory.UpdateHighestTier();
         }
         else
         {
             weaponItem.currentGrip--;
         }
     }
-}
+}

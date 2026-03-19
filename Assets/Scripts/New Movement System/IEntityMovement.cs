@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public interface IEntityMovement
 {
-    void Initialize(float duration, int blocks, GridPlaceable gridplaceable);
+    void Initialize(float duration, int blocks, GridPlaceable gridplaceable, MoveInfo moveInfo);
     //void Move(Vector2Int position);
-    void Move(Vector2Int direction);
+    bool Move(Vector2Int direction);
 }
