@@ -59,4 +59,13 @@ public abstract class InventorySlotHolder
         return slots[index];
     }
 
+    public bool HasAnyItem()
+    {
+        foreach (var slot in slots)
+        {
+            if (slot.item != null) return true;
+        }
+        return false;
+    }
+
 }

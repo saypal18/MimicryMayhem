@@ -10,13 +10,16 @@ public class ActiveAbility
     public IAbility ability = null;
     private DamageDealer damageDealer;
 
-    public void Initialize(Grid grid, DamageDealer meleeDamageDealer, EquippedItem equippedItem, InventorySlotHolder inventory, DamageDealer damageDealer, EntityMovementFactory movementFactory, GridPlaceable gridPlaceable)
+    public bool IsDashing => dashAttack != null && dashAttack.IsDashing;
+    public bool IsMeleeAttacking => meleeAttack != null && meleeAttack.IsAttacking;
+
+    public void Initialize(Grid grid, DamageDealer meleeDamageDealer, EquippedItem equippedItem, InventorySlotHolder inventory, DamageDealer damageDealer, EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo)
     {
         this.equippedItem = equippedItem;
         this.damageDealer = damageDealer;
         meleeAttack.Initialize(grid, meleeDamageDealer);
         rangeAttack.Initialize(grid, damageDealer);
-        dashAttack.Initialize(damageDealer, movementFactory, gridPlaceable);
+        dashAttack.Initialize(damageDealer, movementFactory, gridPlaceable, moveInfo);
         //equippedItem.OnScroll += UpdateActiveAbility;
         //inventory.OnItemRemoved.AddListener((item, amount, index) => UpdateActiveAbility(-1));
         //inventory.OnItemAdded.AddListener((item, amount, index) => UpdateActiveAbility(-1));

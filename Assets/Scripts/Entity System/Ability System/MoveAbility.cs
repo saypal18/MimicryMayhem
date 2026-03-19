@@ -4,27 +4,14 @@ using UnityEngine;
 [Serializable]
 public class MoveAbility : IAbility
 {
-    private IEntityMovement movement;
+    protected IEntityMovement movement;
     [SerializeField] private float moveTime;
     [SerializeField] private int blocksToMove = 1;
 
-    public void Initialize(EntityMovementFactory movementFactory, GridPlaceable gridPlaceable)
+    public void Initialize(EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo)
     {
-        // if (movementFactory == null)
-        // {
-        //     Debug.LogError("movementFactory is null in MoveAbility.Initialize");
-        //     return;
-        // }
-
         movement = movementFactory.GetMovement(this.GetType());
-
-        // if (movement == null)
-        // {
-        //     Debug.LogError($"Movement is null for type {this.GetType()} in MoveAbility.Initialize");
-        //     return;
-        // }
-
-        movement.Initialize(moveTime, blocksToMove, gridPlaceable);
+        movement.Initialize(moveTime, blocksToMove, gridPlaceable, moveInfo);
     }
 
     private Vector2Int currentDirection = Vector2Int.zero;
@@ -38,7 +25,6 @@ public class MoveAbility : IAbility
 
     public bool Perform()
     {
-        movement.Move(currentDirection);
-        return true;
+        return movement.Move(currentDirection);
     }
 }

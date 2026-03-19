@@ -4,7 +4,7 @@ public class Entity : MonoBehaviour
 {
     [SerializeField] private GridPlaceable gridPlaceable;
     [SerializeField] public AttackerAgent agent;
-    [SerializeField] private ActiveAbility activeAbility;
+    [SerializeField] public ActiveAbility activeAbility;
     [SerializeField] private MoveAbility moveAbility;
     public AbilityController abilityController;
     // damage resolvers
@@ -12,11 +12,13 @@ public class Entity : MonoBehaviour
     [SerializeField] private CollisionResolver collisionResolver;
     [SerializeField] public UnifiedDamageResolver damageResolver;
     [SerializeField] public PickupHandler pickupHandler;
+    [SerializeField] public EntityCollisionKnockback entityCollisionKnockback;
     [SerializeField] public DamageDealer damageDealer;
     [SerializeField] public BehaviorParameters behaviorParameters;
     public int TeamId;
     public EquippedItem equippedItem;
     public SortedInventory inventory;
+    public MoveInfo moveInfo = new MoveInfo();
     //[SerializeField] private PickupHandler pickupHandler;
     //[SerializeField] private UnifiedDamageResolver _damageResolver;
     //public DamageResolver damageResolver => _damageResolver; // Expose as DamageResolver for easier access, while allowing UnifiedDamageResolver to have its own internal state and logic.
@@ -28,15 +30,16 @@ public class Entity : MonoBehaviour
     public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick)
     {
         gridPlaceable.Initialize(grid, startPosition);
-        moveAbility.Initialize(movementFactory, gridPlaceable);
+        moveAbility.Initialize(movementFactory, gridPlaceable, moveInfo);
         inventory.Initialize();
         equippedItem.Initialize(inventory);
-        collisionResolver.Initialize();
-        pickupHandler.Initialize(collisionResolver);
-        activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable);
-        damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory, abilityController);
+        pickupHandler.Initialize();
+        entityCollisionKnockback.Initialize(movementFactory, gridPlaceable, moveInfo, abilityController, inventory);
+        collisionResolver.Initialize(pickupHandler, damageResolver, entityCollisionKnockback, abilityController);
+        activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable, moveInfo);
+        damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory, abilityController, moveInfo);
         damageDealer.Initialize();
-        abilityController.Initialize();
+        abilityController.Initialize(moveInfo);
         agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem, pickupHandler, this);
     }
 

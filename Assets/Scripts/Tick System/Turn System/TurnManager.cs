@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 public class TurnManager : MonoBehaviour, ITurnManager
 {
     private int teamsCount = 2;
@@ -15,6 +15,9 @@ public class TurnManager : MonoBehaviour, ITurnManager
     private int[] teamPlayerCounts;
     private int currentTeamActionsReceived;
     [SerializeField] private bool log;
+    [SerializeField] private Image image;
+    [SerializeField] private List<Color> teamColors = new List<Color> { new Color(0.8f, 0.25f, 0.25f), new Color(0.25f, 0.45f, 0.8f) };
+    [SerializeField] private Color transitionColor = new Color(0.9f, 0.9f, 0.4f);
 
     private void Log(string message)
     {
@@ -56,6 +59,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         }
 
         Log($"Initialized with {teamsCount} teams.");
+        UpdateVisuals();
         // Start the first turn (one frame later to ensure everything is ready)
         StartCoroutine(StartFirstTurn());
     }
@@ -86,6 +90,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         }
 
         Log($"Starting Turn for Team {currentTeamIndex}. Expecting {teamPlayerCounts[currentTeamIndex]} actions.");
+        UpdateVisuals();
         TriggerCurrentTurn();
     }
 
@@ -112,6 +117,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             {
                 Log($"Team {teamIndex} completed all actions. Transitioning in {turnTime}s.");
                 isTransitioning = true;
+                UpdateVisuals();
                 StartCoroutine(WaitAndProceed());
             }
         }
@@ -127,6 +133,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         currentTeamIndex = (currentTeamIndex + 1) % teamsCount;
         isTransitioning = false;
         Log($"Proceeding to index {currentTeamIndex}.");
+        UpdateVisuals();
         CheckAndTriggerTurn();
     }
 
@@ -151,10 +158,29 @@ public class TurnManager : MonoBehaviour, ITurnManager
             {
                 Log($"Currently active Team {teamIndex} finished early due to player removal. Transitioning.");
                 isTransitioning = true;
+                UpdateVisuals();
                 StartCoroutine(WaitAndProceed());
             }
         }
     }
+
+    private void UpdateVisuals()
+    {
+        if (image == null) return;
+
+        Color targetColor = Color.white;
+        if (isTransitioning)
+        {
+            targetColor = transitionColor;
+        }
+        else if (currentTeamIndex >= 0 && currentTeamIndex < teamColors.Count)
+        {
+            targetColor = teamColors[currentTeamIndex];
+        }
+
+        image.color = targetColor;
+    }
+
 
     public int GetCurrentTeamIndex() => currentTeamIndex;
     public int GetTeamCount() => teamsCount;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public sealed class GridPlaceable : MonoBehaviour
 {
     public enum PlaceableType { Unassigned, Entity, Pickup, Wall, Bush }
@@ -20,7 +20,7 @@ public sealed class GridPlaceable : MonoBehaviour
     /// <summary>Returns true when the movement system is ready to accept a new move.</summary>
     //public bool CanMove() => movement != null && movement.CanMove();
 
-    public void Initialize(Grid grid, Vector2Int startPosition, IMovement movement = null)
+    public void Initialize(Grid grid, Vector2Int startPosition)
     {
         //this.movement = movement;
         if (poolingEntity == null)
@@ -45,10 +45,8 @@ public sealed class GridPlaceable : MonoBehaviour
         if (grid.GetTile(position) != null)
         {
             grid.AddToTile(position, this);
-            if (movement != null)
-                movement.Snap(grid.GetWorldPosition(position));
-            else
-                transform.position = grid.GetWorldPosition(position);
+            transform.DOKill();
+            transform.position = grid.GetWorldPosition(position);
         }
     }
 
@@ -100,6 +98,13 @@ public sealed class GridPlaceable : MonoBehaviour
         position = newPosition;
         grid.AddToTile(newPosition, this);
         return true;
+    }
+
+    public void SyncPosition(Vector2Int newPosition)
+    {
+        RemoveFromGrid();
+        position = newPosition;
+        grid.AddToTile(newPosition, this);
     }
 
 

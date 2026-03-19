@@ -8,7 +8,7 @@ public class AbilityController
     [SerializeField] private float controlTime;
     private float lastControlTime = -Mathf.Infinity;
     private int controlTurns = 0;
-
+    private MoveInfo moveInfo;
     public Image cooldownImage;
     //public AbilityController(float cooldown)
     //{
@@ -18,7 +18,7 @@ public class AbilityController
 
     public bool CanAct()
     {
-        return Time.time - lastActionTime >= cooldown && Time.time - lastControlTime >= controlTime && controlTurns <= 0;
+        return Time.time - lastActionTime >= cooldown && Time.time - lastControlTime >= controlTime && controlTurns <= 0 && !moveInfo.IsMoving;
     }
 
     public bool IsControlled() => controlTurns > 0;
@@ -40,9 +40,10 @@ public class AbilityController
         lastActionTime = Time.time;
         return true;
     }
-    public void Initialize()
+    public void Initialize(MoveInfo moveInfo)
     {
         cooldownImage = null;
+        this.moveInfo = moveInfo;
     }
     public void Update()
     {
