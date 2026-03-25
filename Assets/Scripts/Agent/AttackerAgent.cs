@@ -229,6 +229,10 @@ public class AttackerAgent : Agent, IMoveInputHandler
     public void OnMouseMove(Vector2 mousePosition)
     {
         this.mousePosition = mousePosition;
+        if (entity.attackTileHighlighter != null && entity.attackTileHighlighter.enabled)
+        {
+            entity.attackTileHighlighter.OnMouseMove(mousePosition);
+        }
     }
 
     private void HandleDamageTaken(Entity attacker)

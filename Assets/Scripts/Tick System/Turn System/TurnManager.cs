@@ -18,6 +18,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
     [SerializeField] private Image image;
     [SerializeField] private List<Color> teamColors = new List<Color> { new Color(0.8f, 0.25f, 0.25f), new Color(0.25f, 0.45f, 0.8f) };
     [SerializeField] private Color transitionColor = new Color(0.9f, 0.9f, 0.4f);
+    [SerializeField] private GameObject moveIndicator;
+    [SerializeField] private int playerTurnIndex;
 
     private void Log(string message)
     {
@@ -166,6 +168,11 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
     private void UpdateVisuals()
     {
+        if (moveIndicator != null)
+        {
+            moveIndicator.SetActive(currentTeamIndex == playerTurnIndex && !isTransitioning);
+        }
+
         if (image == null) return;
 
         Color targetColor = Color.white;

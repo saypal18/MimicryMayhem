@@ -78,7 +78,7 @@ public class Player : MonoBehaviour
         {
             if (!activeEntities[i].TryGetComponent(out BehaviorParameters bp)) continue;
 
-            if (i == 1)
+            if (i == 0)
             {
                 player = activeEntities[i];
                 bp.BehaviorType = BehaviorType.HeuristicOnly;
@@ -87,6 +87,10 @@ public class Player : MonoBehaviour
                 inputManager.InitializeScroll(player.equippedItem);
                 inputManager.agentTransform = player.transform;
                 player.abilityController.cooldownImage = cooldownImage;
+                if (player.attackTileHighlighter != null)
+                {
+                    player.attackTileHighlighter.enabled = true;
+                }
                 inventoryUI.AssignInventory(player.inventory);
                 inventoryUI.AssignEquippedItem(player.equippedItem);
             }
@@ -99,7 +103,8 @@ public class Player : MonoBehaviour
         points = 0;
         //player.damageResolver.OnDamageDealt += () => points++;
         mainCamera.transform.parent = player.transform;
-        mainCamera.transform.localPosition = new Vector3(-5, 0, -10);
+        mainCamera.transform.localPosition = new Vector3(0, 0, -10);
+        //mainCamera.transform.localPosition = new Vector3(-5, 0, -10);
         //player.damageResolver.OnDamageTaken += () => mainCamera.transform.parent = null;
         //player.SetColor(Color.white);
     }
