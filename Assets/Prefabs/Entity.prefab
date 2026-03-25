@@ -611,7 +611,7 @@ GameObject:
   - component: {fileID: 4800117313724373835}
   - component: {fileID: 7954278676264123019}
   - component: {fileID: 6801344637305766425}
-  - component: {fileID: -4836024329037369637}
+  - component: {fileID: 6200968150231765928}
   m_Layer: 7
   m_Name: Entity
   m_TagString: Agent
@@ -704,7 +704,7 @@ MonoBehaviour:
     OnItemRemoved:
       m_PersistentCalls:
         m_Calls: []
-  attackTileHighlighter: {fileID: -4836024329037369637}
+  playerActionHighlighter: {fileID: 6200968150231765928}
 --- !u!114 &-7865425547269084357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1085,20 +1085,23 @@ MonoBehaviour:
   tierPrefab: {fileID: 9038419565630247060, guid: e937d5ba3aa2c6b49a28ee40ee156cda, type: 3}
   gripSprite: {fileID: 2572819850109181117, guid: 365f8a27179baee4aaf122bf011ee4c6, type: 3}
   nogripsprite: {fileID: -7638933322529607394, guid: fe7594d6ba82b044bb3d874ce774193c, type: 3}
---- !u!114 &-4836024329037369637
+--- !u!114 &6200968150231765928
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4593017720766107119}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b06fbf99a4de0f4d8258b99ded428c6, type: 3}
+  m_Script: {fileID: 11500000, guid: b8c1213d355c5ff42bc4bac66bf25f73, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AttackTileHighlighter
-  highlightPrefab: {fileID: 2776582320190435865, guid: 2918cb6833945514eaa7803d3d44a5ea, type: 3}
-  highlightColor: {r: 1, g: 0, b: 0, a: 0.4}
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerActionHighlighter
+  moveHighlightPrefab: {fileID: 3750636812974624063, guid: 76ed5323bf2e4b74fa4f4c88b94646ef, type: 3}
+  attackHighlightPrefab: {fileID: 8231645397858739851, guid: 8a258c19a39614045828868709b1db94, type: 3}
+  moveColor: {r: 0, g: 0.5, b: 1, a: 0.3}
+  attackColor: {r: 1, g: 0, b: 0, a: 0.3}
+  hoverAlphaEnhancement: 0.5
 --- !u!1 &5425535258405990489
 GameObject:
   m_ObjectHideFlags: 0

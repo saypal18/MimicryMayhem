@@ -164,74 +164,50 @@ public class AttackerAgent : Agent, IMoveInputHandler
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActions = actionsOut.DiscreteActions;
-        if (useAttack)
+        int actionIndex = currentHeuristicAction;
+        
+        if (useAttack && actionIndex != (int)MoveAction.NoAction)
         {
-            // Calculate direction from player to mouse
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -Camera.main.transform.position.z));
-            Vector3 directionVector = mouseWorldPos - transform.position;
-
-            // Find cardinal direction with smallest angle
-            if (Mathf.Abs(directionVector.x) > Mathf.Abs(directionVector.y))
-            {
-                if (directionVector.x > 0) discreteActions[0] = 8; // Attack Right
-                else discreteActions[0] = 7; // Attack Left
-            }
-            else
-            {
-                if (directionVector.y > 0) discreteActions[0] = 5; // Attack Up
-                else discreteActions[0] = 6; // Attack Down
-            }
+            actionIndex += 4;
         }
-        else
-        {
-            // Move in the currently held WASD direction
-            discreteActions[0] = currentHeuristicAction;
-        }
+        
+        discreteActions[0] = actionIndex;
+        
+        // Reset so action isn't repeated indefinitely
+        currentHeuristicAction = (int)MoveAction.NoAction;
+        useAttack = false;
     }
 
     // ---- IMoveInputHandler ----
 
-    public void Move(InputAction.CallbackContext context)
+    public void OnGridClick(Vector2Int gridPosition, bool isAttack)
     {
-        if (context.performed)
-        {
-            Vector2 inputDirection = context.ReadValue<Vector2>();
+        if (gridPlaceable == null) return;
+        Vector2Int currentPos = gridPlaceable.Position;
+        Vector2Int direction = gridPosition - currentPos;
 
-            if (inputDirection.y > 0.5f) currentHeuristicAction = (int)MoveAction.Up;
-            else if (inputDirection.y < -0.5f) currentHeuristicAction = (int)MoveAction.Down;
-            else if (inputDirection.x < -0.5f) currentHeuristicAction = (int)MoveAction.Left;
-            else if (inputDirection.x > 0.5f) currentHeuristicAction = (int)MoveAction.Right;
-            else currentHeuristicAction = (int)MoveAction.NoAction;
+        // Assign move action based on direction (since we normalized length, just check dominancy)
+        if (direction.x > 0) currentHeuristicAction = (int)MoveAction.Right;
+        else if (direction.x < 0) currentHeuristicAction = (int)MoveAction.Left;
+        else if (direction.y > 0) currentHeuristicAction = (int)MoveAction.Up;
+        else if (direction.y < 0) currentHeuristicAction = (int)MoveAction.Down;
+        else return; // clicked same tile
 
-            if (currentHeuristicAction != (int)MoveAction.NoAction)
-            {
-                lastHeuristicMoveAction = currentHeuristicAction;
-            }
-        }
-        else if (context.canceled)
-        {
-            currentHeuristicAction = (int)MoveAction.NoAction;
-        }
-    }
+        useAttack = isAttack;
 
-    public void Attack(InputAction.CallbackContext context)
-    {
-        if (context.performed)
+        // Force decision immediately
+        if (controller.CanAct() && pendingDecision)
         {
-            useAttack = true;
-        }
-        else if (context.canceled)
-        {
-            useAttack = false;
+            RequestDecision();
         }
     }
 
     public void OnMouseMove(Vector2 mousePosition)
     {
         this.mousePosition = mousePosition;
-        if (entity.attackTileHighlighter != null && entity.attackTileHighlighter.enabled)
+        if (entity.playerActionHighlighter != null && entity.playerActionHighlighter.enabled)
         {
-            entity.attackTileHighlighter.OnMouseMove(mousePosition);
+            entity.playerActionHighlighter.OnMouseMove(mousePosition);
         }
     }
 

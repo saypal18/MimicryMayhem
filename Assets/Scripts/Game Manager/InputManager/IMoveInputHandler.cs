@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public interface IMoveInputHandler
 {
-    void Move(InputAction.CallbackContext context);
-
-    void Attack(InputAction.CallbackContext context);
+    void OnGridClick(Vector2Int gridPosition, bool isAttack);
     void OnMouseMove(Vector2 mousePosition);
 }
