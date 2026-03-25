@@ -13,12 +13,21 @@ public class MoveAbility : IAbility
 
     [Header("Audio")]
     [SerializeField] private EventReference gridMovementSoundEvent;
+    private EventInstance movementSoundInstance;
 
     public void Initialize(EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo)
     {
         this.gridPlaceable = gridPlaceable;
         movement = movementFactory.GetMovement(this.GetType());
         movement.Initialize(moveTime, blocksToMove, gridPlaceable, moveInfo);
+
+        ReleaseMovementSound();
+        if (!gridMovementSoundEvent.IsNull)
+        {
+            movementSoundInstance = RuntimeManager.CreateInstance(gridMovementSoundEvent);
+            Entity entity = gridPlaceable.Entity;
+            movementSoundInstance.setParameterByNameWithLabel("CharacterType", (entity != null && entity.IsPlayer) ? "Player" : "Enemy");
+        }
     }
 
     private Vector2Int currentDirection = Vector2Int.zero;
@@ -39,13 +48,18 @@ public class MoveAbility : IAbility
 
     private void PlayMovementSound()
     {
-        if (gridMovementSoundEvent.IsNull) return;
+        if (!movementSoundInstance.isValid()) return;
 
-        Entity entity = gridPlaceable.Entity;
-        EventInstance instance = RuntimeManager.CreateInstance(gridMovementSoundEvent);
-        instance.setParameterByNameWithLabel("CharacterType", (entity != null && entity.IsPlayer) ? "Player" : "Enemy");
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
-        instance.start();
-        instance.release();
+        movementSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
+        movementSoundInstance.start();
+    }
+
+    private void ReleaseMovementSound()
+    {
+        if (movementSoundInstance.isValid())
+        {
+            movementSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            movementSoundInstance.release();
+        }
     }
 }
