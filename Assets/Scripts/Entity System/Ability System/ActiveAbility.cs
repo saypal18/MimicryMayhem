@@ -1,5 +1,7 @@
 using UnityEngine;
 using System;
+using FMODUnity;
+using FMOD.Studio;
 [Serializable]
 public class ActiveAbility
 {
@@ -9,6 +11,9 @@ public class ActiveAbility
     private EquippedItem equippedItem;
     public IAbility ability = null;
     private DamageDealer damageDealer;
+
+    [Header("Audio")]
+    [SerializeField] private EventReference weaponAttackSoundEvent;
 
     public bool IsDashing => dashAttack != null && dashAttack.IsDashing;
     public bool IsMeleeAttacking => meleeAttack != null && meleeAttack.IsAttacking;
@@ -51,5 +56,19 @@ public class ActiveAbility
                 break;
         }
         damageDealer.UpdateDamage((WeaponItem)item);
+    }
+
+    public void PlayAttackSound(Vector3 position)
+    {
+        if (weaponAttackSoundEvent.IsNull || equippedItem == null) return;
+
+        InventoryItem item = equippedItem.Get();
+        if (item == null) return;
+
+        EventInstance instance = RuntimeManager.CreateInstance(weaponAttackSoundEvent);
+        instance.setParameterByNameWithLabel("ItemType", item.itemType.ToString());
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+        instance.start();
+        instance.release();
     }
 }

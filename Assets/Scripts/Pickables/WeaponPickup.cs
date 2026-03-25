@@ -3,6 +3,7 @@ using UnityEngine;
 public class WeaponPickup : Pickup
 {
     [SerializeField] private WeaponItem weaponItem;
+    public WeaponItem GetWeaponItem() => weaponItem;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField]
     private Color[] tierColors = new Color[]

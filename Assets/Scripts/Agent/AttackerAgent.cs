@@ -154,7 +154,11 @@ public class AttackerAgent : Agent, IMoveInputHandler
         if (abilityToUse != null)
         {
             abilityToUse.SetDirection(previousDirection);
-            controller.Act(abilityToUse);
+            bool acted = controller.Act(abilityToUse);
+            if (acted && isAttack)
+            {
+                activeAbility.PlayAttackSound(transform.position);
+            }
             pendingDecision = false;
             tick.OnPlayed?.Invoke();
         }
