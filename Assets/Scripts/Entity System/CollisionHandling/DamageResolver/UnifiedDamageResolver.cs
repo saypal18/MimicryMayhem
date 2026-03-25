@@ -71,6 +71,12 @@ public class UnifiedDamageResolver
         }
     }
 
+    private string GetCharacterTypeLabel()
+    {
+        Entity self = gridPlaceable.Entity;
+        return (self != null && self.IsPlayer) ? "Player" : "Enemy";
+    }
+
     private void PlayImpactSound(DamageDealer damageDealer)
     {
         if (weaponImpactSoundEvent.IsNull) return;
@@ -83,6 +89,7 @@ public class UnifiedDamageResolver
         {
             instance.setParameterByNameWithLabel("ItemType", attackerItem.itemType.ToString());
         }
+        instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
         instance.start();
         instance.release();
@@ -94,6 +101,7 @@ public class UnifiedDamageResolver
 
         EventInstance instance = RuntimeManager.CreateInstance(gripReducedSoundEvent);
         instance.setParameterByName("GripAmount", weaponItem.currentGrip);
+        instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
         instance.start();
         instance.release();

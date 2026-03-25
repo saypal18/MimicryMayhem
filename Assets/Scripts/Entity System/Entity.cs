@@ -16,6 +16,8 @@ public class Entity : MonoBehaviour
     [SerializeField] public DamageDealer damageDealer;
     [SerializeField] public BehaviorParameters behaviorParameters;
     public int TeamId;
+    public bool IsPlayer => behaviorParameters != null &&
+        behaviorParameters.BehaviorType == BehaviorType.HeuristicOnly;
     public EquippedItem equippedItem;
     public SortedInventory inventory;
     public MoveInfo moveInfo = new MoveInfo();

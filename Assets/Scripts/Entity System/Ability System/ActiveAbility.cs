@@ -58,7 +58,7 @@ public class ActiveAbility
         damageDealer.UpdateDamage((WeaponItem)item);
     }
 
-    public void PlayAttackSound(Vector3 position)
+    public void PlayAttackSound(Vector3 position, bool isPlayer)
     {
         if (weaponAttackSoundEvent.IsNull || equippedItem == null) return;
 
@@ -67,6 +67,7 @@ public class ActiveAbility
 
         EventInstance instance = RuntimeManager.CreateInstance(weaponAttackSoundEvent);
         instance.setParameterByNameWithLabel("ItemType", item.itemType.ToString());
+        instance.setParameterByNameWithLabel("CharacterType", isPlayer ? "Player" : "Enemy");
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
         instance.start();
         instance.release();

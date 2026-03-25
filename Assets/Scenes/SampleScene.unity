@@ -306,6 +306,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: soundManager
+      value: 
+      objectReference: {fileID: 670429425}
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: teamAssignmentStrategy
       value: 1
       objectReference: {fileID: 0}
@@ -1770,18 +1774,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   musicSoundEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -1294304327
+      Data2: 1335850839
+      Data3: -1320219988
+      Data4: -1647065570
+    Path: event:/Music/Music
   ambienceSoundEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1876592471
+      Data2: 1205279964
+      Data3: 1723615625
+      Data4: -550807086
+    Path: event:/SFX/Ambience/Dungeon Ambience
   requiredBanks:
   - Gameplay
   levelStartSoundEvent:

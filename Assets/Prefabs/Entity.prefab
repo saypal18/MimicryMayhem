@@ -674,9 +674,23 @@ MonoBehaviour:
     dashAttack:
       dashTime: 0.8
       blocksToMove: 3
+    weaponAttackSoundEvent:
+      Guid:
+        Data1: -812323023
+        Data2: 1146443535
+        Data3: -1979226467
+        Data4: 2057014809
+      Path: event:/SFX/Weapons/Weapon Attack
   moveAbility:
     moveTime: 0.2
     blocksToMove: 1
+    gridMovementSoundEvent:
+      Guid:
+        Data1: 1217002394
+        Data2: 1150363421
+        Data3: -2129088604
+        Data4: 1418410538
+      Path: event:/SFX/Footstep/Grid Movement
   abilityController:
     cooldown: 0.3
     controlTime: 0.1
@@ -685,11 +699,39 @@ MonoBehaviour:
   damageResolver:
     knockbackTime: 0.1
     knockbackBlocks: 1
+    weaponImpactSoundEvent:
+      Guid:
+        Data1: 654358561
+        Data2: 1094272230
+        Data3: -247950207
+        Data4: 602705943
+      Path: event:/SFX/Weapons/Weapon Impact
+    gripReducedSoundEvent:
+      Guid:
+        Data1: -1212970194
+        Data2: 1268442919
+        Data3: -1364831342
+        Data4: 1689365211
+      Path: event:/SFX/Combat/Feedback/Grip Reduced (Enemy)
   pickupHandler:
     thisObject: {fileID: 4593017720766107119}
+    pickupSoundEvent:
+      Guid:
+        Data1: -66020728
+        Data2: 1145832026
+        Data3: 570557350
+        Data4: 702215327
+      Path: event:/SFX/Items/Pickup/Weapon Pickup
   entityCollisionKnockback:
     moveTime: 0.2
     blocksToMove: 1
+    gridMovementSoundEvent:
+      Guid:
+        Data1: 0
+        Data2: 0
+        Data3: 0
+        Data4: 0
+      Path: 
   damageDealer: {fileID: 59241930918860346}
   behaviorParameters: {fileID: -2021946009688161316}
   TeamId: 0
@@ -874,6 +916,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9cbf12d5bd34bb47a6b846adb15e8e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquippedItem
+  weaponSwitchSoundEvent:
+    Guid:
+      Data1: 923063522
+      Data2: 1198280528
+      Data3: -1396954465
+      Data4: 228279798
+    Path: event:/SFX/UI/Weapon Switch
 --- !u!114 &8217674001165563348
 MonoBehaviour:
   m_ObjectHideFlags: 0

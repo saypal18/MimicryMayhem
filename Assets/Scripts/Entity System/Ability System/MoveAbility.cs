@@ -41,7 +41,9 @@ public class MoveAbility : IAbility
     {
         if (gridMovementSoundEvent.IsNull) return;
 
+        Entity entity = gridPlaceable.Entity;
         EventInstance instance = RuntimeManager.CreateInstance(gridMovementSoundEvent);
+        instance.setParameterByNameWithLabel("CharacterType", (entity != null && entity.IsPlayer) ? "Player" : "Enemy");
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
         instance.start();
         instance.release();

@@ -588,9 +588,9 @@ MonoBehaviour:
   - fd7c55dab0fce234b8c25f6ffca523c1
   - 52eb9df5db46521439908db3a29a1bbb
   - 0f8eb3f400726694eb47beb1a9f94ce8
+  - 46fbfdf3fc43db0458918377fd40293e
   - de700ef3f37a49b58a57ae3addf01ad9
   - b7716510a1f36934c87976f3a81dbf3d
-  - 46fbfdf3fc43db0458918377fd40293e
   codecChannels:
     Value: []
     HasValue: 0
@@ -709,6 +709,7 @@ MonoBehaviour:
   - Master
   Banks:
   - Gameplay
+  - UI
   BanksToLoad:
   - Master.strings
   - Master

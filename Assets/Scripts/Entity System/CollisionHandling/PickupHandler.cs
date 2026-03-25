@@ -46,8 +46,10 @@ public class PickupHandler
             return;
         }
 
+        Entity entity = thisObject.GetComponent<Entity>();
         EventInstance instance = RuntimeManager.CreateInstance(pickupSoundEvent);
         instance.setParameterByNameWithLabel("ItemType", itemType.Value.ToString());
+        instance.setParameterByNameWithLabel("CharacterType", (entity != null && entity.IsPlayer) ? "Player" : "Enemy");
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(thisObject.transform.position));
         instance.start();
         instance.release();
