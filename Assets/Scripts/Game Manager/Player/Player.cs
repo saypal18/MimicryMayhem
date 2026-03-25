@@ -85,11 +85,12 @@ public class Player : MonoBehaviour
                 if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                     inputManager.InitializeMove(handler);
                 inputManager.InitializeScroll(player.equippedItem);
+                inputManager.InitializeClickMap(grid, player.playerActionHighlighter);
                 inputManager.agentTransform = player.transform;
                 player.abilityController.cooldownImage = cooldownImage;
-                if (player.attackTileHighlighter != null)
+                if (player.playerActionHighlighter != null)
                 {
-                    player.attackTileHighlighter.enabled = true;
+                    player.playerActionHighlighter.enabled = true;
                 }
                 inventoryUI.AssignInventory(player.inventory);
                 inventoryUI.AssignEquippedItem(player.equippedItem);

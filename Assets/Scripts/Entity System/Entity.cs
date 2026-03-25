@@ -19,7 +19,7 @@ public class Entity : MonoBehaviour
     public EquippedItem equippedItem;
     public SortedInventory inventory;
     public MoveInfo moveInfo = new MoveInfo();
-    [SerializeField] public AttackTileHighlighter attackTileHighlighter;
+    [SerializeField] public PlayerActionHighlighter playerActionHighlighter;
 
     public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick)
     {
@@ -36,9 +36,9 @@ public class Entity : MonoBehaviour
         abilityController.Initialize(moveInfo);
         agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem, pickupHandler, this);
         
-        if (attackTileHighlighter != null)
+        if (playerActionHighlighter != null)
         {
-            attackTileHighlighter.Initialize(this, grid, equippedItem, tick);
+            playerActionHighlighter.Initialize(this, grid, equippedItem, tick);
         }
     }
 

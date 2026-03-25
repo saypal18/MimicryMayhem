@@ -7,6 +7,10 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Transform mouseArrow;
     public Transform agentTransform { get; set; }
     public Vector2 mousePosition { get; private set; }
+    
+    private Grid grid;
+    private PlayerActionHighlighter highlighter;
+
     public void InitializeMove(IMoveInputHandler moveInputHandler)
     {
         this.moveInputHandler = moveInputHandler;
@@ -15,19 +19,42 @@ public class InputManager : MonoBehaviour
     {
         this.scrollHandler = scrollHandler;
     }
+    public void InitializeClickMap(Grid grid, PlayerActionHighlighter highlighter)
+    {
+        this.grid = grid;
+        this.highlighter = highlighter;
+    }
+
     public void MovePlayer(InputAction.CallbackContext context)
     {
-        moveInputHandler?.Move(context);
+        if (context.performed && grid != null && highlighter != null && highlighter.enabled)
+        {
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -Camera.main.transform.position.z));
+            Vector2Int hoverPos = grid.GetGridPosition(mouseWorldPos);
+
+            if (highlighter.IsValidMoveTile(hoverPos))
+            {
+                moveInputHandler?.OnGridClick(hoverPos, false);
+            }
+        }
     }
     public void Attack(InputAction.CallbackContext context)
     {
-        moveInputHandler?.Attack(context);
+        if (context.performed && grid != null && highlighter != null && highlighter.enabled)
+        {
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -Camera.main.transform.position.z));
+            Vector2Int hoverPos = grid.GetGridPosition(mouseWorldPos);
+
+            if (highlighter.IsValidAttackTile(hoverPos))
+            {
+                moveInputHandler?.OnGridClick(hoverPos, true);
+            }
+        }
     }
     public void MouseMove(InputAction.CallbackContext context)
     {
         mousePosition = context.ReadValue<Vector2>();
         moveInputHandler?.OnMouseMove(mousePosition);
-        // Debug.Log(mousePosition);
     }
     public void Scroll(InputAction.CallbackContext context)
     {
@@ -43,9 +70,6 @@ public class InputManager : MonoBehaviour
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -Camera.main.transform.position.z));
         Vector3 directionVector = mouseWorldPos - agentTransform.position;
 
-        // // Position the arrow at the mouse world position
-        // mouseArrow.position = new Vector3(mouseWorldPos.x, mouseWorldPos.y, 0);
-
         // Find cardinal direction with smallest angle (formula from AttackerAgent.cs)
         Vector3 cardinalDirection;
         if (Mathf.Abs(directionVector.x) > Mathf.Abs(directionVector.y))
@@ -59,6 +83,6 @@ public class InputManager : MonoBehaviour
 
         // Point the arrow's "up" direction towards the cardinal direction
         mouseArrow.up = cardinalDirection;
-    }
 
+    }
 }
