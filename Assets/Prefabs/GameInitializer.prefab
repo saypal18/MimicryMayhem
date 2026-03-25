@@ -93,6 +93,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5084263085645196711}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2201273084797492020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 799253668079769377}
+  m_Layer: 0
+  m_Name: GroundTiles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &799253668079769377
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2201273084797492020}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5084263085645196711}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2499026002253176562
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,6 +223,7 @@ Transform:
   - {fileID: 3209620099225721577}
   - {fileID: 2335819374844696575}
   - {fileID: 4633003108235146406}
+  - {fileID: 799253668079769377}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2424751851155101755
@@ -208,7 +240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameInitializer
   grid:
     startingTilePosition: {fileID: 3509958387582530915}
-    tileSize: {x: 1, y: 1}
+    tileSize: {x: 1.04, y: 0.36}
     minGridSize: 5
     maxGridSize: 20
     border:
@@ -229,7 +261,7 @@ MonoBehaviour:
     entityPercentage: 2
     teamsEnabled: 0
     teamAssignmentStrategy: 0
-    initialScale: {x: 0.45, y: 0.45, z: 0.45}
+    initialScale: {x: 0.45, y: 0.45, z: 1}
   pickupPlacer:
     pickupPrefabs:
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
@@ -278,6 +310,13 @@ MonoBehaviour:
       rotationAngleMin: 0
       rotationAngleMax: 90
       threshold: 0.7
+  groundTileSpawner:
+    groundPrefab: {fileID: 6985989206982878537, guid: 5d34ea010ec968a4397dad7ea82ba777, type: 3}
+    groundIcons:
+    - {fileID: 21300000, guid: e3eb54b3e45543c4e97e9e854cdeed32, type: 3}
+    - {fileID: 21300000, guid: 311a8c088eb7bdd429a010c496962185, type: 3}
+    - {fileID: 21300000, guid: d187c712744dc0147bdba91fa82d933d, type: 3}
+    container: {fileID: 799253668079769377}
   numTeams: 2
   teamAssignmentStrategy: 0
   maxStepsMultiplier: 500
@@ -301,9 +340,9 @@ MonoBehaviour:
   log: 0
   image: {fileID: 0}
   teamColors:
-  - {r: 0.8, g: 0.25, b: 0.25, a: 1}
-  - {r: 0.25, g: 0.45, b: 0.8, a: 1}
-  transitionColor: {r: 0.9, g: 0.9, b: 0.4, a: 1}
+  - {r: 0.2675329, g: 0.38174284, b: 0.509434, a: 1}
+  - {r: 0, g: 0.09630537, b: 1, a: 1}
+  transitionColor: {r: 0.26666668, g: 0.38039216, b: 0.50980395, a: 1}
 --- !u!1 &7782477435353402049
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,27 +43,6 @@ public class RangeAttack : IAbility
             root.Assign(gridPlaceable.gameObject);
         }
         colliderAnimation.Play(gridPlaceable.Position, currentDirection, spawnedCollider);
-        // if (spawnedCollider.TryGetComponent<DamageDealer>(out DamageDealer spawnedDamageDealer))
-        // {
-        //     spawnedDamageDealer.direction = currentDirection;
-        //     if (damageDealer != null)
-        //     {
-        //         spawnedDamageDealer.tier = damageDealer.tier;
-        //         spawnedDamageDealer.applyKnockback = damageDealer.applyKnockback;
-        //     }
-        // }
-
-        // Vector3 startPos = grid.GetWorldPosition(gridPlaceable.Position);
-        // Vector3 endPos = grid.GetWorldPosition(gridPlaceable.Position + currentDirection * maxDistanceBlocks);
-
-        // spawnedCollider.transform.position = startPos;
-        // spawnedCollider.SetActive(true);
-
-        // Sequence seq = DOTween.Sequence();
-        // seq.Append(spawnedCollider.transform.DOMove(endPos, travelDuration).SetEase(Ease.OutQuad));
-        // seq.AppendInterval(stopDuration);
-        // seq.OnComplete(() => { PoolingEntity.Despawn(spawnedCollider); });
-        // seq.OnKill(() => { PoolingEntity.Despawn(spawnedCollider); });
 
         return true;
     }

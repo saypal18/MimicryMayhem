@@ -57,5 +57,4 @@ public class MeleeAttack : IAbility
         animation.Initialize(grid, swordDamageCollider, animationDuration, stopDuration, damageBlocks);
         damageDealer = meleeDamageDealer;
     }
-
 }

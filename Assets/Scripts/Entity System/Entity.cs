@@ -19,14 +19,8 @@ public class Entity : MonoBehaviour
     public EquippedItem equippedItem;
     public SortedInventory inventory;
     public MoveInfo moveInfo = new MoveInfo();
-    //[SerializeField] private PickupHandler pickupHandler;
-    //[SerializeField] private UnifiedDamageResolver _damageResolver;
-    //public DamageResolver damageResolver => _damageResolver; // Expose as DamageResolver for easier access, while allowing UnifiedDamageResolver to have its own internal state and logic.
-    //[SerializeField] private SizeHandler sizeHandler;
-    //[SerializeField] private SpriteRenderer spriteRenderer;
-    //public AbilityController action;
-    //[SerializeField] public MeleeAttack[] attacks;
-    //public IMovement movement { get; private set; }
+    [SerializeField] public AttackTileHighlighter attackTileHighlighter;
+
     public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick)
     {
         gridPlaceable.Initialize(grid, startPosition);
@@ -41,6 +35,11 @@ public class Entity : MonoBehaviour
         damageDealer.Initialize();
         abilityController.Initialize(moveInfo);
         agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem, pickupHandler, this);
+        
+        if (attackTileHighlighter != null)
+        {
+            attackTileHighlighter.Initialize(this, grid, equippedItem, tick);
+        }
     }
 
     /////// apply during play //////

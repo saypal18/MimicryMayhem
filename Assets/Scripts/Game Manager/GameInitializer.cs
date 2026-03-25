@@ -17,6 +17,7 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] public PickupPlacer pickupPlacer;
     [SerializeField] private WallPlacer wallPlacer;
     [SerializeField] public PerlinBushPlacer bushPlacer;
+    [SerializeField] public GroundTileSpawner groundTileSpawner;
     
     [Header("Team Settings")]
     [SerializeField] public int numTeams = 2;
@@ -96,6 +97,8 @@ public class GameInitializer : MonoBehaviour
         bushPlacer.Initialize(grid);
         pickupPlacer.Initialize(grid);
         wallPlacer.Initialize(grid);
+        groundTileSpawner.Initialize(grid);
+        groundTileSpawner.SpawnTiles();
 
 
         // ── 1. Walls first (so entities/pickups avoid wall tiles) ─────────────
