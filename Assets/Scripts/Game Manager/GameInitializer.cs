@@ -18,6 +18,9 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private WallPlacer wallPlacer;
     [SerializeField] public PerlinBushPlacer bushPlacer;
     [SerializeField] public GroundTileSpawner groundTileSpawner;
+
+    [Header("Audio")]
+    [SerializeField] private SoundManager soundManager;
     
     [Header("Team Settings")]
     [SerializeField] public int numTeams = 2;
@@ -60,10 +63,17 @@ public class GameInitializer : MonoBehaviour
         }
     }
 
+    private bool banksLoaded = false;
+
     public void ResetEnvironment()
     {
+        if (!banksLoaded && soundManager != null)
+        {
+            soundManager.LoadBanks();
+            banksLoaded = true;
+        }
+
         numTeams = Mathf.Max(1, numTeams);
-        turnManager.TeamsCount = numTeams;
         entitySpawner.teamAssignmentStrategy = teamAssignmentStrategy;
         
         turnManager.Initialize();
@@ -116,6 +126,11 @@ public class GameInitializer : MonoBehaviour
         // ── 3. Pickups ────────────────────────────────────────────────────────
         pickupPlacer.SpawnInitialPickups(totalArea);
         onEnvironmentReset?.Invoke();
+
+        if (soundManager != null)
+        {
+            StartCoroutine(soundManager.WaitForBanksAndStart());
+        }
     }
 
 

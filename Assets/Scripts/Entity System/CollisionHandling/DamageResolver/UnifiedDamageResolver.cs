@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+using FMODUnity;
+using FMOD.Studio;
 [System.Serializable]
 public class UnifiedDamageResolver
 {
@@ -16,6 +18,10 @@ public class UnifiedDamageResolver
     private MoveInfo moveInfo;
     [SerializeField] private float knockbackTime = 0.1f;
     [SerializeField] private int knockbackBlocks = 1;
+
+    [Header("Audio")]
+    [SerializeField] private EventReference weaponImpactSoundEvent;
+    [SerializeField] private EventReference gripReducedSoundEvent;
     public void Initialize(CollisionResolver collisionResolver, SortedInventory inventory, EquippedItem equippedItem, EntityMovementFactory movementFactory, AbilityController controller, MoveInfo moveInfo)
     {
         // collisionResolver.OnCollision += OnCollision; // Removed action-subscriber
@@ -40,7 +46,9 @@ public class UnifiedDamageResolver
 
         damageDealer.OnDamageDealt?.Invoke(gridPlaceable.Entity);
         OnDamageTaken?.Invoke(damageDealer.entity);
-        
+
+        PlayImpactSound(damageDealer);
+
         WeaponItem weaponItem = (WeaponItem)item;
         // if grip is < attacker tier, then weapon switches to attacker possession, grip is reset check WeaponPickup for more details
         // if grip is >= attacker tier, then decrease grip by 1
@@ -59,6 +67,44 @@ public class UnifiedDamageResolver
         else
         {
             weaponItem.currentGrip--;
+            PlayGripReducedSound(weaponItem);
         }
     }
+
+    private string GetCharacterTypeLabel()
+    {
+        Entity self = gridPlaceable.Entity;
+        return (self != null && self.IsPlayer) ? "Player" : "Enemy";
+    }
+
+    private void PlayImpactSound(DamageDealer damageDealer)
+    {
+        if (weaponImpactSoundEvent.IsNull) return;
+
+        Entity attacker = damageDealer.GetComponentInParent<Entity>();
+        InventoryItem attackerItem = attacker != null ? attacker.equippedItem.Get() : null;
+
+        EventInstance instance = RuntimeManager.CreateInstance(weaponImpactSoundEvent);
+        if (attackerItem != null)
+        {
+            instance.setParameterByNameWithLabel("ItemType", attackerItem.itemType.ToString());
+        }
+        instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
+        instance.start();
+        instance.release();
+    }
+
+    private void PlayGripReducedSound(WeaponItem weaponItem)
+    {
+        if (gripReducedSoundEvent.IsNull) return;
+
+        EventInstance instance = RuntimeManager.CreateInstance(gripReducedSoundEvent);
+        instance.setParameterByName("GripAmount", weaponItem.currentGrip);
+        instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
+        instance.start();
+        instance.release();
+    }
+
 }

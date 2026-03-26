@@ -6,13 +6,11 @@ public class EntityCollisionKnockback : MoveAbility
     private AbilityController abilityController;
     private MoveInfo selfMoveInfo;
     private int damageDealerLayer;
-    private GridPlaceable gridPlaceable;
     private SortedInventory inventory;
 
     public void Initialize(EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo, AbilityController abilityController, SortedInventory inventory)
     {
         base.Initialize(movementFactory, gridPlaceable, moveInfo);
-        this.gridPlaceable = gridPlaceable;
         this.selfMoveInfo = moveInfo;
         this.abilityController = abilityController;
         this.inventory = inventory;
