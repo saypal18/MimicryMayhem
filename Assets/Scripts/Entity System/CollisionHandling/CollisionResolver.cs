@@ -28,19 +28,10 @@ public class CollisionResolver : MonoBehaviour
     {
         if (!collision.TryGetComponent(out Root root)) return;
         if (root.GO == gameObject) return;
-
         int layer = collision.gameObject.layer;
-        //Entity otherEntity = root.GO.GetComponent<Entity>();
-        //if (otherEntity == null) return;
-
-        if (layer == pickupLayer)
-        {
-            pickupHandler.OnPickup(root.GO);
-            return;
-        }
-
         Entity otherEntity = root.GO.GetComponent<Entity>();
         if (otherEntity == null) return;
+
         if (layer == damageDealerLayer)
         {
             if (otherEntity.damageDealer != null)
@@ -66,6 +57,15 @@ public class CollisionResolver : MonoBehaviour
             }
             knockback.ApplyKnockback(otherEntity, layer);
         }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer != pickupLayer) return;
+        if (!collision.TryGetComponent(out Root root)) return;
+        if (root.GO == gameObject) return;
+
+        pickupHandler.OnPickup(root.GO);
     }
 }
 

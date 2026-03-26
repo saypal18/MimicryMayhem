@@ -57,7 +57,7 @@ public class PickupPlacer
         }
     }
 
-    public void DropItem(WeaponItem item, Vector2Int position)
+    public void DropItem(GameObject dropper, WeaponItem item, Vector2Int position)
     {
         if (pickupPrefabs.Count > 0)
         {
@@ -67,7 +67,7 @@ public class PickupPlacer
             {
                 weaponPickup.SetItem(item);
             }
-            pickup.Initialize(grid, position);
+            pickup.Initialize(grid, position, dropper);
             activePickups.Add(pickup);
             if (pickup.TryGetComponent(out PoolingEntity poolingEntity))
             {
