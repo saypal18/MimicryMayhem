@@ -12,6 +12,8 @@ public sealed class GridPlaceable : MonoBehaviour
     private PoolingEntity poolingEntity;
     //private IMovement movement;
 
+    public System.Action<Vector2Int> OnPositionChanged;
+
     public Entity Entity { get; private set; }
 
     public Vector2Int Position => position;
@@ -47,6 +49,7 @@ public sealed class GridPlaceable : MonoBehaviour
             grid.AddToTile(position, this);
             transform.DOKill();
             transform.position = grid.GetWorldPosition(position);
+            OnPositionChanged?.Invoke(position);
         }
     }
 
@@ -97,6 +100,7 @@ public sealed class GridPlaceable : MonoBehaviour
 
         position = newPosition;
         grid.AddToTile(newPosition, this);
+        OnPositionChanged?.Invoke(position);
         return true;
     }
 
@@ -105,6 +109,7 @@ public sealed class GridPlaceable : MonoBehaviour
         RemoveFromGrid();
         position = newPosition;
         grid.AddToTile(newPosition, this);
+        OnPositionChanged?.Invoke(position);
     }
 
 
