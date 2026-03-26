@@ -25,8 +25,6 @@ public class MoveAbility : IAbility
         if (!gridMovementSoundEvent.IsNull)
         {
             movementSoundInstance = RuntimeManager.CreateInstance(gridMovementSoundEvent);
-            Entity entity = gridPlaceable.Entity;
-            movementSoundInstance.setParameterByNameWithLabel("CharacterType", (entity != null && entity.IsPlayer) ? "Player" : "Enemy");
         }
     }
 
@@ -50,6 +48,8 @@ public class MoveAbility : IAbility
     {
         if (!movementSoundInstance.isValid()) return;
 
+        Entity entity = gridPlaceable.Entity;
+        movementSoundInstance.setParameterByNameWithLabel("CharacterType", (entity != null && entity.IsPlayer) ? "Player" : "Enemy");
         movementSoundInstance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
         movementSoundInstance.start();
     }
