@@ -93,6 +93,7 @@ public class Player : MonoBehaviour
                     player.playerActionHighlighter.enabled = true;
                 }
                 inventoryUI.AssignInventory(player.inventory);
+                inventoryUI.Assign(player);
                 inventoryUI.AssignEquippedItem(player.equippedItem);
             }
             else

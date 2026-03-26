@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.MLAgents.Policies;
+using System;
 public class Entity : MonoBehaviour
 {
     [SerializeField] private GridPlaceable gridPlaceable;
@@ -23,11 +24,17 @@ public class Entity : MonoBehaviour
     public MoveInfo moveInfo = new MoveInfo();
     [SerializeField] public PlayerActionHighlighter playerActionHighlighter;
 
+    public Action<WeaponItem, Vector2Int> OnDropItemToGrid;
+
     public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick)
     {
         gridPlaceable.Initialize(grid, startPosition);
         moveAbility.Initialize(movementFactory, gridPlaceable, moveInfo);
         inventory.Initialize();
+        
+        inventory.OnItemDropped -= HandleItemDropped;
+        inventory.OnItemDropped += HandleItemDropped;
+
         equippedItem.Initialize(inventory);
         pickupHandler.Initialize();
         entityCollisionKnockback.Initialize(movementFactory, gridPlaceable, moveInfo, abilityController, inventory);
@@ -42,6 +49,11 @@ public class Entity : MonoBehaviour
         {
             playerActionHighlighter.Initialize(this, grid, equippedItem, tick);
         }
+    }
+
+    private void HandleItemDropped(WeaponItem item, int slotIndex)
+    {
+        OnDropItemToGrid?.Invoke(item, gridPlaceable.Position);
     }
 
     /////// apply during play //////

@@ -31,6 +31,15 @@ public class EquippedItem : MonoBehaviour, IScrollHandler
         return index;
     }
 
+    public void SetIndex(int newIndex)
+    {
+        if (inventory != null && newIndex >= 0 && newIndex < inventory.slotCount)
+        {
+            index = newIndex;
+            OnScroll?.Invoke(index);
+        }
+    }
+
     public void HandleScroll(InputAction.CallbackContext context)
     {
         if (context.performed)

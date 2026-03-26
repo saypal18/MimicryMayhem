@@ -57,6 +57,25 @@ public class PickupPlacer
         }
     }
 
+    public void DropItem(WeaponItem item, Vector2Int position)
+    {
+        if (pickupPrefabs.Count > 0)
+        {
+            // Use the first prefab as a base for custom drops
+            Pickup pickup = PoolingEntity.Spawn(pickupPrefabs[0], pickupParent);
+            if (pickup is WeaponPickup weaponPickup)
+            {
+                weaponPickup.SetItem(item);
+            }
+            pickup.Initialize(grid, position);
+            activePickups.Add(pickup);
+            if (pickup.TryGetComponent(out PoolingEntity poolingEntity))
+            {
+                poolingEntity.OnDespawning += CreateDespawnHandler(pickup, poolingEntity);
+            }
+        }
+    }
+
     private System.Action CreateDespawnHandler(Pickup pickup, PoolingEntity poolingEntity)
     {
         System.Action handler = null;

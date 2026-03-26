@@ -103,7 +103,7 @@ public class GameInitializer : MonoBehaviour
         pickupPlacer.SetInterval(pickupSpawnIntervalConstant / (float)totalArea);
 
         // Initialise subsystems before spawning anything.
-        entitySpawner.Initialize(grid, turnManager);
+        entitySpawner.Initialize(grid, turnManager, pickupPlacer);
         bushPlacer.Initialize(grid);
         pickupPlacer.Initialize(grid);
         wallPlacer.Initialize(grid);

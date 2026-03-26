@@ -30,6 +30,7 @@ public class EntitySpawner
     private int entitiesCount;
     private List<ITick> turnTicks;
     private ITurnManager turnManager;
+    private PickupPlacer pickupPlacer;
     private readonly List<Entity> activeEntities = new List<Entity>();
 
     /// <summary>Number of entities currently alive on the grid.</summary>
@@ -42,10 +43,11 @@ public class EntitySpawner
     /// <summary>Returns a snapshot of all currently active entities.</summary>
     public IReadOnlyList<Entity> GetActiveEntities() => activeEntities;
 
-    public void Initialize(Grid grid, ITurnManager turnManager)
+    public void Initialize(Grid grid, ITurnManager turnManager, PickupPlacer pickupPlacer)
     {
         this.grid = grid;
         this.turnManager = turnManager;
+        this.pickupPlacer = pickupPlacer;
         this.turnTicks = turnManager.GetTeams();
         activeEntities.Clear();
     }
@@ -62,6 +64,9 @@ public class EntitySpawner
     {
         Entity entity = PoolingEntity.Spawn(entityPrefab, entityParent);
         entity.Initialize(grid, position, movementFactory, turnTicks[teamId]);
+
+        entity.OnDropItemToGrid -= HandleEntityDropItem;
+        entity.OnDropItemToGrid += HandleEntityDropItem;
 
         // Track active entities and auto-remove when despawned
         activeEntities.Add(entity);
@@ -146,11 +151,20 @@ public class EntitySpawner
         Action handler = null;
         handler = () =>
         {
+            entity.OnDropItemToGrid -= HandleEntityDropItem;
             activeEntities.Remove(entity);
             turnManager.UnregisterPlayer(teamId);
             // poolingEntity.OnDespawning -= handler;
         };
         return handler;
+    }
+
+    private void HandleEntityDropItem(WeaponItem item, Vector2Int position)
+    {
+        if (pickupPlacer != null)
+        {
+            pickupPlacer.DropItem(item, position);
+        }
     }
 
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WeaponPickup : Pickup
 {
@@ -18,6 +19,12 @@ public class WeaponPickup : Pickup
     public override void Initialize(Grid grid, Vector2Int position)
     {
         base.Initialize(grid, position);
+        UpdateVisuals();
+    }
+
+    public void SetItem(WeaponItem item)
+    {
+        this.weaponItem = item;
         UpdateVisuals();
     }
 
@@ -52,11 +59,10 @@ public class WeaponPickup : Pickup
                 PoolingEntity.Despawn(gameObject);
                 return true;
             }
-            // else
-            // {
-            //     Destroy(instancedWeapon);
-            //     return false;
-            // }
+            else
+            {
+                Destroy(instancedWeapon);
+            }
         }
         return false;
     }
