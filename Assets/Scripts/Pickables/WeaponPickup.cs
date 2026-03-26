@@ -47,6 +47,7 @@ public class WeaponPickup : Pickup
 
     public override bool Collected(GameObject picker)
     {
+        if (dropper != null && picker == dropper) return false;
         if (picker.TryGetComponent(out Entity entity))
         {
             // Instantiate a unique copy of the WeaponItem so it has its own Grip value

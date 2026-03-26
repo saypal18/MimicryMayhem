@@ -24,7 +24,7 @@ public class Entity : MonoBehaviour
     public MoveInfo moveInfo = new MoveInfo();
     [SerializeField] public PlayerActionHighlighter playerActionHighlighter;
 
-    public Action<WeaponItem, Vector2Int> OnDropItemToGrid;
+    public Action<Entity, WeaponItem, Vector2Int> OnDropItemToGrid;
 
     public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick)
     {
@@ -53,7 +53,7 @@ public class Entity : MonoBehaviour
 
     private void HandleItemDropped(WeaponItem item, int slotIndex)
     {
-        OnDropItemToGrid?.Invoke(item, gridPlaceable.Position);
+        OnDropItemToGrid?.Invoke(this, item, gridPlaceable.Position);
     }
 
     /////// apply during play //////

@@ -159,11 +159,11 @@ public class EntitySpawner
         return handler;
     }
 
-    private void HandleEntityDropItem(WeaponItem item, Vector2Int position)
+    private void HandleEntityDropItem(Entity dropper, WeaponItem item, Vector2Int position)
     {
         if (pickupPlacer != null)
         {
-            pickupPlacer.DropItem(item, position);
+            pickupPlacer.DropItem(dropper.gameObject, item, position);
         }
     }
 

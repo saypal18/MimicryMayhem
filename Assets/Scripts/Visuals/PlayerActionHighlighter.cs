@@ -36,20 +36,41 @@ public class PlayerActionHighlighter : MonoBehaviour
         this.tick = tick;
 
         tick.OnTick += () => {
+            if (!enabled) return;
             isMyTurn = true;
             UpdateActionTiles();
         };
         tick.OnPlayed += () => {
+            if (!enabled) return;
             isMyTurn = false;
             ClearHighlights();
         };
         
         equippedItem.OnScroll += (index) => {
+            if (!enabled) return;
             if (isMyTurn)
             {
                 UpdateActionTiles();
             }
         };
+
+        owner.inventory.OnItemAdded.AddListener((item, amount, index) => {
+            if (!enabled) return;
+            if (isMyTurn) UpdateActionTiles();
+        });
+        owner.inventory.OnItemRemoved.AddListener((item, amount, index) => {
+            if (!enabled) return;
+            if (isMyTurn) UpdateActionTiles();
+        });
+
+        GridPlaceable gp = owner.GetComponent<GridPlaceable>();
+        if (gp != null)
+        {
+            gp.OnPositionChanged += (pos) => {
+                if (!enabled) return;
+                if (isMyTurn) UpdateActionTiles();
+            };
+        }
         
         // Initial setup if we start on our turn (though tick will probably handle it)
     }
