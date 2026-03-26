@@ -3,13 +3,17 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+using System;
+
 /// <summary>
 /// Manages the visual representation of an inventory slot in the UI.
 /// Displays item icon, amount text, and handles slot assignment/clearing.
 /// Usage: Attach to inventory slot UI GameObjects in the scene. Works with InventoryItemDragger for drag/drop.
 /// </summary>
-public class InventorySlotUI : MonoBehaviour
+public class InventorySlotUI : MonoBehaviour, IPointerClickHandler
 {
+    public Action<InventorySlotUI, PointerEventData.InputButton> OnSlotClicked;
+
     /// <summary>Text display showing the item quantity in this slot.</summary>
     public TextMeshProUGUI amountText;
 
@@ -101,5 +105,10 @@ public class InventorySlotUI : MonoBehaviour
         {
             slot.Discard();
         }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        OnSlotClicked?.Invoke(this, eventData.button);
     }
 }

@@ -15,6 +15,7 @@ public class PlayerActionHighlighter : MonoBehaviour
     private EquippedItem equippedItem;
     private ITick tick;
     private bool isMyTurn = false;
+    public bool IsMyTurn => isMyTurn;
 
     private Dictionary<Vector2Int, GameObject> validMoveTiles = new Dictionary<Vector2Int, GameObject>();
     private Dictionary<Vector2Int, GameObject> validAttackTiles = new Dictionary<Vector2Int, GameObject>();
@@ -41,6 +42,13 @@ public class PlayerActionHighlighter : MonoBehaviour
         tick.OnPlayed += () => {
             isMyTurn = false;
             ClearHighlights();
+        };
+        
+        equippedItem.OnScroll += (index) => {
+            if (isMyTurn)
+            {
+                UpdateActionTiles();
+            }
         };
         
         // Initial setup if we start on our turn (though tick will probably handle it)

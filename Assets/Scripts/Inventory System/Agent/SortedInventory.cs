@@ -33,6 +33,8 @@ public class SortedInventory : InventorySlotHolder
         // OnItemRemoved.AddListener((item, amount, index) => UpdateHighestTier());
     }
 
+    public Action<WeaponItem, int> OnItemDropped;
+
     public void ShiftUp()
     {
         if (isReorganizing) return;
@@ -57,6 +59,35 @@ public class SortedInventory : InventorySlotHolder
         }
 
         isReorganizing = false;
+    }
+
+    public bool ReplaceAndAdd(int slotNumber, WeaponItem newItem)
+    {
+        if (slotNumber < 0 || slotNumber >= slotCount) return false;
+        
+        InventorySlot slot = slots[slotNumber];
+        WeaponItem oldItem = slot.item as WeaponItem;
+        if (oldItem != null)
+        {
+            OnItemDropped?.Invoke(oldItem, slotNumber);
+            slot.Remove();
+        }
+        
+        return AddItem(newItem, 1);
+    }
+
+    public void RemoveItem(int slotNumber)
+    {
+        if (slotNumber < 0 || slotNumber >= slotCount) return;
+
+        InventorySlot slot = slots[slotNumber];
+        WeaponItem oldItem = slot.item as WeaponItem;
+        if (oldItem != null)
+        {
+            OnItemDropped?.Invoke(oldItem, slotNumber);
+            slot.Remove();
+        }
+        ShiftUp();
     }
 
     //public void UpdateHighestTier()
@@ -91,6 +122,11 @@ public class SortedInventory : InventorySlotHolder
             {
                 currentItems.Add(w);
             }
+        }
+
+        if (currentItems.Count + amount > slotCount)
+        {
+            return false;
         }
 
         List<WeaponItem> combinedItems = new List<WeaponItem>(currentItems);

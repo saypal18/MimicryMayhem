@@ -33,6 +33,8 @@ public class InventoryUI : MonoBehaviour
 
     public EventTrigger eventTrigger;
     public Image selectedItemHighlight;
+    private EquippedItem equippedItem;
+
     /// <summary>
     /// Assigns a unit's inventory to this UI for display.
     /// </summary>
@@ -50,7 +52,7 @@ public class InventoryUI : MonoBehaviour
         //    Debug.LogError("Assigned Character has no CharacterInventoryManager attached!");
         //    return;
         //}
-        UpdateInventory(assignedCharacter.inventory);
+        //UpdateInventory(assignedCharacter.inventory);
         //assignedCharacter.itemEquip.onItemSelectionChanged += UpdateSelectedItem;
         //StartCoroutine(UpdateSelectedItemNextFrame());
     }
@@ -67,6 +69,7 @@ public class InventoryUI : MonoBehaviour
         {
             // InventorySlotUI slotUi = PoolingEntity.Spawn(InventorySlotUIPrefab, storagePanel); // Not required as we are never really destroying slotUIs
             InventorySlotUI slotUi = Instantiate(InventorySlotUIPrefab, storagePanel);
+            slotUi.OnSlotClicked += HandleSlotClicked;
             slotUis.Add(slotUi);
         }
 
@@ -95,7 +98,29 @@ public class InventoryUI : MonoBehaviour
     }
     public void AssignEquippedItem(EquippedItem item)
     {
+        this.equippedItem = item;
         item.OnScroll += UpdateSelectedItem;
+    }
+
+    private void HandleSlotClicked(InventorySlotUI clickedSlot, PointerEventData.InputButton button)
+    {
+        if (assignedCharacter == null || assignedCharacter.playerActionHighlighter == null) return;
+        if (!assignedCharacter.playerActionHighlighter.IsMyTurn) return;
+
+        int index = slotUis.IndexOf(clickedSlot);
+        if (index == -1) return;
+
+        if (button == PointerEventData.InputButton.Left)
+        {
+            if (equippedItem != null)
+            {
+                equippedItem.SetIndex(index);
+            }
+        }
+        else if (button == PointerEventData.InputButton.Right)
+        {
+            assignedCharacter.inventory.RemoveItem(index);
+        }
     }
 
     public void UpdateSelectedItem(int index)
