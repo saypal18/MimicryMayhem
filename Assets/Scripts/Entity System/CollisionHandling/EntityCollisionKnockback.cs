@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using FMODUnity;
+using FMOD.Studio;
 [Serializable]
 public class EntityCollisionKnockback : MoveAbility
 {
@@ -7,6 +9,9 @@ public class EntityCollisionKnockback : MoveAbility
     private MoveInfo selfMoveInfo;
     private int damageDealerLayer;
     private SortedInventory inventory;
+
+    [Header("Audio")]
+    [SerializeField] private EventReference knockbackSoundEvent;
 
     public void Initialize(EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo, AbilityController abilityController, SortedInventory inventory)
     {
@@ -47,6 +52,19 @@ public class EntityCollisionKnockback : MoveAbility
                 abilityController.Control(1);
             }
             movement.Move(direction);
+            PlayKnockbackSound();
         }
+    }
+
+    private void PlayKnockbackSound()
+    {
+        if (knockbackSoundEvent.IsNull) return;
+
+        Entity self = gridPlaceable.Entity;
+        EventInstance instance = RuntimeManager.CreateInstance(knockbackSoundEvent);
+        instance.setParameterByNameWithLabel("CharacterType", (self != null && self.IsPlayer) ? "Player" : "Enemy");
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
+        instance.start();
+        instance.release();
     }
 }

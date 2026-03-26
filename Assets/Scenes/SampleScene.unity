@@ -1786,7 +1786,7 @@ MonoBehaviour:
       Data2: 1205279964
       Data3: 1723615625
       Data4: -550807086
-    Path: event:/SFX/Ambience/Dungeon Ambience
+    Path: event:/SFX/Ambience/DungeonAmbience
   requiredBanks:
   - Gameplay
   levelStartSoundEvent:

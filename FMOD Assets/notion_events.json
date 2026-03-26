@@ -1,10 +1,10 @@
 {
-  "exportedAt": "2026-03-25T18:14:47.902483+00:00",
+  "exportedAt": "2026-03-26T16:26:02.543517+00:00",
   "databaseId": "32ec2cb91b6281be8684e653ff30aa7d",
   "events": [
     {
       "notionId": "32ec2cb9-1b62-811a-9575-cc49f0206b01",
-      "fmodPath": "event:/SFX/Combat/Feedback/Grip Reduced",
+      "fmodPath": "event:/SFX/Combat/Feedback/GripReduced",
       "type": "event/SFX",
       "spatialisation": false,
       "bank": "Gameplay"
@@ -18,70 +18,98 @@
     },
     {
       "notionId": "32ec2cb9-1b62-8129-8309-fd306701bbc1",
-      "fmodPath": "event:/SFX/Items/Pickup/Weapon Pickup",
+      "fmodPath": "event:/SFX/Items/Pickup",
       "type": "event/SFX",
       "spatialisation": false,
       "bank": "Gameplay"
     },
     {
       "notionId": "32ec2cb9-1b62-8132-a3a5-c231bf799dc7",
-      "fmodPath": "event:/SFX/Footstep/Grid Movement",
+      "fmodPath": "event:/SFX/Footstep/GridMovement",
       "type": "event/SFX",
       "spatialisation": false,
       "bank": "Gameplay"
     },
     {
+      "notionId": "32ec2cb9-1b62-8139-8f90-cb6bfedb5141",
+      "fmodPath": "parameter/GameState",
+      "type": "parameter",
+      "spatialisation": false,
+      "bank": ""
+    },
+    {
       "notionId": "32ec2cb9-1b62-8173-904c-f581ec2b0132",
-      "fmodPath": "event:/SFX/UI/Weapon Switch",
+      "fmodPath": "event:/SFX/UI/WeaponSwitch",
       "type": "event/SFX",
       "spatialisation": false,
       "bank": "UI"
     },
     {
       "notionId": "32ec2cb9-1b62-8189-9d87-df83d9043caa",
-      "fmodPath": "event:/SFX/Weapons/Weapon Attack",
+      "fmodPath": "event:/SFX/Combat/Attack",
       "type": "event/SFX",
       "spatialisation": true,
       "bank": "Gameplay"
     },
     {
       "notionId": "32ec2cb9-1b62-818a-b247-f0b4f1f62d75",
-      "fmodPath": "event:/SFX/Combat/Weapon Steal",
+      "fmodPath": "event:/SFX/Items/Steal",
       "type": "event/SFX",
       "spatialisation": true,
       "bank": "Gameplay"
     },
     {
       "notionId": "32ec2cb9-1b62-81af-9db6-f43e318f46d6",
-      "fmodPath": "event:/SFX/Weapons/Weapon Impact",
+      "fmodPath": "event:/SFX/Combat/Hit",
       "type": "event/SFX",
       "spatialisation": true,
       "bank": "Gameplay"
     },
     {
       "notionId": "32ec2cb9-1b62-81ba-9231-f2e7d36d69bd",
-      "fmodPath": "event:/SFX/Items/Weapon Drop",
+      "fmodPath": "event:/SFX/Items/Drop",
       "type": "event/SFX",
       "spatialisation": true,
       "bank": "Gameplay"
     },
     {
+      "notionId": "32ec2cb9-1b62-81bc-b6c1-e5f6be9feb45",
+      "fmodPath": "parameter/ItemType",
+      "type": "parameter",
+      "spatialisation": false,
+      "bank": ""
+    },
+    {
       "notionId": "32ec2cb9-1b62-81cc-8c01-f66e514acffa",
-      "fmodPath": "event:/SFX/UI/Turn Transition",
+      "fmodPath": "event:/SFX/UI/TurnTransition",
       "type": "event/SFX",
       "spatialisation": false,
       "bank": "UI"
     },
     {
       "notionId": "32ec2cb9-1b62-81ce-9fc5-c7a7458c3a69",
-      "fmodPath": "event:/SFX/UI/Level Start",
+      "fmodPath": "event:/SFX/UI/LevelStart",
       "type": "event/SFX",
       "spatialisation": false,
       "bank": "UI"
     },
     {
+      "notionId": "32ec2cb9-1b62-81de-9f55-e5312e618361",
+      "fmodPath": "parameter/CharacterType",
+      "type": "parameter",
+      "spatialisation": false,
+      "bank": ""
+    },
+    {
+      "notionId": "32ec2cb9-1b62-81e1-b4fe-f68f1b3825ec",
+      "fmodPath": "parameter/GripAmount",
+      "type": "parameter",
+      "spatialisation": false,
+      "bank": ""
+    },
+    {
       "notionId": "32ec2cb9-1b62-81ed-96c4-f00820199ffe",
-      "fmodPath": "event:/SFX/Ambience/Dungeon Ambience",
+      "fmodPath": "event:/SFX/Ambience/DungeonAmbience",
       "type": "event/SFX",
       "spatialisation": false,
       "bank": "Gameplay"
@@ -94,8 +122,8 @@
       "bank": "Gameplay"
     },
     {
-      "notionId": "32ec2cb9-1b62-81ef-b968-ea9db432cf7a",
-      "fmodPath": "event:/SFX/Combat/Feedback/Grip Reduced (Enemy) — ARCHIVED",
+      "notionId": "32fc2cb9-1b62-8103-8528-f855c0bf6864",
+      "fmodPath": "event:/SFX/Combat/ProjectileFlight",
       "type": "event/SFX",
       "spatialisation": true,
       "bank": "Gameplay"

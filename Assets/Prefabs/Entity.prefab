@@ -680,7 +680,7 @@ MonoBehaviour:
         Data2: 1146443535
         Data3: -1979226467
         Data4: 2057014809
-      Path: event:/SFX/Weapons/Weapon Attack
+      Path: event:/SFX/Combat/Attack
   moveAbility:
     moveTime: 0.2
     blocksToMove: 1
@@ -690,7 +690,7 @@ MonoBehaviour:
         Data2: 1150363421
         Data3: -2129088604
         Data4: 1418410538
-      Path: event:/SFX/Footstep/Grid Movement
+      Path: event:/SFX/Footstep/GridMovement
   abilityController:
     cooldown: 0.3
     controlTime: 0.1
@@ -705,14 +705,14 @@ MonoBehaviour:
         Data2: 1094272230
         Data3: -247950207
         Data4: 602705943
-      Path: event:/SFX/Weapons/Weapon Impact
+      Path: event:/SFX/Combat/Hit
     gripReducedSoundEvent:
       Guid:
-        Data1: -1212970194
-        Data2: 1268442919
-        Data3: -1364831342
-        Data4: 1689365211
-      Path: event:/SFX/Combat/Feedback/Grip Reduced (Enemy)
+        Data1: -393644465
+        Data2: 1159654135
+        Data3: 1164234903
+        Data4: 1210100954
+      Path: event:/SFX/Combat/Feedback/GripReduced
   pickupHandler:
     thisObject: {fileID: 4593017720766107119}
     pickupSoundEvent:
@@ -721,17 +721,24 @@ MonoBehaviour:
         Data2: 1145832026
         Data3: 570557350
         Data4: 702215327
-      Path: event:/SFX/Items/Pickup/Weapon Pickup
+      Path: event:/SFX/Items/Pickup
   entityCollisionKnockback:
     moveTime: 0.2
     blocksToMove: 1
     gridMovementSoundEvent:
       Guid:
-        Data1: 0
-        Data2: 0
-        Data3: 0
-        Data4: 0
-      Path: 
+        Data1: 1217002394
+        Data2: 1150363421
+        Data3: -2129088604
+        Data4: 1418410538
+      Path: event:/SFX/Footstep/GridMovement
+    knockbackSoundEvent:
+      Guid:
+        Data1: -1765258748
+        Data2: 1301259413
+        Data3: 1667868091
+        Data4: -65333191
+      Path: event:/SFX/Combat/Knockback
   damageDealer: {fileID: 59241930918860346}
   behaviorParameters: {fileID: -2021946009688161316}
   TeamId: 0
@@ -922,7 +929,7 @@ MonoBehaviour:
       Data2: 1198280528
       Data3: -1396954465
       Data4: 228279798
-    Path: event:/SFX/UI/Weapon Switch
+    Path: event:/SFX/UI/WeaponSwitch
 --- !u!114 &8217674001165563348
 MonoBehaviour:
   m_ObjectHideFlags: 0
