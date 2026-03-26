@@ -1,0 +1,104 @@
+{
+  "exportedAt": "2026-03-25T18:14:47.902483+00:00",
+  "databaseId": "32ec2cb91b6281be8684e653ff30aa7d",
+  "events": [
+    {
+      "notionId": "32ec2cb9-1b62-811a-9575-cc49f0206b01",
+      "fmodPath": "event:/SFX/Combat/Feedback/Grip Reduced",
+      "type": "event/SFX",
+      "spatialisation": false,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-8120-8eca-f3f8795f6796",
+      "fmodPath": "event:/SFX/Combat/Knockback",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-8129-8309-fd306701bbc1",
+      "fmodPath": "event:/SFX/Items/Pickup/Weapon Pickup",
+      "type": "event/SFX",
+      "spatialisation": false,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-8132-a3a5-c231bf799dc7",
+      "fmodPath": "event:/SFX/Footstep/Grid Movement",
+      "type": "event/SFX",
+      "spatialisation": false,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-8173-904c-f581ec2b0132",
+      "fmodPath": "event:/SFX/UI/Weapon Switch",
+      "type": "event/SFX",
+      "spatialisation": false,
+      "bank": "UI"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-8189-9d87-df83d9043caa",
+      "fmodPath": "event:/SFX/Weapons/Weapon Attack",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-818a-b247-f0b4f1f62d75",
+      "fmodPath": "event:/SFX/Combat/Weapon Steal",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-81af-9db6-f43e318f46d6",
+      "fmodPath": "event:/SFX/Weapons/Weapon Impact",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-81ba-9231-f2e7d36d69bd",
+      "fmodPath": "event:/SFX/Items/Weapon Drop",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-81cc-8c01-f66e514acffa",
+      "fmodPath": "event:/SFX/UI/Turn Transition",
+      "type": "event/SFX",
+      "spatialisation": false,
+      "bank": "UI"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-81ce-9fc5-c7a7458c3a69",
+      "fmodPath": "event:/SFX/UI/Level Start",
+      "type": "event/SFX",
+      "spatialisation": false,
+      "bank": "UI"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-81ed-96c4-f00820199ffe",
+      "fmodPath": "event:/SFX/Ambience/Dungeon Ambience",
+      "type": "event/SFX",
+      "spatialisation": false,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-81ee-ada8-f8d788f6e593",
+      "fmodPath": "event:/Music/Music",
+      "type": "event/Music",
+      "spatialisation": false,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "32ec2cb9-1b62-81ef-b968-ea9db432cf7a",
+      "fmodPath": "event:/SFX/Combat/Feedback/Grip Reduced (Enemy) — ARCHIVED",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    }
+  ]
+}

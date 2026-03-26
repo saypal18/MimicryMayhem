@@ -1,0 +1,21 @@
+{
+  "config": {
+    "spatialiserPresetGuid": "{58675822-e420-4be4-a9ec-b3fcfdd53f76}"
+  },
+  "events": {
+    "32ec2cb9-1b62-8189-9d87-df83d9043caa": "{cf94ef31-570f-4455-9d66-078a198e9b7a}",
+    "32ec2cb9-1b62-81af-9db6-f43e318f46d6": "{2700b821-44e6-4139-8194-38f11790ec23}",
+    "32ec2cb9-1b62-811a-9575-cc49f0206b01": "{e889764f-eaf7-451e-97d0-6445daac2048}",
+    "32ec2cb9-1b62-81ef-b968-ea9db432cf7a": "{09b79853-b542-4a25-bd94-3b4ac91b2ea0}",
+    "32ec2cb9-1b62-8129-8309-fd306701bbc1": "{fc109a88-025a-444c-a603-02229ff4da29}",
+    "32ec2cb9-1b62-81ba-9231-f2e7d36d69bd": "{1ca5b8f5-0bff-44dd-8089-525dff16a9ff}",
+    "32ec2cb9-1b62-8173-904c-f581ec2b0132": "{3704d4e2-4f50-476c-9f2a-bcacf6459b0d}",
+    "32ec2cb9-1b62-8132-a3a5-c231bf799dc7": "{4889fb9a-271d-4491-a4af-18812a3a8b54}",
+    "32ec2cb9-1b62-8120-8eca-f3f8795f6796": "{96c84a04-a495-4d8f-bba5-696339181bfc}",
+    "32ec2cb9-1b62-818a-b247-f0b4f1f62d75": "{22d09deb-6f5e-4cfc-9f22-972f8e82e16e}",
+    "32ec2cb9-1b62-81cc-8c01-f66e514acffa": "{5c62d764-baf7-4814-bb3c-b49dac8f5bd6}",
+    "32ec2cb9-1b62-81ce-9fc5-c7a7458c3a69": "{46e53098-ff78-4c78-8424-1d3e752a5aa6}",
+    "32ec2cb9-1b62-81ed-96c4-f00820199ffe": "{6fda8757-1cdc-47d7-8949-bc66d2592bdf}",
+    "32ec2cb9-1b62-81ee-ada8-f8d788f6e593": "{b2da7bb9-7757-4f9f-ac0a-4fb11ec6d39d}"
+  }
+}
