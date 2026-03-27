@@ -262,6 +262,8 @@ MonoBehaviour:
     entityPercentage: 2
     teamsEnabled: 0
     teamAssignmentStrategy: 0
+    reserveTeamForPlayer: 0
+    reservedTeamId: 0
     initialScale: {x: 1, y: 1, z: 1}
     agentType: 0
     ruleBasedWeaponPrefabs:
@@ -271,7 +273,7 @@ MonoBehaviour:
     - {fileID: 2279582224576281527, guid: 3ff4a2f570e3a344ab59e0d6c4f4ffa0, type: 3}
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
     - {fileID: 2279582224576281527, guid: 0732882f54b923345908b517e76e161e, type: 3}
-    ruleBasedWeaponSpawnDelay: 20
+    ruleBasedWeaponSpawnDelay: 5
   pickupPlacer:
     pickupPrefabs:
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
