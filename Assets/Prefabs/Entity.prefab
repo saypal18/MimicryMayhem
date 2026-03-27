@@ -822,7 +822,7 @@ MonoBehaviour:
         Data2: 1150363421
         Data3: -2129088604
         Data4: 1418410538
-      Path: event:/SFX/Footstep/GridMovement
+      Path: event:/SFX/GridMovement
   abilityController:
     cooldown: 0.3
     controlTime: 0.1
