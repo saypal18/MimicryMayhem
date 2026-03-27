@@ -224,6 +224,7 @@ Transform:
   - {fileID: 2335819374844696575}
   - {fileID: 4633003108235146406}
   - {fileID: 799253668079769377}
+  - {fileID: 168297767917431162}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2424751851155101755
@@ -240,7 +241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameInitializer
   grid:
     startingTilePosition: {fileID: 3509958387582530915}
-    tileSize: {x: 1.04, y: 0.36}
+    tileSize: {x: 1, y: 1}
     minGridSize: 5
     maxGridSize: 20
     border:
@@ -261,7 +262,7 @@ MonoBehaviour:
     entityPercentage: 2
     teamsEnabled: 0
     teamAssignmentStrategy: 0
-    initialScale: {x: 0.45, y: 0.45, z: 1}
+    initialScale: {x: 1, y: 1, z: 1}
   pickupPlacer:
     pickupPrefabs:
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
@@ -313,10 +314,51 @@ MonoBehaviour:
   groundTileSpawner:
     groundPrefab: {fileID: 6985989206982878537, guid: 5d34ea010ec968a4397dad7ea82ba777, type: 3}
     groundIcons:
-    - {fileID: 21300000, guid: e3eb54b3e45543c4e97e9e854cdeed32, type: 3}
-    - {fileID: 21300000, guid: 311a8c088eb7bdd429a010c496962185, type: 3}
-    - {fileID: 21300000, guid: d187c712744dc0147bdba91fa82d933d, type: 3}
+    - {fileID: 5314239091056881, guid: 20cec6d44cdbaba45b9fe193a7046cad, type: 3}
     container: {fileID: 799253668079769377}
+  backgroundStuffSpawner:
+    configs:
+    - name: grass1
+      prefab: {fileID: 8026521401813893763, guid: 3155419d4bd9c2e47bb7487dbd801042, type: 3}
+      probability: 0.1
+      colorMin: {r: 1, g: 1, b: 1, a: 1}
+      colorMax: {r: 1, g: 1, b: 1, a: 1}
+    - name: grass2
+      prefab: {fileID: 8199646045161697471, guid: 02540b354ec0e994e9685d9fabd000d9, type: 3}
+      probability: 0.1
+      colorMin: {r: 1, g: 1, b: 1, a: 1}
+      colorMax: {r: 1, g: 1, b: 1, a: 1}
+    - name: grass3
+      prefab: {fileID: 7054259575351644165, guid: 6cec9c3ad9a28f3488116a67437b72ad, type: 3}
+      probability: 0.1
+      colorMin: {r: 1, g: 1, b: 1, a: 1}
+      colorMax: {r: 1, g: 1, b: 1, a: 1}
+    - name: grass4
+      prefab: {fileID: 6882016472551793881, guid: 322f7b9119772da4082db41d5999a686, type: 3}
+      probability: 0.1
+      colorMin: {r: 1, g: 1, b: 1, a: 1}
+      colorMax: {r: 1, g: 1, b: 1, a: 1}
+    - name: tile 1
+      prefab: {fileID: 8600821637242932507, guid: f5799813eb313a7449de494ba1e69175, type: 3}
+      probability: 0.1
+      colorMin: {r: 0.5882353, g: 0.8235294, b: 0.8235294, a: 1}
+      colorMax: {r: 0.2901961, g: 0.5176471, b: 0.5176471, a: 1}
+    - name: tile 2
+      prefab: {fileID: 6924336702845795164, guid: 222ca5106ff9cba46bdafa172eff824b, type: 3}
+      probability: 0.1
+      colorMin: {r: 0.58812934, g: 0.8238993, b: 0.8238993, a: 1}
+      colorMax: {r: 0.29029697, g: 0.51572317, b: 0.51572317, a: 1}
+    - name: tile 3
+      prefab: {fileID: 5474892292819325611, guid: 8f10f46a49a9e904fb650753b29ebadd, type: 3}
+      probability: 0.1
+      colorMin: {r: 0.5882353, g: 0.8235294, b: 0.8235294, a: 1}
+      colorMax: {r: 0.2901961, g: 0.5176471, b: 0.5176471, a: 1}
+    noiseScale: 1
+    threshold: 0.4
+    density: 2
+    jitter: {x: 0.5, y: 0.5}
+    container: {fileID: 168297767917431162}
+  soundManager: {fileID: 0}
   numTeams: 2
   teamAssignmentStrategy: 0
   maxStepsMultiplier: 500
@@ -343,6 +385,8 @@ MonoBehaviour:
   - {r: 0.2675329, g: 0.38174284, b: 0.509434, a: 1}
   - {r: 0, g: 0.09630537, b: 1, a: 1}
   transitionColor: {r: 0.26666668, g: 0.38039216, b: 0.50980395, a: 1}
+  moveIndicator: {fileID: 0}
+  playerTurnIndex: 0
 --- !u!1 &7782477435353402049
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,6 +410,37 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7782477435353402049}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5084263085645196711}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8774473039352767273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 168297767917431162}
+  m_Layer: 0
+  m_Name: backgroundStuff
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &168297767917431162
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8774473039352767273}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}

@@ -51,10 +51,44 @@ public class InputManager : MonoBehaviour
             }
         }
     }
+    // Make sure this perfectly matches the _Strength in your Material!
+    [SerializeField] private float distortionStrength = 1.5f;
+
+
+    // Your existing input callback
     public void MouseMove(InputAction.CallbackContext context)
     {
-        mousePosition = context.ReadValue<Vector2>();
+        // 1. Read the raw, undistorted mouse position from the hardware
+        Vector2 rawMousePosition = context.ReadValue<Vector2>();
+
+        // 2. Run it through our fisheye math
+        mousePosition = ApplyFisheyeDistortion(rawMousePosition);
+
+        // 3. Send the CORRECTED position to the rest of your game
         moveInputHandler?.OnMouseMove(mousePosition);
+    }
+
+    /// <summary>
+    /// Takes the raw 2D screen coordinates and warps them using the shader math.
+    /// </summary>
+    private Vector2 ApplyFisheyeDistortion(Vector2 rawMouse)
+    {
+        // Convert to UV space [0 to 1]
+        Vector2 uv = new Vector2(rawMouse.x / Screen.width, rawMouse.y / Screen.height);
+
+        // Center the UVs [-0.5 to 0.5]
+        Vector2 centeredUV = uv - new Vector2(0.5f, 0.5f);
+
+        // Run the math from the shader
+        float dist = centeredUV.magnitude;
+        float distortion = 1.0f + (distortionStrength * (dist * dist));
+        float maxDistortion = 1.0f + (distortionStrength * 0.5f);
+
+        // Calculate the distorted UV
+        Vector2 distortedUV = (centeredUV * (distortion / maxDistortion)) + new Vector2(0.5f, 0.5f);
+
+        // Convert back to pixel coordinates and return
+        return new Vector2(distortedUV.x * Screen.width, distortedUV.y * Screen.height);
     }
     public void Scroll(InputAction.CallbackContext context)
     {

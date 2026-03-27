@@ -1132,8 +1132,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 323.6, y: -180.3}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 320, y: -14.387}
+  m_SizeDelta: {x: 71.023, y: 74.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &510575131
 GameObject:
@@ -1339,7 +1339,7 @@ Camera:
   far clip plane: 100
   field of view: 34
   orthographic: 1
-  orthographic size: 3.2
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2087,7 +2087,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 208.3, y: -180.3}
+  m_AnchoredPosition: {x: -319.62, y: -155.6}
   m_SizeDelta: {x: 30.1073, y: 30.1073}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &717497406
@@ -2590,11 +2590,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1095906093146944836, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 297.456
+      value: 71.0444
       objectReference: {fileID: 0}
     - target: {fileID: 1095906093146944836, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -380.0007
+      value: -213.4309
       objectReference: {fileID: 0}
     - target: {fileID: 1095906093146944836, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2626,11 +2626,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1095906093146944836, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -234.84953
+      value: -684.1
       objectReference: {fileID: 0}
     - target: {fileID: 1095906093146944836, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -180.29999
+      value: 32.115
       objectReference: {fileID: 0}
     - target: {fileID: 1095906093146944836, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2694,11 +2694,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7404421201534151285, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -113.74
+      value: 0.5382
       objectReference: {fileID: 0}
     - target: {fileID: 7404421201534151285, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.99881
+      value: 83.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3908,6 +3908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
   mouseArrow: {fileID: 1102849815}
+  distortionStrength: 1.5
 --- !u!1 &1596596012
 GameObject:
   m_ObjectHideFlags: 0
@@ -4072,7 +4073,7 @@ MonoBehaviour:
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: f59463a500000000679fa935
-  m_LightCookieSprite: {fileID: -8478270437045002879, guid: 9d5a2f8d81fd54c4397c09e8bc349be4, type: 3}
+  m_LightCookieSprite: {fileID: 8063670472780345489, guid: ac63c46da1829f6438e9d5f3b7fc7a38, type: 3}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
   m_AlphaBlendOnOverlap: 0
@@ -4088,7 +4089,7 @@ MonoBehaviour:
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 2.6, y: 0.9, z: 0}
+    m_Extent: {x: 2.5, y: 2.5, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
