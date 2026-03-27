@@ -164,6 +164,7 @@ public class Player : MonoBehaviour
     {
         teleporter = gameObject.AddComponent<PlayerTeleporter>();
         teleporter.inputManager = inputManager;
+        teleporter.cam = mainCamera;
         StartEnvironment();
     }
 

@@ -25,6 +25,7 @@ public class InputManager : MonoBehaviour
         this.grid = grid;
         this.highlighter = highlighter;
         this.cam = cam;
+        if (highlighter != null) highlighter.SetInputManager(this);
     }
 
     public void Attack(InputAction.CallbackContext context)

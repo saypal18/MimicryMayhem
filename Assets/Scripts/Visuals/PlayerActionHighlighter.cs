@@ -6,8 +6,10 @@ public class PlayerActionHighlighter : MonoBehaviour
     [Header("Settings")]
     public GameObject moveHighlightPrefab;
     public GameObject attackHighlightPrefab;
+    public GameObject targetHighlightPrefab;
     [SerializeField] private Color moveColor = new Color(0, 0.5f, 1f, 0.3f);
     [SerializeField] private Color attackColor = new Color(1f, 0f, 0f, 0.3f);
+    [SerializeField] private Color targetColor = new Color(1f, 1f, 0f, 0.4f);
     [SerializeField] private float hoverAlphaEnhancement = 0.5f;
     [SerializeField] private float faintAlphaMultiplier = 0.3f;
     [SerializeField] private Transform highlightParent;
@@ -22,8 +24,7 @@ public class PlayerActionHighlighter : MonoBehaviour
 
     private Dictionary<Vector2Int, GameObject> validMoveTiles = new Dictionary<Vector2Int, GameObject>();
     private Dictionary<Vector2Int, GameObject> validAttackTiles = new Dictionary<Vector2Int, GameObject>();
-    
-    private Vector2Int? currentlyHoveredTile = null;
+    private InputManager inputManager;
     
     // Directions
     private static readonly Vector2Int[] Directions = new[]
@@ -78,6 +79,11 @@ public class PlayerActionHighlighter : MonoBehaviour
         ClearHighlights();
     }
 
+    public void SetInputManager(InputManager manager)
+    {
+        this.inputManager = manager;
+    }
+
     public void UpdateEnvironment(Grid newGrid, ITick newTick)
     {
         this.grid = newGrid;
@@ -101,7 +107,7 @@ public class PlayerActionHighlighter : MonoBehaviour
 
     private void Update()
     {
-        if (!isMyTurn || grid == null || owner == null || cam == null)
+        if (!isMyTurn || grid == null || owner == null || cam == null || inputManager == null)
         {
             if (validMoveTiles.Count > 0 || validAttackTiles.Count > 0) ClearHighlights();
             return;
@@ -152,7 +158,7 @@ public class PlayerActionHighlighter : MonoBehaviour
         }
 
         // 3. Mouse Hover Check
-        Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -cam.transform.position.z));
+        Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(inputManager.mousePosition.x, inputManager.mousePosition.y, -cam.transform.position.z));
         Collider2D hoveredCollider = Physics2D.OverlapPoint(mouseWorldPos);
         Entity hoveredEnemy = (hoveredCollider != null && hoveredCollider.TryGetComponent(out Entity eHover) && eHover != owner && eHover.TeamId != owner.TeamId) ? eHover : null;
         Vector2Int hoveredGridPos = grid.GetGridPosition(mouseWorldPos);
@@ -219,7 +225,7 @@ public class PlayerActionHighlighter : MonoBehaviour
         currentlyHoveredEnemy = hoveredEnemy;
 
         // If hovering a move tile, hide all target highlights
-        bool isHoveringMove = IsAdjacent(grid.GetGridPosition(cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -cam.transform.position.z))));
+        bool isHoveringMove = IsAdjacent(grid.GetGridPosition(cam.ScreenToWorldPoint(new Vector3(inputManager.mousePosition.x, inputManager.mousePosition.y, -cam.transform.position.z))));
         
         if (isHoveringMove && hoveredEnemy == null)
         {
@@ -243,7 +249,7 @@ public class PlayerActionHighlighter : MonoBehaviour
                     hl.SetActive(enemies.Contains(enemy));
                     if (hl.activeSelf)
                     {
-                        SetHighlightAlpha(hl, attackColor, hoveredEnemy != null ? 1.0f : faintAlphaMultiplier);
+                        SetHighlightAlpha(hl, targetColor, hoveredEnemy != null ? 1.0f : faintAlphaMultiplier);
                     }
                 }
             }
@@ -253,11 +259,11 @@ public class PlayerActionHighlighter : MonoBehaviour
             {
                 if (!entityTargetHighlights.ContainsKey(enemy))
                 {
-                    GameObject hl = SpawnHighlight(enemy.Position, attackColor, attackHighlightPrefab, enemy.transform);
+                    GameObject hl = SpawnHighlight(enemy.Position, targetColor, targetHighlightPrefab, enemy.transform);
                     if (hl != null)
                     {
                         entityTargetHighlights[enemy] = hl;
-                        SetHighlightAlpha(hl, attackColor, enemy == hoveredEnemy ? 1.0f : faintAlphaMultiplier);
+                        SetHighlightAlpha(hl, targetColor, enemy == hoveredEnemy ? 1.0f : faintAlphaMultiplier);
                         hl.SetActive(hoveredEnemy == null || hoveredEnemy == enemy);
                     }
                 }
@@ -325,7 +331,14 @@ public class PlayerActionHighlighter : MonoBehaviour
         GameObject hl = PoolingEntity.Spawn(prefab, customParent != null ? customParent : highlightParent);
         if (hl != null)
         {
-            hl.transform.position = worldPos;
+            if (customParent != null)
+            {
+                hl.transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                hl.transform.position = worldPos;
+            }
             hl.transform.localScale = Vector3.one;
             hl.SetActive(true);
             SpriteRenderer sr = hl.GetComponentInChildren<SpriteRenderer>();
@@ -364,5 +377,4 @@ public class PlayerActionHighlighter : MonoBehaviour
     }
 
     public bool IsValidMoveTile(Vector2Int pos) => validMoveTiles.ContainsKey(pos);
-    public bool IsValidAttackTile(Vector2Int pos) => false; // Deprecated by collider check
 }
