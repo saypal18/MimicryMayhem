@@ -52,7 +52,7 @@ public class Grid
                 emptyPositions.Add(new Vector2Int(x, y));
             }
         }
-        border.CreateGridBorder(tileSize, size);
+        border.CreateGridBorder(tileSize, size, startingTilePosition.position);
     }
 
     public void PurgeGrid()

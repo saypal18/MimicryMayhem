@@ -11,12 +11,15 @@ public class PlayerTeleporter : MonoBehaviour
         if (player == null) return;
 
         List<GridPlaceable> tile = player.CurrentGrid?.GetTile(player.Position);
+        bool isOnDoor = false;
+
         if (tile != null)
         {
             foreach (var placeable in tile)
             {
                 if (placeable.Type == GridPlaceable.PlaceableType.Door && placeable.TryGetComponent(out DoorTile door))
                 {
+                    isOnDoor = true;
                     if (door.targetEnvironment != null)
                     {
                         if (door == lastDoorTeleportedTo) return; // Prevent bouncing back immediately
@@ -27,7 +30,8 @@ public class PlayerTeleporter : MonoBehaviour
                 }
             }
         }
-        else
+        
+        if (!isOnDoor)
         {
             // If they are not on any door, clear the last teleported door
             lastDoorTeleportedTo = null;
@@ -48,7 +52,7 @@ public class PlayerTeleporter : MonoBehaviour
             newTick = newEnv.turnManager.GetTeams()[player.TeamId];
         }
 
-        player.TransferToNewEnvironment(newEnv.grid, dropPos, newTick);
+        player.TransferToNewEnvironment(newEnv.grid, dropPos, newTick, newEnv.entitySpawner);
 
         if (newEnv != null) newEnv.entitySpawner.AddEntitySafely(player);
 

@@ -53,6 +53,15 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] public ICurriculum curriculum;
     [SerializeField] public TurnManager turnManager;
 
+    public enum AgentType
+    {
+        MLAgent,
+        RuleBased
+    }
+
+    [Header("Agent Settings")]
+    [SerializeField] public AgentType agentType = AgentType.MLAgent;
+
     public Action onEnvironmentReset;
 
     private int stepCount = 0;
@@ -93,6 +102,7 @@ public class GameInitializer : MonoBehaviour
 
         numTeams = Mathf.Max(1, numTeams);
         entitySpawner.teamAssignmentStrategy = teamAssignmentStrategy;
+        entitySpawner.agentType = agentType;
         
         turnManager.Initialize();
         if (curriculum == null)

@@ -2,11 +2,13 @@ using UnityEngine;
 using System.Collections.Generic;
 using Unity.MLAgents.Policies;
 using UnityEngine.UI;
+using Unity.Cinemachine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private InputManager inputManager;
     [SerializeField] private PlayerUI playerUI;
+    [SerializeField] private CinemachineCamera vCam;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private Image cooldownImage;
@@ -64,7 +66,29 @@ public class Player : MonoBehaviour
                 if (env == environments[0] && i == 0)
                 {
                     player = activeEntities[i];
+
+                    // If team reservation is enabled, move the player to the reserved team
+                    if (env.entitySpawner.reserveTeamForPlayer)
+                    {
+                        int reservedId = env.entitySpawner.reservedTeamId;
+                        if (player.TeamId != reservedId)
+                        {
+                            env.entitySpawner.RemoveEntitySafely(player);
+                            player.TeamId = reservedId;
+                            env.entitySpawner.AddEntitySafely(player);
+
+                            // Update agent and highlighter ticks for the new team
+                            ITick newTick = env.turnManager.GetTeams()[reservedId];
+                            player.agent.UpdateTick(newTick);
+                            if (player.playerActionHighlighter != null)
+                            {
+                                player.playerActionHighlighter.UpdateEnvironment(env.grid, newTick);
+                            }
+                        }
+                    }
+
                     bp.BehaviorType = BehaviorType.HeuristicOnly;
+                    player.agent.isRuleBased = false; // Human player is never rule-based
                     if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                         inputManager.InitializeMove(handler);
                     inputManager.InitializeScroll(player.equippedItem);
@@ -81,15 +105,24 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    bp.BehaviorType = BehaviorType.InferenceOnly;
+                    if (env.agentType == GameInitializer.AgentType.RuleBased)
+                    {
+                        bp.BehaviorType = BehaviorType.HeuristicOnly;
+                    }
+                    else
+                    {
+                        bp.BehaviorType = BehaviorType.InferenceOnly;
+                    }
                 }
             }
             env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
         }
         
         points = 0;
-        mainCamera.transform.parent = player.transform;
-        mainCamera.transform.localPosition = new Vector3(0, 0, -10);
+        if (vCam != null)
+        {
+            vCam.Follow = player.transform;
+        }
     }
 
     private void StartEnvironment()

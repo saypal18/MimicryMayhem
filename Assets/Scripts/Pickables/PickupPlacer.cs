@@ -6,6 +6,7 @@ public class PickupPlacer
 {
     [SerializeField] private List<Pickup> pickupPrefabs;
     [SerializeField] private Transform pickupParent;
+    public Transform PickupParent => pickupParent;
     [SerializeField] private float spawnInterval = 2.0f;
     [Header("Pickup Settings")]
     [SerializeField] public float pickupPercentage = 25f;

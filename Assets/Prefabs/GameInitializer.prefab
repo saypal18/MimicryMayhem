@@ -263,6 +263,15 @@ MonoBehaviour:
     teamsEnabled: 0
     teamAssignmentStrategy: 0
     initialScale: {x: 1, y: 1, z: 1}
+    agentType: 0
+    ruleBasedWeaponPrefabs:
+    - {fileID: 2279582224576281527, guid: 2f4824a3662631d4fa4ff5640fb82fe1, type: 3}
+    - {fileID: 2279582224576281527, guid: 707c9f4dbc43f3d4c842e3bc41cebc44, type: 3}
+    - {fileID: 2279582224576281527, guid: 7373fa2bc024db0468820b0974ebc7ae, type: 3}
+    - {fileID: 2279582224576281527, guid: 3ff4a2f570e3a344ab59e0d6c4f4ffa0, type: 3}
+    - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
+    - {fileID: 2279582224576281527, guid: 0732882f54b923345908b517e76e161e, type: 3}
+    ruleBasedWeaponSpawnDelay: 20
   pickupPlacer:
     pickupPrefabs:
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
@@ -359,6 +368,8 @@ MonoBehaviour:
     jitter: {x: 0.5, y: 0.5}
     container: {fileID: 168297767917431162}
   soundManager: {fileID: 0}
+  doorPrefab: {fileID: 0}
+  doorLinks: []
   numTeams: 2
   teamAssignmentStrategy: 0
   distanceActivator:
@@ -369,6 +380,7 @@ MonoBehaviour:
   MaxSteps: 1000
   shouldRandomize: 1
   turnManager: {fileID: -5087976263453988065}
+  agentType: 0
 --- !u!114 &-5087976263453988065
 MonoBehaviour:
   m_ObjectHideFlags: 0

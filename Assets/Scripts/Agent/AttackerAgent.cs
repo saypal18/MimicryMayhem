@@ -30,6 +30,8 @@ public class AttackerAgent : Agent, IMoveInputHandler
     private ActiveAbility activeAbility;
     [SerializeField] private CustomGridSensorComponent customGridSensorComponent;
     [SerializeField] private BehaviorParameters behaviorParameters;
+    public bool isRuleBased;
+    private EntitySpawner entitySpawner;
     // ---- direction helpers ----
     private static readonly Vector2Int[] Directions = new[]
     {
@@ -62,7 +64,8 @@ public class AttackerAgent : Agent, IMoveInputHandler
         Grid grid,
         EquippedItem equippedItem,
         PickupHandler pickupHandler,
-        Entity entity
+        Entity entity,
+        EntitySpawner entitySpawner
         )
     {
         this.tick = tick;
@@ -78,6 +81,12 @@ public class AttackerAgent : Agent, IMoveInputHandler
         this.equippedItemObservation = new EquippedItemObservation(equippedItem);
         this.equippedItem = equippedItem;
         this.entity = entity;
+        this.entitySpawner = entitySpawner;
+    }
+
+    public void UpdateSpawner(EntitySpawner newSpawner)
+    {
+        this.entitySpawner = newSpawner;
     }
 
     public void UpdateGrid(Grid newGrid)
@@ -101,6 +110,12 @@ public class AttackerAgent : Agent, IMoveInputHandler
     private void ActOnCooldown()
     {
         if (!entity.IsActiveForTurns)
+        {
+            tick.OnPlayed?.Invoke();
+            return;
+        }
+
+        if (isRuleBased && (equippedItem == null || equippedItem.Get() == null))
         {
             tick.OnPlayed?.Invoke();
             return;
@@ -190,14 +205,58 @@ public class AttackerAgent : Agent, IMoveInputHandler
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActions = actionsOut.DiscreteActions;
-        int actionIndex = currentHeuristicAction;
-        
-        if (useAttack && actionIndex != (int)MoveAction.NoAction)
+        if (isRuleBased)
         {
-            actionIndex += 4;
+            if (entitySpawner == null) return;
+
+            Entity target = null;
+            IReadOnlyList<Entity> entities = entitySpawner.GetActiveEntities();
+            foreach (var e in entities)
+            {
+                if (e != null && e != entity && e.TeamId != entity.TeamId)
+                {
+                    target = e;
+                    break;
+                }
+            }
+
+            if (target != null)
+            {
+                Vector2Int diff = target.Position - entity.Position;
+                Vector2Int direction = Vector2Int.zero;
+
+                if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+                {
+                    direction.x = diff.x > 0 ? 1 : -1;
+                }
+                else
+                {
+                    direction.y = diff.y > 0 ? 1 : -1;
+                }
+
+                int actionIndex = 0;
+                if (direction == Vector2Int.up) actionIndex = 5;
+                else if (direction == Vector2Int.down) actionIndex = 6;
+                else if (direction == Vector2Int.left) actionIndex = 7;
+                else if (direction == Vector2Int.right) actionIndex = 8;
+
+                discreteActions[0] = actionIndex;
+            }
+            else
+            {
+                discreteActions[0] = (int)MoveAction.NoAction;
+            }
+            return;
+        }
+
+        int actionIndexHeuristic = currentHeuristicAction;
+        
+        if (useAttack && actionIndexHeuristic != (int)MoveAction.NoAction)
+        {
+            actionIndexHeuristic += 4;
         }
         
-        discreteActions[0] = actionIndex;
+        discreteActions[0] = actionIndexHeuristic;
         
         // Reset so action isn't repeated indefinitely
         currentHeuristicAction = (int)MoveAction.NoAction;
