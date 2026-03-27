@@ -19,4 +19,4 @@ MonoBehaviour:
   maxStackSize: 1
   tier: 3
   currentGrip: 0
-  range: 3
+  range: 2
