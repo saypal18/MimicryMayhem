@@ -1,0 +1,27 @@
+Anime BIGJ.png
+size:187,73
+filter:Linear,Linear
+pma:true
+bow gui item
+bounds:106,12,21,22
+character body
+bounds:2,2,72,69
+character leg
+bounds:76,4,28,30
+character leg 2
+bounds:114,42,26,29
+eye bg
+bounds:147,23,21,20
+eye fg
+bounds:170,18,15,16
+mask item bg
+bounds:76,36,36,35
+move field
+bounds:142,45,26,26
+shield gui item
+bounds:129,19,16,21
+sword animated icon
+bounds:170,36,15,35
+sword gui item
+bounds:147,2,19,21
+rotate:90

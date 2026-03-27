@@ -22,10 +22,6 @@ public class MoveAbility : IAbility
         movement.Initialize(moveTime, blocksToMove, gridPlaceable, moveInfo);
 
         ReleaseMovementSound();
-        if (!gridMovementSoundEvent.IsNull)
-        {
-            movementSoundInstance = RuntimeManager.CreateInstance(gridMovementSoundEvent);
-        }
     }
 
     private Vector2Int currentDirection = Vector2Int.zero;
@@ -44,8 +40,17 @@ public class MoveAbility : IAbility
         return moved;
     }
 
+    private void EnsureMovementSoundInstance()
+    {
+        if (movementSoundInstance.isValid() || gridMovementSoundEvent.IsNull) return;
+        if (!RuntimeManager.HaveAllBanksLoaded) return;
+
+        movementSoundInstance = RuntimeManager.CreateInstance(gridMovementSoundEvent);
+    }
+
     private void PlayMovementSound()
     {
+        EnsureMovementSoundInstance();
         if (!movementSoundInstance.isValid()) return;
 
         Entity entity = gridPlaceable.Entity;
