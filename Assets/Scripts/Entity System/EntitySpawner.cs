@@ -80,11 +80,9 @@ public class EntitySpawner
             bp.BehaviorType = isRuleBased ? BehaviorType.HeuristicOnly : BehaviorType.InferenceOnly;
         }
 
-        if (isRuleBased)
-        {
-            RuleBasedWeaponProvider weaponProvider = entity.gameObject.AddComponent<RuleBasedWeaponProvider>();
-            weaponProvider.Initialize(ruleBasedWeaponPrefabs, ruleBasedWeaponSpawnDelay, entity.inventory, grid, pickupPlacer.PickupParent, entity);
-        }
+        RuleBasedWeaponProvider weaponProvider = entity.gameObject.AddComponent<RuleBasedWeaponProvider>();
+        weaponProvider.Initialize(ruleBasedWeaponPrefabs, ruleBasedWeaponSpawnDelay, entity.inventory, grid, pickupPlacer.PickupParent, entity);
+
 
         entity.OnDropItemToGrid -= HandleEntityDropItem;
         entity.OnDropItemToGrid += HandleEntityDropItem;

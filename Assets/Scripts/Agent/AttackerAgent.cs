@@ -44,7 +44,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
     private GridPlaceable gridPlaceable;
     private IAbility moveAbility;
     private EquippedItemObservation equippedItemObservation;
-    private ITick tick;
+    public ITick tick;
     private EquippedItem equippedItem;
     private Entity entity;
     ////

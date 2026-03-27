@@ -169,9 +169,9 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (teleporter != null)
+        if (teleporter != null && player != null && player.moveInfo != null && !player.moveInfo.IsMoving)
         {
-            teleporter.TeleportIfOnDoor(player);
+            teleporter.TeleportIfOnDoor(player, player.transform.position);
         }
     }
 

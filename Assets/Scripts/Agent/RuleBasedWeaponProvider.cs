@@ -34,7 +34,7 @@ public class RuleBasedWeaponProvider : MonoBehaviour
             return;
         }
 
-        bool hasNoWeapon = !inventory.HasAnyItem();
+        bool hasNoWeapon = !inventory.HasAnyItem() && !entity.IsPlayer;
 
         if (hasNoWeapon && spawnCoroutine == null)
         {
