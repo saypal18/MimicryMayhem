@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.MLAgents.Policies;
 [System.Serializable]
 public enum TeamAssignmentStrategy
 {
@@ -26,7 +27,14 @@ public class EntitySpawner
     [SerializeField] public float entityPercentage = 2f;
     [SerializeField] public bool teamsEnabled = false;
     [SerializeField] public TeamAssignmentStrategy teamAssignmentStrategy = TeamAssignmentStrategy.Alternate;
+    [SerializeField] public bool reserveTeamForPlayer = false;
+    [SerializeField] public int reservedTeamId = 0;
     [SerializeField] private Vector3 initialScale = Vector3.one;
+    public GameInitializer.AgentType agentType;
+    [Header("Rule Based Weapon Spawning")]
+    [SerializeField] private List<Pickup> ruleBasedWeaponPrefabs;
+    [SerializeField] private float ruleBasedWeaponSpawnDelay = 5f;
+
     private int entitiesCount;
     private List<ITick> turnTicks;
     private ITurnManager turnManager;
@@ -63,7 +71,20 @@ public class EntitySpawner
     public void SpawnAtPosition(Vector2Int position, int teamId = 0)
     {
         Entity entity = PoolingEntity.Spawn(entityPrefab, entityParent);
-        entity.Initialize(grid, position, movementFactory, turnTicks[teamId]);
+        entity.Initialize(grid, position, movementFactory, turnTicks[teamId], this);
+        bool isRuleBased = (agentType == GameInitializer.AgentType.RuleBased);
+        entity.agent.isRuleBased = isRuleBased;
+
+        if (entity.TryGetComponent(out BehaviorParameters bp))
+        {
+            bp.BehaviorType = isRuleBased ? BehaviorType.HeuristicOnly : BehaviorType.InferenceOnly;
+        }
+
+        if (isRuleBased)
+        {
+            RuleBasedWeaponProvider weaponProvider = entity.gameObject.AddComponent<RuleBasedWeaponProvider>();
+            weaponProvider.Initialize(ruleBasedWeaponPrefabs, ruleBasedWeaponSpawnDelay, entity.inventory, grid, pickupPlacer.PickupParent, entity);
+        }
 
         entity.OnDropItemToGrid -= HandleEntityDropItem;
         entity.OnDropItemToGrid += HandleEntityDropItem;
@@ -124,16 +145,40 @@ public class EntitySpawner
     {
         List<Vector2Int> randomPositions = grid.GetRandomEmptyPositions(count);
         int numTeams = turnManager.GetTeamCount();
+        
         for (int i = 0; i < randomPositions.Count; i++)
         {
             int teamId = 0;
-            if (teamAssignmentStrategy == TeamAssignmentStrategy.Alternate)
+            
+            if (reserveTeamForPlayer && numTeams > 1)
             {
-                teamId = i % numTeams;
+                int effectiveTeams = numTeams - 1;
+                int strategyIndex = 0;
+                
+                if (teamAssignmentStrategy == TeamAssignmentStrategy.Alternate)
+                {
+                    strategyIndex = i % effectiveTeams;
+                }
+                else if (teamAssignmentStrategy == TeamAssignmentStrategy.DistinctThenLast)
+                {
+                    strategyIndex = (i < effectiveTeams) ? i : effectiveTeams - 1;
+                }
+                
+                // Shift index to avoid reservedTeamId
+                teamId = (strategyIndex >= reservedTeamId) ? strategyIndex + 1 : strategyIndex;
+                // Clamp to ensure it doesn't exceed numTeams - 1 (in case reservedTeamId was invalidly high)
+                if (teamId >= numTeams) teamId = (reservedTeamId == 0) ? 1 : 0;
             }
-            else if (teamAssignmentStrategy == TeamAssignmentStrategy.DistinctThenLast)
+            else
             {
-                teamId = (i < numTeams) ? i : numTeams - 1;
+                if (teamAssignmentStrategy == TeamAssignmentStrategy.Alternate)
+                {
+                    teamId = i % numTeams;
+                }
+                else if (teamAssignmentStrategy == TeamAssignmentStrategy.DistinctThenLast)
+                {
+                    teamId = (i < numTeams) ? i : numTeams - 1;
+                }
             }
             
             SpawnAtPosition(randomPositions[i], teamId);
@@ -164,6 +209,27 @@ public class EntitySpawner
         if (pickupPlacer != null)
         {
             pickupPlacer.DropItem(dropper.gameObject, item, position);
+        }
+    }
+
+    public void RemoveEntitySafely(Entity entity)
+    {
+        if (activeEntities.Contains(entity))
+        {
+            entity.OnDropItemToGrid -= HandleEntityDropItem;
+            activeEntities.Remove(entity);
+            turnManager.UnregisterPlayer(entity.TeamId);
+        }
+    }
+
+    public void AddEntitySafely(Entity entity)
+    {
+        if (!activeEntities.Contains(entity))
+        {
+            entity.OnDropItemToGrid -= HandleEntityDropItem;
+            entity.OnDropItemToGrid += HandleEntityDropItem;
+            activeEntities.Add(entity);
+            turnManager.RegisterPlayer(entity.TeamId);
         }
     }
 

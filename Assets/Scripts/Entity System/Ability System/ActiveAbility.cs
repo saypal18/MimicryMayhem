@@ -31,6 +31,12 @@ public class ActiveAbility
         //UpdateActiveAbility(0);
     }
 
+    public void UpdateGrid(Grid newGrid)
+    {
+        meleeAttack.Initialize(newGrid, damageDealer);
+        rangeAttack.Initialize(newGrid, damageDealer);
+    }
+
     public void UpdateActiveAbility()
     {
         InventoryItem item = equippedItem.Get();

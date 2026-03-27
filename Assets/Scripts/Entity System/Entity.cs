@@ -18,7 +18,20 @@ public class Entity : MonoBehaviour
     [SerializeField] public BehaviorParameters behaviorParameters;
     public int TeamId;
     public bool IsPlayer => behaviorParameters != null &&
-        behaviorParameters.BehaviorType == BehaviorType.HeuristicOnly;
+        behaviorParameters.BehaviorType == BehaviorType.HeuristicOnly &&
+        (agent == null || !agent.isRuleBased);
+    public Vector2Int Position => gridPlaceable.Position;
+    public Grid CurrentGrid => gridPlaceable.CurrentGrid;
+    public bool IsActiveForTurns { get; private set; } = true;
+    
+    public void SetActiveForTurns(bool active)
+    {
+        if (IsActiveForTurns == active) return;
+        IsActiveForTurns = active;
+        Debug.Log($"[Entity] {(active ? "Activated" : "Deactivated")}: {gameObject.name}");
+        if (agent != null) agent.enabled = active;
+    }
+
     public EquippedItem equippedItem;
     public SortedInventory inventory;
     public MoveInfo moveInfo = new MoveInfo();
@@ -26,7 +39,7 @@ public class Entity : MonoBehaviour
 
     public Action<Entity, WeaponItem, Vector2Int> OnDropItemToGrid;
 
-    public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick)
+    public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick, EntitySpawner entitySpawner)
     {
         gridPlaceable.Initialize(grid, startPosition);
         moveAbility.Initialize(movementFactory, gridPlaceable, moveInfo);
@@ -43,12 +56,34 @@ public class Entity : MonoBehaviour
         damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory, abilityController, moveInfo);
         damageDealer.Initialize();
         abilityController.Initialize(moveInfo);
-        agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem, pickupHandler, this);
+        agent.Initialize(tick, abilityController, activeAbility, moveAbility, damageResolver, damageDealer, gridPlaceable, grid, equippedItem, pickupHandler, this, entitySpawner);
         
         if (playerActionHighlighter != null)
         {
             playerActionHighlighter.Initialize(this, grid, equippedItem, tick);
         }
+    }
+
+    public void TransferToNewEnvironment(Grid newGrid, Vector2Int newPosition, ITick newTick, EntitySpawner newSpawner)
+    {
+        SetActiveForTurns(true);
+
+        gridPlaceable.RemoveFromGrid();
+        gridPlaceable.Initialize(newGrid, newPosition);
+
+        if (agent != null) 
+        {
+            agent.UpdateGrid(newGrid);
+            agent.UpdateTick(newTick);
+            agent.UpdateSpawner(newSpawner);
+        }
+
+        if (playerActionHighlighter != null) 
+        {
+            playerActionHighlighter.UpdateEnvironment(newGrid, newTick);
+        }
+
+        activeAbility.UpdateGrid(newGrid);
     }
 
     private void HandleItemDropped(WeaponItem item, int slotIndex)

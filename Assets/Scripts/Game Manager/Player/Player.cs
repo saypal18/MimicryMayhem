@@ -2,148 +2,175 @@ using UnityEngine;
 using System.Collections.Generic;
 using Unity.MLAgents.Policies;
 using UnityEngine.UI;
+using Unity.Cinemachine;
+
 public class Player : MonoBehaviour
 {
-
-    private EntitySpawner entitySpawner;
-    private Grid grid;
-    [SerializeField] private GameInitializer gameInitializer;
     [SerializeField] private InputManager inputManager;
     [SerializeField] private PlayerUI playerUI;
+    [SerializeField] private CinemachineCamera vCam;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private Image cooldownImage;
+
+    [Header("Multi-Grid Play Mode")]
+    [SerializeField] private List<GameInitializer> environments = new List<GameInitializer>();
+    
     private Entity player;
     private int points;
-    void UpdatePlayerPower()
-    {
-        //int aliveCount = entitySpawner.ActiveEntityCount;
-        //int playerPower = player.damageResolver.power;
 
-        //playerUI.UpdateStats(aliveCount, playerPower, points);
+    private GameInitializer GetPlayerEnvironment()
+    {
+        if (player == null && environments.Count > 0) return environments[0];
+        foreach (var env in environments)
+        {
+            if (env.grid == player?.CurrentGrid) return env;
+        }
+        return environments.Count > 0 ? environments[0] : null;
     }
 
-    // enemy will be 3 distinct shades of red / blue whether 
-    // it is more or less powerful and based on their power relative to the player 
-    // - lighter = closer to player power. == player power means white
-    void UpdateEnemyPowerDisplay()
+    private PlayerTeleporter teleporter;
+
+    private void ResetAllEnvironments()
     {
-        //if (entitySpawner == null || player == null || player.damageResolver == null)
-        //    return;
+        // Unbind previous callbacks to prevent multiple triggers
+        foreach (var env in environments)
+        {
+            env.onEnvironmentReset -= CreatePvEScenario;
+            env.entitySpawner.colorize = false;
+        }
 
-        //IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
-        //int playerPower = player.damageResolver.power;
+        player = null;
 
-        //for (int i = 0; i < activeEntities.Count; i++)
-        //{
-        //    Entity entity = activeEntities[i];
-        //    if (entity == null || entity == player || entity.damageResolver == null)
-        //        continue;
+        // Bind creation logic to the first grid ONLY
+        environments[0].onEnvironmentReset += CreatePvEScenario;
 
-        //    int diff = entity.damageResolver.power - playerPower;
-        //    Color targetColor;
-        //    diff = Mathf.Clamp(diff, -3, 3); // Cap the difference for color tiers
-        //    switch(diff)
-        //    {
-        //        case 3:
-        //            targetColor = new Color(0.75f, 0f, 0f); // Strongly stronger - dark red
-        //            break;
-        //        case 2:
-        //            targetColor = new Color(1f, 0.45f, 0.45f); // Moderately stronger - medium red
-        //            break;
-        //        case 1:
-        //            targetColor = new Color(1f, 0.75f, 0.75f); // Slightly stronger - light red
-        //            break;
-        //        case -1:
-        //            targetColor = new Color(0.75f, 0.85f, 1f); // Slightly weaker - light blue
-        //            break;
-        //        case -2:
-        //            targetColor = new Color(0.45f, 0.65f, 1f); // Moderately weaker - medium blue
-        //            break;
-        //        case -3:
-        //            targetColor = new Color(0f, 0.3f, 0.8f); // Strongly weaker - dark blue
-        //            break;
-        //        default:
-        //            targetColor = Color.white; // Equal power
-        //            break;
-        //    }
-        //    entity.SetColor(targetColor);
-        //}
+        // Reset all
+        foreach (var env in environments)
+        {
+            env.ResetEnvironment();
+        }
+
+        environments[0].onEnvironmentReset -= CreatePvEScenario;
     }
 
     void CreatePvEScenario()
     {
-        IReadOnlyList<Entity> activeEntities = entitySpawner.GetActiveEntities();
-        for (int i = 0; i < activeEntities.Count; i++)
+        foreach (var env in environments)
         {
-            if (!activeEntities[i].TryGetComponent(out BehaviorParameters bp)) continue;
+            IReadOnlyList<Entity> activeEntities = env.entitySpawner.GetActiveEntities();
+            for (int i = 0; i < activeEntities.Count; i++)
+            {
+                if (!activeEntities[i].TryGetComponent(out BehaviorParameters bp)) continue;
 
-            if (i == 0)
-            {
-                player = activeEntities[i];
-                bp.BehaviorType = BehaviorType.HeuristicOnly;
-                if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
-                    inputManager.InitializeMove(handler);
-                inputManager.InitializeScroll(player.equippedItem);
-                inputManager.InitializeClickMap(grid, player.playerActionHighlighter);
-                inputManager.agentTransform = player.transform;
-                player.abilityController.cooldownImage = cooldownImage;
-                if (player.playerActionHighlighter != null)
+                if (env == environments[0] && i == 0)
                 {
-                    player.playerActionHighlighter.enabled = true;
+                    player = activeEntities[i];
+
+                    // If team reservation is enabled, move the player to the reserved team
+                    if (env.entitySpawner.reserveTeamForPlayer)
+                    {
+                        int reservedId = env.entitySpawner.reservedTeamId;
+                        if (player.TeamId != reservedId)
+                        {
+                            env.entitySpawner.RemoveEntitySafely(player);
+                            player.TeamId = reservedId;
+                            env.entitySpawner.AddEntitySafely(player);
+
+                            // Update agent and highlighter ticks for the new team
+                            ITick newTick = env.turnManager.GetTeams()[reservedId];
+                            player.agent.UpdateTick(newTick);
+                            if (player.playerActionHighlighter != null)
+                            {
+                                player.playerActionHighlighter.UpdateEnvironment(env.grid, newTick);
+                            }
+                        }
+                    }
+
+                    bp.BehaviorType = BehaviorType.HeuristicOnly;
+                    player.agent.isRuleBased = false; // Human player is never rule-based
+                    if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
+                        inputManager.InitializeMove(handler);
+                    inputManager.InitializeScroll(player.equippedItem);
+                    inputManager.InitializeClickMap(env.grid, player.playerActionHighlighter);
+                    inputManager.agentTransform = player.transform;
+                    player.abilityController.cooldownImage = cooldownImage;
+                    if (player.playerActionHighlighter != null)
+                    {
+                        player.playerActionHighlighter.enabled = true;
+                    }
+                    inventoryUI.AssignInventory(player.inventory);
+                    inventoryUI.Assign(player);
+                    inventoryUI.AssignEquippedItem(player.equippedItem);
                 }
-                inventoryUI.AssignInventory(player.inventory);
-                inventoryUI.Assign(player);
-                inventoryUI.AssignEquippedItem(player.equippedItem);
+                else
+                {
+                    if (env.agentType == GameInitializer.AgentType.RuleBased)
+                    {
+                        bp.BehaviorType = BehaviorType.HeuristicOnly;
+                    }
+                    else
+                    {
+                        bp.BehaviorType = BehaviorType.InferenceOnly;
+                    }
+                }
             }
-            else
-            {
-                bp.BehaviorType = BehaviorType.InferenceOnly;
-            }
+            env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
         }
-        gameInitializer.MaxSteps = 0; // Disable time-based reset for player control mode
+        
         points = 0;
-        //player.damageResolver.OnDamageDealt += () => points++;
-        mainCamera.transform.parent = player.transform;
-        mainCamera.transform.localPosition = new Vector3(0, 0, -10);
-        //mainCamera.transform.localPosition = new Vector3(-5, 0, -10);
-        //player.damageResolver.OnDamageTaken += () => mainCamera.transform.parent = null;
-        //player.SetColor(Color.white);
+        if (vCam != null)
+        {
+            vCam.Follow = player.transform;
+        }
     }
 
     private void StartEnvironment()
     {
-        grid = gameInitializer.grid;
-        entitySpawner = gameInitializer.entitySpawner;
-        playerUI.gridSizeSlider.onValueChanged.AddListener((value) => grid.SetSize(new Vector2Int((int)value, (int)value)));
-        playerUI.gridSizeSlider.onValueChanged.Invoke(playerUI.gridSizeSlider.value); // Apply initial value
-        playerUI.enemyCountSlider.onValueChanged.AddListener((value) => entitySpawner.SetEntityCount((int)value));
-        playerUI.enemyCountSlider.onValueChanged.Invoke(playerUI.enemyCountSlider.value); // Apply initial value
-        playerUI.randomizeToggle.onValueChanged.AddListener(SetGridRandomization);
-        playerUI.randomizeToggle.onValueChanged.Invoke(playerUI.randomizeToggle.isOn); // Apply initial value
+        if (environments == null || environments.Count == 0)
+        {
+            Debug.LogWarning("Player: No environments assigned in the Inspector!");
+            return;
+        }
 
-        playerUI.restartButton.onClick.AddListener(() => gameInitializer.ResetEnvironment());
-        gameInitializer.onEnvironmentReset += CreatePvEScenario;
-        entitySpawner.colorize = false;
-        gameInitializer.ResetEnvironment();
+        playerUI.gridSizeSlider.onValueChanged.AddListener((value) => {
+            foreach (var env in environments) env.grid.SetSize(new Vector2Int((int)value, (int)value));
+        });
+        playerUI.gridSizeSlider.onValueChanged.Invoke(playerUI.gridSizeSlider.value); 
+
+        playerUI.enemyCountSlider.onValueChanged.AddListener((value) => {
+            foreach (var env in environments) env.entitySpawner.SetEntityCount((int)value);
+        });
+        playerUI.enemyCountSlider.onValueChanged.Invoke(playerUI.enemyCountSlider.value);
+        
+        playerUI.randomizeToggle.onValueChanged.AddListener(SetGridRandomization);
+        playerUI.randomizeToggle.onValueChanged.Invoke(playerUI.randomizeToggle.isOn);
+
+        playerUI.restartButton.onClick.AddListener(ResetAllEnvironments);
+        
+        ResetAllEnvironments();
     }
 
     private void SetGridRandomization(bool enabled)
     {
         playerUI.gridSizeSlider.interactable = !enabled;
         playerUI.enemyCountSlider.interactable = !enabled;
-        gameInitializer.shouldRandomize = enabled;
+        foreach (var env in environments) env.shouldRandomize = enabled;
     }
 
     private void Start()
     {
+        teleporter = gameObject.AddComponent<PlayerTeleporter>();
+        teleporter.inputManager = inputManager;
         StartEnvironment();
     }
 
-    //private void Update()
-    //{
-    //    UpdatePlayerPower();
-    //    UpdateEnemyPowerDisplay();
-    //}
+    private void Update()
+    {
+        if (teleporter != null)
+        {
+            teleporter.TeleportIfOnDoor(player);
+        }
+    }
 
 }

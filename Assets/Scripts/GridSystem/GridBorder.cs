@@ -10,7 +10,7 @@ public class GridBorder
     // create border prefab set scale to cover 1 unit outside the grid in all directions,
     // visual only
     // center of the first grid cell is at 0,0
-    public void CreateGridBorder(Vector2 TileSize, Vector2Int Size)
+    public void CreateGridBorder(Vector2 TileSize, Vector2Int Size, Vector3 baseWorldPos)
     {
         DestroyAllChildren();
 
@@ -23,19 +23,19 @@ public class GridBorder
 
         // Bottom
         CreateSingleBorder(
-            new Vector3(center.x, -halfTileY - thickness / 2f, 0),
+            baseWorldPos + new Vector3(center.x, -halfTileY - thickness / 2f, 0),
             new Vector3(totalSize.x + 2 * thickness, thickness, 1));
         // Top
         CreateSingleBorder(
-            new Vector3(center.x, (Size.y - 0.5f) * TileSize.y + thickness / 2f, 0),
+            baseWorldPos + new Vector3(center.x, (Size.y - 0.5f) * TileSize.y + thickness / 2f, 0),
             new Vector3(totalSize.x + 2 * thickness, thickness, 1));
         // Left
         CreateSingleBorder(
-            new Vector3(-halfTileX - thickness / 2f, center.y, 0),
+            baseWorldPos + new Vector3(-halfTileX - thickness / 2f, center.y, 0),
             new Vector3(thickness, totalSize.y, 1));
         // Right
         CreateSingleBorder(
-            new Vector3((Size.x - 0.5f) * TileSize.x + thickness / 2f, center.y, 0),
+            baseWorldPos + new Vector3((Size.x - 0.5f) * TileSize.x + thickness / 2f, center.y, 0),
             new Vector3(thickness, totalSize.y, 1));
     }
     private void DestroyAllChildren()
@@ -46,10 +46,10 @@ public class GridBorder
         }
     }
 
-    private void CreateSingleBorder(Vector3 position, Vector3 scale)
+    private void CreateSingleBorder(Vector3 worldPosition, Vector3 scale)
     {
         GameObject border = PoolingEntity.Spawn(borderPrefab, borderParent);
         border.transform.localScale = scale;
-        border.transform.localPosition = position;
+        border.transform.position = worldPosition;
     }
 }
