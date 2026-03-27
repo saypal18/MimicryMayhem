@@ -18,6 +18,7 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private WallPlacer wallPlacer;
     [SerializeField] public PerlinBushPlacer bushPlacer;
     [SerializeField] public GroundTileSpawner groundTileSpawner;
+    [SerializeField] public BackgroundStuffSpawner backgroundStuffSpawner;
 
     [Header("Audio")]
     [SerializeField] private SoundManager soundManager;
@@ -109,6 +110,8 @@ public class GameInitializer : MonoBehaviour
         wallPlacer.Initialize(grid);
         groundTileSpawner.Initialize(grid);
         groundTileSpawner.SpawnTiles();
+        backgroundStuffSpawner.Initialize(grid);
+        backgroundStuffSpawner.SpawnStuff();
 
 
         // ── 1. Walls first (so entities/pickups avoid wall tiles) ─────────────
