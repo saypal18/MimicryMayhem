@@ -46,6 +46,8 @@ public class ActiveAbility
             damageDealer.UpdateDamage(null);
             return;
         }
+
+        WeaponItem weapon = (WeaponItem)item;
         switch (item.itemType)
         {
             case (ItemType.Sword):
@@ -61,7 +63,13 @@ public class ActiveAbility
                 ability = null;
                 break;
         }
-        damageDealer.UpdateDamage((WeaponItem)item);
+
+        if (ability != null)
+        {
+            ability.Range = weapon.range;
+        }
+
+        damageDealer.UpdateDamage(weapon);
     }
 
     public void PlayAttackSound(Vector3 position, bool isPlayer)

@@ -59,4 +59,9 @@ public class SmoothRangeDamageColliderAnimation : MonoBehaviour, IRangeDamageCol
             PoolingEntity.Despawn(rangeDamageCollider);
         });
     }
+
+    public void UpdateRange(int maxDistanceBlocks)
+    {
+        this.maxDistanceBlocks = maxDistanceBlocks;
+    }
 }

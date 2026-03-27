@@ -84,4 +84,8 @@ public class SmoothEntityMovement : IEntityMovement
 
 
 
-}
+    public void UpdateRange(int blocks)
+    {
+        this.blocksToMove = blocks;
+    }
+}

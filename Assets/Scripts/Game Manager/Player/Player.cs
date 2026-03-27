@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
                     if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                         inputManager.InitializeMove(handler);
                     inputManager.InitializeScroll(player.equippedItem);
-                    inputManager.InitializeClickMap(env.grid, player.playerActionHighlighter);
+                    inputManager.InitializeClickMap(env.grid, player.playerActionHighlighter, mainCamera);
                     inputManager.agentTransform = player.transform;
                     player.abilityController.cooldownImage = cooldownImage;
                     if (player.playerActionHighlighter != null)
