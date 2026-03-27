@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
 
     [Header("Multi-Grid Play Mode")]
     [SerializeField] private List<GameInitializer> environments = new List<GameInitializer>();
-    
+
     private Entity player;
     private int points;
 
@@ -67,25 +67,25 @@ public class Player : MonoBehaviour
                 {
                     player = activeEntities[i];
 
-                    // If team reservation is enabled, move the player to the reserved team
-                    if (env.entitySpawner.reserveTeamForPlayer)
-                    {
-                        int reservedId = env.entitySpawner.reservedTeamId;
-                        if (player.TeamId != reservedId)
-                        {
-                            env.entitySpawner.RemoveEntitySafely(player);
-                            player.TeamId = reservedId;
-                            env.entitySpawner.AddEntitySafely(player);
+                    // // If team reservation is enabled, move the player to the reserved team
+                    // if (env.entitySpawner.reserveTeamForPlayer)
+                    // {
+                    //     int reservedId = env.entitySpawner.reservedTeamId;
+                    //     if (player.TeamId != reservedId)
+                    //     {
+                    //         env.entitySpawner.RemoveEntitySafely(player);
+                    //         player.TeamId = reservedId;
+                    //         env.entitySpawner.AddEntitySafely(player);
 
-                            // Update agent and highlighter ticks for the new team
-                            ITick newTick = env.turnManager.GetTeams()[reservedId];
-                            player.agent.UpdateTick(newTick);
-                            if (player.playerActionHighlighter != null)
-                            {
-                                player.playerActionHighlighter.UpdateEnvironment(env.grid, newTick);
-                            }
-                        }
-                    }
+                    //         // Update agent and highlighter ticks for the new team
+                    //         ITick newTick = env.turnManager.GetTeams()[reservedId];
+                    //         player.agent.UpdateTick(newTick);
+                    //         if (player.playerActionHighlighter != null)
+                    //         {
+                    //             player.playerActionHighlighter.UpdateEnvironment(env.grid, newTick);
+                    //         }
+                    //     }
+                    // }
 
                     bp.BehaviorType = BehaviorType.HeuristicOnly;
                     player.agent.isRuleBased = false; // Human player is never rule-based
@@ -117,7 +117,7 @@ public class Player : MonoBehaviour
             }
             env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
         }
-        
+
         points = 0;
         if (vCam != null)
         {
@@ -133,21 +133,23 @@ public class Player : MonoBehaviour
             return;
         }
 
-        playerUI.gridSizeSlider.onValueChanged.AddListener((value) => {
+        playerUI.gridSizeSlider.onValueChanged.AddListener((value) =>
+        {
             foreach (var env in environments) env.grid.SetSize(new Vector2Int((int)value, (int)value));
         });
-        playerUI.gridSizeSlider.onValueChanged.Invoke(playerUI.gridSizeSlider.value); 
+        playerUI.gridSizeSlider.onValueChanged.Invoke(playerUI.gridSizeSlider.value);
 
-        playerUI.enemyCountSlider.onValueChanged.AddListener((value) => {
+        playerUI.enemyCountSlider.onValueChanged.AddListener((value) =>
+        {
             foreach (var env in environments) env.entitySpawner.SetEntityCount((int)value);
         });
         playerUI.enemyCountSlider.onValueChanged.Invoke(playerUI.enemyCountSlider.value);
-        
+
         playerUI.randomizeToggle.onValueChanged.AddListener(SetGridRandomization);
         playerUI.randomizeToggle.onValueChanged.Invoke(playerUI.randomizeToggle.isOn);
 
         playerUI.restartButton.onClick.AddListener(ResetAllEnvironments);
-        
+
         ResetAllEnvironments();
     }
 
