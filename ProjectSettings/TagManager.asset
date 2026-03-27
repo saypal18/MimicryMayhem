@@ -50,5 +50,8 @@ TagManager:
   - name: bush
     uniqueID: 900308839
     locked: 0
+  - name: fg
+    uniqueID: 3334689089
+    locked: 0
   m_RenderingLayers:
   - Default

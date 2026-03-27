@@ -12,7 +12,7 @@ public class PlayerActionHighlighter : MonoBehaviour
     [SerializeField] private Color targetColor = new Color(1f, 1f, 0f, 0.4f);
     [SerializeField] private float hoverAlphaEnhancement = 0.5f;
     [SerializeField] private float faintAlphaMultiplier = 0.3f;
-    [SerializeField] private Transform highlightParent;
+    [HideInInspector] public Transform highlightParent;
 
     private Entity owner;
     private Grid grid;

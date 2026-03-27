@@ -49,7 +49,7 @@ public class EntityCollisionKnockback : MoveAbility
             bool applyStun = ((collidedLayer == damageDealerLayer) || attacker.moveInfo.IsDashing) && inventory.HasAnyItem();
             if (applyStun)
             {
-                abilityController.Control(1);
+                // abilityController.Control(1);
             }
             movement.Move(direction);
             PlayKnockbackSound();

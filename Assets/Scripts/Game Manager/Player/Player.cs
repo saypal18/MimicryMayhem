@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private Image cooldownImage;
+    [SerializeField] private Transform highlightParent;
 
     [Header("Multi-Grid Play Mode")]
     [SerializeField] private List<GameInitializer> environments = new List<GameInitializer>();
@@ -97,6 +98,7 @@ public class Player : MonoBehaviour
                     player.abilityController.cooldownImage = cooldownImage;
                     if (player.playerActionHighlighter != null)
                     {
+                        player.playerActionHighlighter.highlightParent = highlightParent;
                         player.playerActionHighlighter.enabled = true;
                     }
                     inventoryUI.AssignInventory(player.inventory);
