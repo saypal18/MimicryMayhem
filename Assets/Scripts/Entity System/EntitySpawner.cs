@@ -167,4 +167,25 @@ public class EntitySpawner
         }
     }
 
+    public void RemoveEntitySafely(Entity entity)
+    {
+        if (activeEntities.Contains(entity))
+        {
+            entity.OnDropItemToGrid -= HandleEntityDropItem;
+            activeEntities.Remove(entity);
+            turnManager.UnregisterPlayer(entity.TeamId);
+        }
+    }
+
+    public void AddEntitySafely(Entity entity)
+    {
+        if (!activeEntities.Contains(entity))
+        {
+            entity.OnDropItemToGrid -= HandleEntityDropItem;
+            entity.OnDropItemToGrid += HandleEntityDropItem;
+            activeEntities.Add(entity);
+            turnManager.RegisterPlayer(entity.TeamId);
+        }
+    }
+
 }

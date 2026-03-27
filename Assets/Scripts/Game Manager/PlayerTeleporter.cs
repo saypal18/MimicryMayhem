@@ -1,0 +1,77 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+public class PlayerTeleporter : MonoBehaviour
+{
+    public InputManager inputManager;
+    private DoorTile lastDoorTeleportedTo;
+
+    public void TeleportIfOnDoor(Entity player)
+    {
+        if (player == null) return;
+
+        List<GridPlaceable> tile = player.CurrentGrid?.GetTile(player.Position);
+        if (tile != null)
+        {
+            foreach (var placeable in tile)
+            {
+                if (placeable.Type == GridPlaceable.PlaceableType.Door && placeable.TryGetComponent(out DoorTile door))
+                {
+                    if (door.targetEnvironment != null)
+                    {
+                        if (door == lastDoorTeleportedTo) return; // Prevent bouncing back immediately
+
+                        TeleportPlayer(player, door);
+                        return;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // If they are not on any door, clear the last teleported door
+            lastDoorTeleportedTo = null;
+        }
+    }
+
+    private void TeleportPlayer(Entity player, DoorTile sourceDoor)
+    {
+        GameInitializer oldEnv = sourceDoor.parentEnvironment;
+        GameInitializer newEnv = sourceDoor.targetEnvironment;
+        Vector2Int dropPos = sourceDoor.targetDoorPosition;
+
+        if (oldEnv != null) oldEnv.entitySpawner.RemoveEntitySafely(player);
+
+        ITick newTick = null;
+        if (newEnv != null)
+        {
+            newTick = newEnv.turnManager.GetTeams()[player.TeamId];
+        }
+
+        player.TransferToNewEnvironment(newEnv.grid, dropPos, newTick);
+
+        if (newEnv != null) newEnv.entitySpawner.AddEntitySafely(player);
+
+        if (inputManager != null)
+            inputManager.InitializeClickMap(newEnv.grid, player.playerActionHighlighter);
+
+        DoorTile targetDoorTile = null;
+        if (newEnv != null && newEnv.grid != null)
+        {
+            var tileParams = newEnv.grid.GetTile(dropPos);
+            if (tileParams != null)
+            {
+                foreach (var placeable in tileParams)
+                {
+                    if (placeable.Type == GridPlaceable.PlaceableType.Door && placeable.TryGetComponent(out DoorTile dt))
+                    {
+                        targetDoorTile = dt;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        lastDoorTeleportedTo = targetDoorTile;
+    }
+}

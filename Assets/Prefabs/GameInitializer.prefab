@@ -361,6 +361,9 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   numTeams: 2
   teamAssignmentStrategy: 0
+  distanceActivator:
+    enableDistanceActivation: 1
+    activationDistance: 5
   maxStepsMultiplier: 500
   pickupSpawnIntervalConstant: 2000
   MaxSteps: 1000

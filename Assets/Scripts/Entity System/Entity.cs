@@ -19,6 +19,17 @@ public class Entity : MonoBehaviour
     public int TeamId;
     public bool IsPlayer => behaviorParameters != null &&
         behaviorParameters.BehaviorType == BehaviorType.HeuristicOnly;
+    public Vector2Int Position => gridPlaceable.Position;
+    public Grid CurrentGrid => gridPlaceable.CurrentGrid;
+    public bool IsActiveForTurns { get; private set; } = true;
+    
+    public void SetActiveForTurns(bool active)
+    {
+        if (IsActiveForTurns == active) return;
+        IsActiveForTurns = active;
+        if (agent != null) agent.enabled = active;
+    }
+
     public EquippedItem equippedItem;
     public SortedInventory inventory;
     public MoveInfo moveInfo = new MoveInfo();
@@ -49,6 +60,27 @@ public class Entity : MonoBehaviour
         {
             playerActionHighlighter.Initialize(this, grid, equippedItem, tick);
         }
+    }
+
+    public void TransferToNewEnvironment(Grid newGrid, Vector2Int newPosition, ITick newTick)
+    {
+        SetActiveForTurns(true);
+
+        gridPlaceable.RemoveFromGrid();
+        gridPlaceable.Initialize(newGrid, newPosition);
+
+        if (agent != null) 
+        {
+            agent.UpdateGrid(newGrid);
+            agent.UpdateTick(newTick);
+        }
+
+        if (playerActionHighlighter != null) 
+        {
+            playerActionHighlighter.UpdateEnvironment(newGrid, newTick);
+        }
+
+        activeAbility.UpdateGrid(newGrid);
     }
 
     private void HandleItemDropped(WeaponItem item, int slotIndex)

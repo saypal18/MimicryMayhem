@@ -8,6 +8,14 @@ using Unity.MLAgents;
 public class GameInitializer : MonoBehaviour
 {
 
+    [System.Serializable]
+    public class DoorLinkConfig
+    {
+        public Vector2Int localDoorPosition;
+        public GameInitializer targetEnvironment;
+        public Vector2Int targetDoorPosition;
+    }
+
 
     // ── Core references ───────────────────────────────────────────────────────
     [Header("References")]
@@ -22,10 +30,18 @@ public class GameInitializer : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private SoundManager soundManager;
+
+    [Header("Doors")]
+    [SerializeField] private DoorTile doorPrefab;
+    [SerializeField] public List<DoorLinkConfig> doorLinks = new List<DoorLinkConfig>();
+    private List<GameObject> spawnedDoors = new List<GameObject>();
     
     [Header("Team Settings")]
     [SerializeField] public int numTeams = 2;
     [SerializeField] public TeamAssignmentStrategy teamAssignmentStrategy = TeamAssignmentStrategy.Alternate;
+
+    [Header("Optimization")]
+    [SerializeField] public EntityDistanceActivator distanceActivator = new EntityDistanceActivator();
 
     // ── Episode settings ──────────────────────────────────────────────────────
     [Header("Episode Settings")]
@@ -45,6 +61,7 @@ public class GameInitializer : MonoBehaviour
     {
         stepCount++;
         pickupPlacer.Tick(Time.fixedDeltaTime);
+        distanceActivator.TickActivations(entitySpawner);
 
         // MaxSteps 0 means no time-based reset
         if (MaxSteps > 0 && stepCount >= MaxSteps)
@@ -113,6 +130,7 @@ public class GameInitializer : MonoBehaviour
         backgroundStuffSpawner.Initialize(grid);
         backgroundStuffSpawner.SpawnStuff();
 
+        SpawnDoors(); // Spawn doors FIRST so they reserve empty tiles on the grid.
 
         // ── 1. Walls first (so entities/pickups avoid wall tiles) ─────────────
         wallPlacer.PlaceWalls(totalArea);
@@ -133,6 +151,26 @@ public class GameInitializer : MonoBehaviour
         if (soundManager != null)
         {
             StartCoroutine(soundManager.WaitForBanksAndStart());
+        }
+    }
+
+    private void SpawnDoors()
+    {
+        foreach (var door in spawnedDoors)
+        {
+            if (door != null) PoolingEntity.Despawn(door);
+        }
+        spawnedDoors.Clear();
+
+        if (doorPrefab == null) return;
+
+        foreach (var link in doorLinks)
+        {
+            Vector3 worldPos = grid.GetWorldPosition(link.localDoorPosition);
+            GameObject doorObj = PoolingEntity.Spawn(doorPrefab.gameObject, worldPos, Quaternion.identity, transform);
+            DoorTile door = doorObj.GetComponent<DoorTile>();
+            door.InitializeDoor(this, grid, link.localDoorPosition, link.targetEnvironment, link.targetDoorPosition);
+            spawnedDoors.Add(doorObj);
         }
     }
 

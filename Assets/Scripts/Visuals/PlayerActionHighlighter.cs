@@ -35,16 +35,8 @@ public class PlayerActionHighlighter : MonoBehaviour
         this.equippedItem = equippedItem;
         this.tick = tick;
 
-        tick.OnTick += () => {
-            if (!enabled) return;
-            isMyTurn = true;
-            UpdateActionTiles();
-        };
-        tick.OnPlayed += () => {
-            if (!enabled) return;
-            isMyTurn = false;
-            ClearHighlights();
-        };
+        tick.OnTick += HandleOnTick;
+        tick.OnPlayed += HandleOnPlayed;
         
         equippedItem.OnScroll += (index) => {
             if (!enabled) return;
@@ -73,6 +65,39 @@ public class PlayerActionHighlighter : MonoBehaviour
         }
         
         // Initial setup if we start on our turn (though tick will probably handle it)
+    }
+
+    private void HandleOnTick()
+    {
+        if (!enabled) return;
+        isMyTurn = true;
+        UpdateActionTiles();
+    }
+
+    private void HandleOnPlayed()
+    {
+        if (!enabled) return;
+        isMyTurn = false;
+        ClearHighlights();
+    }
+
+    public void UpdateEnvironment(Grid newGrid, ITick newTick)
+    {
+        this.grid = newGrid;
+        
+        if (this.tick != null)
+        {
+            this.tick.OnTick -= HandleOnTick;
+            this.tick.OnPlayed -= HandleOnPlayed;
+        }
+        
+        this.tick = newTick;
+        
+        if (this.tick != null)
+        {
+            this.tick.OnTick += HandleOnTick;
+            this.tick.OnPlayed += HandleOnPlayed;
+        }
     }
 
     public void OnMouseMove(Vector2 mousePosition)

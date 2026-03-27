@@ -3,7 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 public sealed class GridPlaceable : MonoBehaviour
 {
-    public enum PlaceableType { Unassigned, Entity, Pickup, Wall, Bush }
+    public enum PlaceableType { Unassigned, Entity, Pickup, Wall, Bush, Door }
     [SerializeField] private PlaceableType type;
     public PlaceableType Type => type;
 

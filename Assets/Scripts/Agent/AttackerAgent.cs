@@ -80,10 +80,32 @@ public class AttackerAgent : Agent, IMoveInputHandler
         this.entity = entity;
     }
 
+    public void UpdateGrid(Grid newGrid)
+    {
+        customGridSensorComponent.SetAgentReferences(gridPlaceable, entity.damageDealer, newGrid);
+    }
+
+    public void UpdateTick(ITick newTick)
+    {
+        if (this.tick != null)
+            this.tick.OnTick -= ActOnCooldown;
+        
+        this.tick = newTick;
+        
+        if (this.tick != null)
+            this.tick.OnTick += ActOnCooldown;
+    }
+
     private bool pendingDecision = false;
 
     private void ActOnCooldown()
     {
+        if (!entity.IsActiveForTurns)
+        {
+            tick.OnPlayed?.Invoke();
+            return;
+        }
+
         if (controller.IsControlled())
         {
             controller.ConsumeControlTurn();
