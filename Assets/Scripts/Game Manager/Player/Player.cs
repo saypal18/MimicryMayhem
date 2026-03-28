@@ -13,11 +13,13 @@ public class Player : MonoBehaviour
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private Image cooldownImage;
     [SerializeField] private Transform highlightParent;
+    [SerializeField] private QuestManager questManager;
 
     [Header("Multi-Grid Play Mode")]
     [SerializeField] private List<GameInitializer> environments = new List<GameInitializer>();
 
     private Entity player;
+    public System.Action<Entity> OnPlayerSpawned;
     private int points;
 
     private GameInitializer GetPlayerEnvironment()
@@ -104,6 +106,8 @@ public class Player : MonoBehaviour
                     inventoryUI.AssignInventory(player.inventory);
                     inventoryUI.Assign(player);
                     inventoryUI.AssignEquippedItem(player.equippedItem);
+
+                    OnPlayerSpawned?.Invoke(player);
                 }
                 else
                 {
@@ -151,6 +155,8 @@ public class Player : MonoBehaviour
         playerUI.randomizeToggle.onValueChanged.Invoke(playerUI.randomizeToggle.isOn);
 
         playerUI.restartButton.onClick.AddListener(ResetAllEnvironments);
+
+        if (questManager != null) questManager.ClearAll();
 
         ResetAllEnvironments();
     }

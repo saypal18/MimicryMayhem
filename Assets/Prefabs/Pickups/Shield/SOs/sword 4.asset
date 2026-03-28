@@ -18,5 +18,5 @@ MonoBehaviour:
   description: Shield
   maxStackSize: 1
   tier: 4
-  currentGrip: 0
+  currentGrip: 4
   range: 3

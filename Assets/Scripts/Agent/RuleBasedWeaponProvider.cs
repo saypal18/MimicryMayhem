@@ -23,6 +23,12 @@ public class RuleBasedWeaponProvider : MonoBehaviour
         this.pickupParent = parent;
         this.entity = entity;
 
+        StartCoroutine(InitialSpawnRoutine());
+    }
+
+    private IEnumerator InitialSpawnRoutine()
+    {
+        yield return new WaitForEndOfFrame();
         if (!entity.IsPlayer && !inventory.HasAnyItem())
         {
             SpawnWeapon();

@@ -3024,6 +3024,7 @@ MonoBehaviour:
   inventoryUI: {fileID: 1213528981}
   cooldownImage: {fileID: 1475025918}
   highlightParent: {fileID: 0}
+  questManager: {fileID: 0}
   environments:
   - {fileID: 1241795408}
   - {fileID: 631604651}
@@ -3041,9 +3042,248 @@ Transform:
   m_LocalPosition: {x: 21.11362, y: 18.45967, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1140512329}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1140512328
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1140512329}
+  - component: {fileID: 1140512334}
+  - component: {fileID: 1140512333}
+  - component: {fileID: 1140512332}
+  - component: {fileID: 1140512331}
+  - component: {fileID: 1140512330}
+  - component: {fileID: 1140512339}
+  - component: {fileID: 1140512338}
+  - component: {fileID: 1140512337}
+  - component: {fileID: 1140512336}
+  - component: {fileID: 1140512335}
+  - component: {fileID: 1140512340}
+  m_Layer: 0
+  m_Name: quest system
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1140512329
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1137655401}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1140512330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fcaafd6d8cc0c349a880d0159375a6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponFindHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: 'Find a [h]BOW[/h]'
+  categoryKey: 20_weapon_hint
+  delayAfterMove: 10
+--- !u!114 &1140512331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ccef1f07ab5bb349baf38219e18d2eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoveHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: '[h]CLICK[/h] on a neighbouring tile to move'
+  categoryKey: 10_move_hint
+  delay: 5
+--- !u!114 &1140512332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295827a768cab7b43a45b699bc69dc5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  questText: '[h]ESCAPE[/h] the dungeon'
+  categoryKey: 01_main
+--- !u!114 &1140512333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509a2ec9420efa247879aab172e7c7b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuestUI
+  questManager: {fileID: 1140512334}
+  questTextBox: {fileID: 1878261853}
+  emptyMessage: 
+  colorA: {r: 0, g: 0.8705883, b: 1, a: 1}
+  colorB: {r: 1, g: 1, b: 1, a: 1}
+  pulseFrequency: 0.125
+  stopAfterDuration: 3
+--- !u!114 &1140512334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00d68e672b8a5a04eb3c595a30359e8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuestManager
+  clearOnStart: 1
+  highlightColor: {r: 0, g: 0.87081695, b: 1, a: 1}
+  highlightBold: 1
+  OnQuestChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1140512335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e98d01a01766dd54f8ada6aca24d5442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NextAreaHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: You can collect tier 1 and tier 2 bows and swords in this area. move
+    to [h]NEXT AREA[/h], the one on the right to continue
+  categoryKey: 41_next_area_hint
+  delayAfterFull: 45
+  grid2Index: 1
+--- !u!114 &1140512336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21b8ff27e596fde45a1891ae4e875b23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryFullHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: '[h]RIGHT CLICK[/h] an item on the inventory to drop it. Your can at
+    max pick up [h]{0}[/h] weapons.'
+  categoryKey: 40_inventory_full_hint
+--- !u!114 &1140512337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4176de519d0cc3242a5ab4bf242e0d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DefeatEnemiesHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: '[h]DEFEAT[/h] [h]3[/h] enemies.'
+  categoryKey: 31_combat_hint_defeat
+  enemiesToDefeat: 3
+  delayAfterSword: 30
+--- !u!114 &1140512338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c19edce9288f0854cb87a972cc61d1b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BowSwordRangeHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: Use the long range of [h]BOW[/h] to defeat an enemy using a [h]SWORD[/h].
+  categoryKey: 30_combat_hint_range
+  delayAfterFirstAttack: 10
+--- !u!114 &1140512339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee515822db4b6f4989a7ec477054e4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HighTierAreaWarningQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  warningText: 'You aren''t equipped well to handle this area. You might get [h]OBLITERATED[/h]'
+  categoryKey: 50_area_warning
+  requiredTier: 3
+  grid1Index: 0
+  grid2Index: 1
+  grid4Index: 3
+--- !u!114 &1140512340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c899a51379ab12f4a99a6c255d4ebf7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponAttackHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: CLICK on an enemy to attack in its general direction. Bow's range is
+    [h]2[/h]. Sword's range is [h]1[/h].
+  categoryKey: 25_weapon_attack_hint
+  delayAfterWeaponAcquired: 10
 --- !u!1001 &1147041997
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5116,7 +5356,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1878261852
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5133,8 +5373,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 320, y: 162.51294}
-  m_SizeDelta: {x: 145.7625, y: 50}
+  m_AnchoredPosition: {x: 316.50003, y: -4.478498}
+  m_SizeDelta: {x: 145.7625, y: 309.7561}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1878261853
 MonoBehaviour:
@@ -5156,17 +5396,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '(!) Goal: Escape the dungeon!'
+  m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 841fb546cd7178248a98b9af47719a2f, type: 2}
+  m_sharedMaterial: {fileID: -491451174616029511, guid: 841fb546cd7178248a98b9af47719a2f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.46378693, g: 0.7832579, b: 0.84276724, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5190,8 +5430,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
