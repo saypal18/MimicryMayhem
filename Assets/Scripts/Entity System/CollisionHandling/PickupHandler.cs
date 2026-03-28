@@ -7,6 +7,7 @@ using FMOD.Studio;
 public class PickupHandler
 {
     public Action<Pickup> OnPickupCollected;
+    public Action<Pickup> OnPickupFailed;
     [SerializeField] private GameObject thisObject;
 
     [Header("Audio")]
@@ -15,6 +16,7 @@ public class PickupHandler
     public void Initialize()
     {
         OnPickupCollected = null;
+        OnPickupFailed = null;
     }
 
     public void OnPickup(GameObject other)
@@ -32,6 +34,10 @@ public class PickupHandler
             {
                 PlayPickupSound(pickupItemType);
                 OnPickupCollected?.Invoke(pickup);
+            }
+            else
+            {
+                OnPickupFailed?.Invoke(pickup);
             }
         }
     }

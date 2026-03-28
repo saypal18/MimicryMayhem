@@ -26,6 +26,8 @@ public class AttackerAgent : Agent, IMoveInputHandler
     private bool useAttack = false;
     private Vector2 mousePosition;
 
+    public event System.Action OnAttackPerformed;
+
     private AbilityController controller;
     private ActiveAbility activeAbility;
     [SerializeField] private CustomGridSensorComponent customGridSensorComponent;
@@ -195,6 +197,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
             if (acted && isAttack)
             {
                 activeAbility.PlayAttackSound(transform.position, entity.IsPlayer);
+                OnAttackPerformed?.Invoke();
             }
             pendingDecision = false;
             tick.OnPlayed?.Invoke();

@@ -3060,6 +3060,12 @@ GameObject:
   - component: {fileID: 1140512332}
   - component: {fileID: 1140512331}
   - component: {fileID: 1140512330}
+  - component: {fileID: 1140512339}
+  - component: {fileID: 1140512338}
+  - component: {fileID: 1140512337}
+  - component: {fileID: 1140512336}
+  - component: {fileID: 1140512335}
+  - component: {fileID: 1140512340}
   m_Layer: 0
   m_Name: quest system
   m_TagString: Untagged
@@ -3147,6 +3153,10 @@ MonoBehaviour:
   questManager: {fileID: 1140512334}
   questTextBox: {fileID: 1878261853}
   emptyMessage: 
+  colorA: {r: 0, g: 0.8705883, b: 1, a: 1}
+  colorB: {r: 1, g: 1, b: 1, a: 1}
+  pulseFrequency: 0.125
+  stopAfterDuration: 3
 --- !u!114 &1140512334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3165,6 +3175,115 @@ MonoBehaviour:
   OnQuestChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1140512335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e98d01a01766dd54f8ada6aca24d5442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NextAreaHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: You can collect tier 1 and tier 2 bows and swords in this area. move
+    to [h]NEXT AREA[/h], the one on the right to continue
+  categoryKey: 41_next_area_hint
+  delayAfterFull: 45
+  grid2Index: 1
+--- !u!114 &1140512336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21b8ff27e596fde45a1891ae4e875b23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryFullHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: '[h]RIGHT CLICK[/h] an item on the inventory to drop it. Your can at
+    max pick up [h]{0}[/h] weapons.'
+  categoryKey: 40_inventory_full_hint
+--- !u!114 &1140512337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4176de519d0cc3242a5ab4bf242e0d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DefeatEnemiesHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: '[h]DEFEAT[/h] [h]3[/h] enemies.'
+  categoryKey: 31_combat_hint_defeat
+  enemiesToDefeat: 3
+  delayAfterSword: 30
+--- !u!114 &1140512338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c19edce9288f0854cb87a972cc61d1b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BowSwordRangeHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: Use the long range of [h]BOW[/h] to defeat an enemy using a [h]SWORD[/h].
+  categoryKey: 30_combat_hint_range
+  delayAfterFirstAttack: 10
+--- !u!114 &1140512339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee515822db4b6f4989a7ec477054e4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HighTierAreaWarningQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  warningText: 'You aren''t equipped well to handle this area. You might get [h]OBLITERATED[/h]'
+  categoryKey: 50_area_warning
+  requiredTier: 3
+  grid1Index: 0
+  grid2Index: 1
+  grid4Index: 3
+--- !u!114 &1140512340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140512328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c899a51379ab12f4a99a6c255d4ebf7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponAttackHintQuest
+  questManager: {fileID: 1140512334}
+  playerScript: {fileID: 1137655400}
+  hintText: CLICK on an enemy to attack in its general direction. Bow's range is
+    [h]2[/h]. Sword's range is [h]1[/h].
+  categoryKey: 25_weapon_attack_hint
+  delayAfterWeaponAcquired: 10
 --- !u!1001 &1147041997
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5279,15 +5398,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 841fb546cd7178248a98b9af47719a2f, type: 2}
+  m_sharedMaterial: {fileID: -491451174616029511, guid: 841fb546cd7178248a98b9af47719a2f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 0.5251572, g: 0.92511445, b: 1, a: 1}
+  m_fontColor: {r: 0.46378693, g: 0.7832579, b: 0.84276724, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5311,7 +5430,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
