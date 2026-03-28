@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     
     private Grid grid;
     private PlayerActionHighlighter highlighter;
+    private Camera cam;
 
     public void InitializeMove(IMoveInputHandler moveInputHandler)
     {
@@ -19,35 +20,37 @@ public class InputManager : MonoBehaviour
     {
         this.scrollHandler = scrollHandler;
     }
-    public void InitializeClickMap(Grid grid, PlayerActionHighlighter highlighter)
+    public void InitializeClickMap(Grid grid, PlayerActionHighlighter highlighter, Camera cam)
     {
         this.grid = grid;
         this.highlighter = highlighter;
+        this.cam = cam;
+        if (highlighter != null) highlighter.SetInputManager(this);
     }
 
-    public void MovePlayer(InputAction.CallbackContext context)
-    {
-        if (context.performed && grid != null && highlighter != null && highlighter.enabled)
-        {
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -Camera.main.transform.position.z));
-            Vector2Int hoverPos = grid.GetGridPosition(mouseWorldPos);
-
-            if (highlighter.IsValidMoveTile(hoverPos))
-            {
-                moveInputHandler?.OnGridClick(hoverPos, false);
-            }
-        }
-    }
     public void Attack(InputAction.CallbackContext context)
     {
-        if (context.performed && grid != null && highlighter != null && highlighter.enabled)
+        if (context.performed && grid != null && highlighter != null && highlighter.enabled && cam != null)
         {
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -Camera.main.transform.position.z));
-            Vector2Int hoverPos = grid.GetGridPosition(mouseWorldPos);
-
-            if (highlighter.IsValidAttackTile(hoverPos))
+            Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z));
+            
+            // Check for entity collider
+            Collider2D collider = Physics2D.OverlapPoint(mouseWorldPos);
+            if (collider != null && collider.TryGetComponent(out Entity entity))
             {
-                moveInputHandler?.OnGridClick(hoverPos, true);
+                // If it's an enemy (not self), perform cardinal attack calculation
+                if (entity.transform != agentTransform)
+                {
+                    moveInputHandler?.OnGridClick(entity.Position, true);
+                    return;
+                }
+            }
+
+            // Fallback to grid-based move if no entity or self clicked
+            Vector2Int hoverPos = grid.GetGridPosition(mouseWorldPos);
+            if (highlighter.IsAdjacent(hoverPos))
+            {
+                moveInputHandler?.OnGridClick(hoverPos, false);
             }
         }
     }
@@ -65,7 +68,6 @@ public class InputManager : MonoBehaviour
         mousePosition = ApplyFisheyeDistortion(rawMousePosition);
 
         // 3. Send the CORRECTED position to the rest of your game
-        moveInputHandler?.OnMouseMove(mousePosition);
     }
 
     /// <summary>
@@ -101,7 +103,7 @@ public class InputManager : MonoBehaviour
         if (mouseArrow == null || moveInputHandler == null || agentTransform == null) return;
 
         // Formula from AttackerAgent.heuristic
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -Camera.main.transform.position.z));
+        Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z));
         Vector3 directionVector = mouseWorldPos - agentTransform.position;
 
         // Find cardinal direction with smallest angle (formula from AttackerAgent.cs)

@@ -40,6 +40,7 @@ public class EntitySpawner
     private ITurnManager turnManager;
     private PickupPlacer pickupPlacer;
     private readonly List<Entity> activeEntities = new List<Entity>();
+    private List<Pickup> currentWeaponPool;
 
     /// <summary>Number of entities currently alive on the grid.</summary>
     public int ActiveEntityCount => activeEntities.Count;
@@ -58,6 +59,7 @@ public class EntitySpawner
         this.pickupPlacer = pickupPlacer;
         this.turnTicks = turnManager.GetTeams();
         activeEntities.Clear();
+        this.currentWeaponPool = new List<Pickup>(ruleBasedWeaponPrefabs);
     }
 
     // public void Initialize(Grid grid, InputManager inputManager, GameInitializer gameInitializer)
@@ -80,11 +82,9 @@ public class EntitySpawner
             bp.BehaviorType = isRuleBased ? BehaviorType.HeuristicOnly : BehaviorType.InferenceOnly;
         }
 
-        if (isRuleBased)
-        {
-            RuleBasedWeaponProvider weaponProvider = entity.gameObject.AddComponent<RuleBasedWeaponProvider>();
-            weaponProvider.Initialize(ruleBasedWeaponPrefabs, ruleBasedWeaponSpawnDelay, entity.inventory, grid, pickupPlacer.PickupParent, entity);
-        }
+        RuleBasedWeaponProvider weaponProvider = entity.gameObject.AddComponent<RuleBasedWeaponProvider>();
+        weaponProvider.Initialize(ruleBasedWeaponPrefabs, currentWeaponPool, ruleBasedWeaponSpawnDelay, entity.inventory, grid, pickupPlacer.PickupParent, entity);
+
 
         entity.OnDropItemToGrid -= HandleEntityDropItem;
         entity.OnDropItemToGrid += HandleEntityDropItem;

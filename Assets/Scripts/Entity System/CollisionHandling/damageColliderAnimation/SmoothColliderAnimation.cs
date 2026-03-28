@@ -39,4 +39,9 @@ public class SmoothColliderAnimation : MonoBehaviour, IDamageColliderAnimation
         seq.OnComplete(() => { swordDamageCollider.SetActive(false); });
         seq.OnKill(() => { swordDamageCollider.SetActive(false); });
     }
+
+    public void UpdateRange(int range)
+    {
+        this.damageBlocks = range;
+    }
 }

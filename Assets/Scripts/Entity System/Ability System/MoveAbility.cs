@@ -10,6 +10,11 @@ public class MoveAbility : IAbility
     protected GridPlaceable gridPlaceable;
     [SerializeField] private float moveTime;
     [SerializeField] private int blocksToMove = 1;
+    public int Range 
+    { 
+        get => blocksToMove; 
+        set { blocksToMove = value; if (movement != null) movement.UpdateRange(value); } 
+    }
 
     [Header("Audio")]
     [SerializeField] private EventReference gridMovementSoundEvent;

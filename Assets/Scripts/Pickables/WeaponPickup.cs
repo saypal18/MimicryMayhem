@@ -52,7 +52,6 @@ public class WeaponPickup : Pickup
         {
             // Instantiate a unique copy of the WeaponItem so it has its own Grip value
             WeaponItem instancedWeapon = Instantiate(weaponItem);
-            instancedWeapon.Initialize();
 
             // SortedInventory.AddItem returns true if item was successfully added
             if (entity.inventory.AddItem(instancedWeapon, 1))

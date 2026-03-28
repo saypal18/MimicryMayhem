@@ -44,7 +44,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
     private GridPlaceable gridPlaceable;
     private IAbility moveAbility;
     private EquippedItemObservation equippedItemObservation;
-    private ITick tick;
+    public ITick tick;
     private EquippedItem equippedItem;
     private Entity entity;
     ////
@@ -269,14 +269,19 @@ public class AttackerAgent : Agent, IMoveInputHandler
     {
         if (gridPlaceable == null) return;
         Vector2Int currentPos = gridPlaceable.Position;
-        Vector2Int direction = gridPosition - currentPos;
+        Vector2Int diff = gridPosition - currentPos;
 
-        // Assign move action based on direction (since we normalized length, just check dominancy)
-        if (direction.x > 0) currentHeuristicAction = (int)MoveAction.Right;
-        else if (direction.x < 0) currentHeuristicAction = (int)MoveAction.Left;
-        else if (direction.y > 0) currentHeuristicAction = (int)MoveAction.Up;
-        else if (direction.y < 0) currentHeuristicAction = (int)MoveAction.Down;
-        else return; // clicked same tile
+        if (diff == Vector2Int.zero) return;
+
+        // Dominant axis for cardinal direction
+        if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+        {
+            currentHeuristicAction = diff.x > 0 ? (int)MoveAction.Right : (int)MoveAction.Left;
+        }
+        else
+        {
+            currentHeuristicAction = diff.y > 0 ? (int)MoveAction.Up : (int)MoveAction.Down;
+        }
 
         useAttack = isAttack;
 
@@ -287,14 +292,6 @@ public class AttackerAgent : Agent, IMoveInputHandler
         }
     }
 
-    public void OnMouseMove(Vector2 mousePosition)
-    {
-        this.mousePosition = mousePosition;
-        if (entity.playerActionHighlighter != null && entity.playerActionHighlighter.enabled)
-        {
-            entity.playerActionHighlighter.OnMouseMove(mousePosition);
-        }
-    }
 
     private void HandleDamageTaken(Entity attacker)
     {

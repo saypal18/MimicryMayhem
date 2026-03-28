@@ -14,6 +14,12 @@ public class MeleeAttack : IAbility
     [SerializeField] private int damageBlocks; //
     private DamageDealer damageDealer;
     public bool IsAttacking => swordDamageCollider != null && swordDamageCollider.activeSelf;
+    private int _range;
+    public int Range 
+    { 
+        get => _range; 
+        set { _range = value; if (animation != null) animation.UpdateRange(value); } 
+    }
 
     private Vector2Int currentDirection = Vector2Int.zero;
     public void SetDirection(Vector2Int direction)
@@ -54,7 +60,7 @@ public class MeleeAttack : IAbility
     public void Initialize(Grid grid, DamageDealer meleeDamageDealer)
     {
         swordDamageCollider.SetActive(false);
-        animation.Initialize(grid, swordDamageCollider, animationDuration, stopDuration, damageBlocks);
+        animation.Initialize(grid, swordDamageCollider, animationDuration, stopDuration, Range > 0 ? Range : damageBlocks);
         damageDealer = meleeDamageDealer;
     }
 }

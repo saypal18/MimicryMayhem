@@ -4,13 +4,15 @@ using System.Collections.Generic;
 public class PlayerTeleporter : MonoBehaviour
 {
     public InputManager inputManager;
+    public Camera cam;
     private DoorTile lastDoorTeleportedTo;
 
-    public void TeleportIfOnDoor(Entity player)
+    public void TeleportIfOnDoor(Entity player, Vector3 visualPosition)
     {
-        if (player == null) return;
+        if (player == null || player.CurrentGrid == null) return;
 
-        List<GridPlaceable> tile = player.CurrentGrid?.GetTile(player.Position);
+        Vector2Int gridPos = player.CurrentGrid.GetGridPosition(visualPosition);
+        List<GridPlaceable> tile = player.CurrentGrid.GetTile(gridPos);
         bool isOnDoor = false;
 
         if (tile != null)
@@ -57,7 +59,7 @@ public class PlayerTeleporter : MonoBehaviour
         if (newEnv != null) newEnv.entitySpawner.AddEntitySafely(player);
 
         if (inputManager != null)
-            inputManager.InitializeClickMap(newEnv.grid, player.playerActionHighlighter);
+            inputManager.InitializeClickMap(newEnv.grid, player.playerActionHighlighter, cam != null ? cam : Camera.main);
 
         DoorTile targetDoorTile = null;
         if (newEnv != null && newEnv.grid != null)

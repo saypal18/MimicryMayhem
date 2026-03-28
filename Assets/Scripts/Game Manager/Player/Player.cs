@@ -12,10 +12,11 @@ public class Player : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private Image cooldownImage;
+    [SerializeField] private Transform highlightParent;
 
     [Header("Multi-Grid Play Mode")]
     [SerializeField] private List<GameInitializer> environments = new List<GameInitializer>();
-    
+
     private Entity player;
     private int points;
 
@@ -67,36 +68,37 @@ public class Player : MonoBehaviour
                 {
                     player = activeEntities[i];
 
-                    // If team reservation is enabled, move the player to the reserved team
-                    if (env.entitySpawner.reserveTeamForPlayer)
-                    {
-                        int reservedId = env.entitySpawner.reservedTeamId;
-                        if (player.TeamId != reservedId)
-                        {
-                            env.entitySpawner.RemoveEntitySafely(player);
-                            player.TeamId = reservedId;
-                            env.entitySpawner.AddEntitySafely(player);
+                    // // If team reservation is enabled, move the player to the reserved team
+                    // if (env.entitySpawner.reserveTeamForPlayer)
+                    // {
+                    //     int reservedId = env.entitySpawner.reservedTeamId;
+                    //     if (player.TeamId != reservedId)
+                    //     {
+                    //         env.entitySpawner.RemoveEntitySafely(player);
+                    //         player.TeamId = reservedId;
+                    //         env.entitySpawner.AddEntitySafely(player);
 
-                            // Update agent and highlighter ticks for the new team
-                            ITick newTick = env.turnManager.GetTeams()[reservedId];
-                            player.agent.UpdateTick(newTick);
-                            if (player.playerActionHighlighter != null)
-                            {
-                                player.playerActionHighlighter.UpdateEnvironment(env.grid, newTick);
-                            }
-                        }
-                    }
+                    //         // Update agent and highlighter ticks for the new team
+                    //         ITick newTick = env.turnManager.GetTeams()[reservedId];
+                    //         player.agent.UpdateTick(newTick);
+                    //         if (player.playerActionHighlighter != null)
+                    //         {
+                    //             player.playerActionHighlighter.UpdateEnvironment(env.grid, newTick);
+                    //         }
+                    //     }
+                    // }
 
                     bp.BehaviorType = BehaviorType.HeuristicOnly;
                     player.agent.isRuleBased = false; // Human player is never rule-based
                     if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                         inputManager.InitializeMove(handler);
                     inputManager.InitializeScroll(player.equippedItem);
-                    inputManager.InitializeClickMap(env.grid, player.playerActionHighlighter);
+                    inputManager.InitializeClickMap(env.grid, player.playerActionHighlighter, mainCamera);
                     inputManager.agentTransform = player.transform;
                     player.abilityController.cooldownImage = cooldownImage;
                     if (player.playerActionHighlighter != null)
                     {
+                        player.playerActionHighlighter.highlightParent = highlightParent;
                         player.playerActionHighlighter.enabled = true;
                     }
                     inventoryUI.AssignInventory(player.inventory);
@@ -117,7 +119,7 @@ public class Player : MonoBehaviour
             }
             env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
         }
-        
+
         points = 0;
         if (vCam != null)
         {
@@ -133,21 +135,23 @@ public class Player : MonoBehaviour
             return;
         }
 
-        playerUI.gridSizeSlider.onValueChanged.AddListener((value) => {
+        playerUI.gridSizeSlider.onValueChanged.AddListener((value) =>
+        {
             foreach (var env in environments) env.grid.SetSize(new Vector2Int((int)value, (int)value));
         });
-        playerUI.gridSizeSlider.onValueChanged.Invoke(playerUI.gridSizeSlider.value); 
+        playerUI.gridSizeSlider.onValueChanged.Invoke(playerUI.gridSizeSlider.value);
 
-        playerUI.enemyCountSlider.onValueChanged.AddListener((value) => {
+        playerUI.enemyCountSlider.onValueChanged.AddListener((value) =>
+        {
             foreach (var env in environments) env.entitySpawner.SetEntityCount((int)value);
         });
         playerUI.enemyCountSlider.onValueChanged.Invoke(playerUI.enemyCountSlider.value);
-        
+
         playerUI.randomizeToggle.onValueChanged.AddListener(SetGridRandomization);
         playerUI.randomizeToggle.onValueChanged.Invoke(playerUI.randomizeToggle.isOn);
 
         playerUI.restartButton.onClick.AddListener(ResetAllEnvironments);
-        
+
         ResetAllEnvironments();
     }
 
@@ -162,14 +166,15 @@ public class Player : MonoBehaviour
     {
         teleporter = gameObject.AddComponent<PlayerTeleporter>();
         teleporter.inputManager = inputManager;
+        teleporter.cam = mainCamera;
         StartEnvironment();
     }
 
     private void Update()
     {
-        if (teleporter != null)
+        if (teleporter != null && player != null && player.moveInfo != null && !player.moveInfo.IsMoving)
         {
-            teleporter.TeleportIfOnDoor(player);
+            teleporter.TeleportIfOnDoor(player, player.transform.position);
         }
     }
 

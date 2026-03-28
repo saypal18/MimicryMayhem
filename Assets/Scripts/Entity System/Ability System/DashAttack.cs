@@ -11,6 +11,12 @@ public class DashAttack : IAbility
     private DamageDealer damageDealer;
     private Vector2Int currentDirection = Vector2Int.zero;
     private MoveInfo moveInfo;
+    private int _range;
+    public int Range 
+    { 
+        get => _range; 
+        set { _range = value; if (movement != null) movement.UpdateRange(value); } 
+    }
 
     public bool IsDashing => moveInfo != null && moveInfo.IsDashing;
 
@@ -18,7 +24,7 @@ public class DashAttack : IAbility
     {
         damageDealer = dashDamageDealer;
         movement = movementFactory.GetMovement(this.GetType());
-        movement.Initialize(dashTime, blocksToMove, gridPlaceable, moveInfo);
+        movement.Initialize(dashTime, Range > 0 ? Range : blocksToMove, gridPlaceable, moveInfo);
         this.moveInfo = moveInfo;
     }
 

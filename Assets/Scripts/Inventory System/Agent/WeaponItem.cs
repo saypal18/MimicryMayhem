@@ -8,14 +8,12 @@ public class WeaponItem : InventoryItem
     [Header("Durability / Grip")]
     //public int maxGrip;
     public int currentGrip;
+    public int range;
 
     // /// <summary>Sound category used as an FMOD parameter for pickup and drop sounds.</summary>
     // [Tooltip("Sound category sent as the FMOD 'ItemType' parameter for pickup and drop sounds.")]
     // public PickupSoundType soundType = PickupSoundType.Other;
 
-    public void Initialize()
-    {
-        currentGrip = tier;
-    }
+
 
 }

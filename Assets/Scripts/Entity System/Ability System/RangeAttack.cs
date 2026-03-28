@@ -15,6 +15,12 @@ public class RangeAttack : IAbility
 
     private DamageDealer damageDealer;
     private Grid grid;
+    private int _range;
+    public int Range 
+    { 
+        get => _range; 
+        set { _range = value; if (colliderAnimation != null) colliderAnimation.UpdateRange(value); } 
+    }
 
     private Vector2Int currentDirection = Vector2Int.zero;
 
@@ -51,6 +57,6 @@ public class RangeAttack : IAbility
     {
         this.grid = grid;
         this.damageDealer = rangeDamageDealer;
-        this.colliderAnimation.Initialize(grid, travelDuration, stopDuration, maxDistanceBlocks);
+        this.colliderAnimation.Initialize(grid, travelDuration, stopDuration, Range > 0 ? Range : maxDistanceBlocks);
     }
 }
