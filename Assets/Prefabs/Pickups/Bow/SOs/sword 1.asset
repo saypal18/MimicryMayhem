@@ -18,5 +18,5 @@ MonoBehaviour:
   description: Bow
   maxStackSize: 1
   tier: 1
-  currentGrip: 0
+  currentGrip: 1
   range: 2

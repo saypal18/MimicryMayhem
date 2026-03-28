@@ -18,5 +18,5 @@ MonoBehaviour:
   description: Sword
   maxStackSize: 1
   tier: 5
-  currentGrip: 0
+  currentGrip: 5
   range: 1
