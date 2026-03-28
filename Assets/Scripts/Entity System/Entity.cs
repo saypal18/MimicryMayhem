@@ -28,7 +28,7 @@ public class Entity : MonoBehaviour
     {
         if (IsActiveForTurns == active) return;
         IsActiveForTurns = active;
-        Debug.Log($"[Entity] {(active ? "Activated" : "Deactivated")}: {gameObject.name}");
+        //Debug.Log($"[Entity] {(active ? "Activated" : "Deactivated")}: {gameObject.name}");
         if (agent != null) agent.enabled = active;
     }
 

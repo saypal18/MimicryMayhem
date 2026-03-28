@@ -1076,7 +1076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 666808016634f5e4d946793cc9a5bcae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomGridSensorComponent
-  sensorType: 1
+  sensorType: 2
   viewRadius: 5
   showGizmos: 0
   logObservations: 0

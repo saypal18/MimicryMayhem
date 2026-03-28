@@ -9,6 +9,7 @@ public class Trainer : MonoBehaviour
 
     [SerializeField] private Vector2 gridSize;
     [SerializeField] private int fieldLength = 4;
+    [SerializeField] private SoundManager soundManager; 
 
     void Start()
     {
@@ -18,6 +19,7 @@ public class Trainer : MonoBehaviour
             GameInitializer gameInitializer = Instantiate(gameInitializerPrefab);
             gameInitializer.transform.position = initialPosition + new Vector3((i / fieldLength) * gridSize.x, (i % fieldLength) * gridSize.y, 0);
             //gameInitializer.inputManager = inputManager;
+            gameInitializer.soundManager = soundManager;
             gameInitializer.ResetEnvironment();
         }
     }

@@ -29,7 +29,7 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] public BackgroundStuffSpawner backgroundStuffSpawner;
 
     [Header("Audio")]
-    [SerializeField] private SoundManager soundManager;
+    [SerializeField] public SoundManager soundManager;
 
     [Header("Doors")]
     [SerializeField] private DoorTile doorPrefab;

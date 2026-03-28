@@ -74,7 +74,7 @@ public class ActiveAbility
 
     public void PlayAttackSound(Vector3 position, bool isPlayer)
     {
-        if (weaponAttackSoundEvent.IsNull || equippedItem == null) return;
+        if (weaponAttackSoundEvent.IsNull || equippedItem == null || !SoundManager.CanPlayAudio) return;
 
         InventoryItem item = equippedItem.Get();
         if (item == null) return;

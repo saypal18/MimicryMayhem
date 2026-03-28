@@ -4,7 +4,8 @@ using UnityEngine;
 public enum GridSensorType
 {
     Custom,
-    Easy
+    Easy,
+    Tactical
 }
 
 /// <summary>
@@ -20,6 +21,8 @@ public class CustomGridSensorComponent : SensorComponent
     private GridPlaceable pendingPlaceable;
     private DamageDealer pendingDamageResolver;
     private Grid pendingGrid;
+    private EntitySpawner pendingSpawner;
+    private Entity pendingAgentEntity;
 
     [Header("Settings")]
     public GridSensorType sensorType = GridSensorType.Custom;
@@ -36,17 +39,17 @@ public class CustomGridSensorComponent : SensorComponent
         {
             sensor = new CustomGridSensor(null, viewRadius);
         }
-        else if (sensorType == GridSensorType.Easy)
+        else if (sensorType == GridSensorType.Tactical)
         {
-            var easySensor = new EasyGridSensor(null, viewRadius);
-            easySensor.LogObservations = logObservations;
-            sensor = easySensor;
+            var tacticalSensor = new TacticalGridSensor(null, viewRadius, null, null);
+            tacticalSensor.LogObservations = logObservations;
+            sensor = tacticalSensor;
         }
 
         // Apply any references that arrived before CreateSensors was called
         if (pendingPlaceable != null)
         {
-            SetSensorReferences(pendingPlaceable, pendingDamageResolver, pendingGrid);
+            SetSensorReferences(pendingPlaceable, pendingDamageResolver, pendingGrid, pendingSpawner, pendingAgentEntity);
         }
 
         return new ISensor[] { sensor };
@@ -55,11 +58,11 @@ public class CustomGridSensorComponent : SensorComponent
     /// <summary>
     /// Called by SurvivorAgent.Initialize() to inject the runtime grid and per-agent refs.
     /// </summary>
-    public void SetAgentReferences(GridPlaceable agentPlaceable, DamageDealer agentDamageResolver, Grid grid)
+    public void SetAgentReferences(GridPlaceable agentPlaceable, DamageDealer agentDamageResolver, Grid grid, EntitySpawner spawner, Entity agentEntity)
     {
         if (sensor != null)
         {
-            SetSensorReferences(agentPlaceable, agentDamageResolver, grid);
+            SetSensorReferences(agentPlaceable, agentDamageResolver, grid, spawner, agentEntity);
         }
         else
         {
@@ -67,10 +70,12 @@ public class CustomGridSensorComponent : SensorComponent
             pendingPlaceable = agentPlaceable;
             pendingDamageResolver = agentDamageResolver;
             pendingGrid = grid;
+            pendingSpawner = spawner;
+            pendingAgentEntity = agentEntity;
         }
     }
 
-    private void SetSensorReferences(GridPlaceable placeable, DamageDealer damageResolver, Grid grid)
+    private void SetSensorReferences(GridPlaceable placeable, DamageDealer damageResolver, Grid grid, EntitySpawner spawner, Entity agentEntity)
     {
         if (sensor is CustomGridSensor customSensor)
         {
@@ -79,6 +84,10 @@ public class CustomGridSensorComponent : SensorComponent
         else if (sensor is EasyGridSensor easySensor)
         {
             easySensor.SetAgentReferences(placeable, grid);
+        }
+        else if (sensor is TacticalGridSensor tacticalSensor)
+        {
+            tacticalSensor.SetAgentReferences(placeable, grid, spawner, agentEntity);
         }
     }
 
@@ -94,9 +103,9 @@ public class CustomGridSensorComponent : SensorComponent
                 {
                     customSensor.OnDrawGizmos();
                 }
-                else if (sensor is EasyGridSensor easySensor)
+                else if (sensor is TacticalGridSensor tacticalSensor)
                 {
-                    easySensor.OnDrawGizmos();
+                    tacticalSensor.OnDrawGizmos();
                 }
             }
             else if (pendingPlaceable != null)

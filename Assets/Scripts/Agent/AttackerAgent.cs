@@ -79,7 +79,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
         damageResolver.OnDamageTaken += HandleDamageTaken;
         damageDealer.OnDamageDealt += HandleDamageDealt;
         pickupHandler.OnPickupCollected += HandlePickupCollected;
-        customGridSensorComponent.SetAgentReferences(gridPlaceable, damageDealer, grid);
+        customGridSensorComponent.SetAgentReferences(gridPlaceable, damageDealer, grid, entitySpawner, this.entity);
         this.equippedItemObservation = new EquippedItemObservation(equippedItem);
         this.equippedItem = equippedItem;
         this.entity = entity;
@@ -93,7 +93,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
 
     public void UpdateGrid(Grid newGrid)
     {
-        customGridSensorComponent.SetAgentReferences(gridPlaceable, entity.damageDealer, newGrid);
+        customGridSensorComponent.SetAgentReferences(gridPlaceable, entity.damageDealer, newGrid, entitySpawner, entity);
     }
 
     public void UpdateTick(ITick newTick)

@@ -55,6 +55,7 @@ public class MoveAbility : IAbility
 
     private void PlayMovementSound()
     {
+        if (!SoundManager.CanPlayAudio) return;
         EnsureMovementSoundInstance();
         if (!movementSoundInstance.isValid()) return;
 

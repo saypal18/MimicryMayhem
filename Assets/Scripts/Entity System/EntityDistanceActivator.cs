@@ -7,7 +7,7 @@ public class EntityDistanceActivator
 {
     [SerializeField] public bool enableDistanceActivation = false;
     [SerializeField] public int activationDistance = 10;
-    
+
     public void TickActivations(EntitySpawner entitySpawner)
     {
         var activeEntities = entitySpawner.GetActiveEntities();
@@ -34,7 +34,7 @@ public class EntityDistanceActivator
                 break;
             }
         }
-        
+
         if (player == null)
         {
             for (int i = 0; i < activeEntities.Count; i++)
@@ -43,7 +43,7 @@ public class EntityDistanceActivator
             }
             return;
         }
-        
+
         Vector2Int pPos = player.Position;
 
         for (int i = 0; i < activeEntities.Count; i++)
@@ -53,7 +53,7 @@ public class EntityDistanceActivator
 
             Vector2Int ePos = e.Position;
             int dist = Mathf.Max(Mathf.Abs(pPos.x - ePos.x), Mathf.Abs(pPos.y - ePos.y));
-            
+
             bool shouldBeActive = dist <= activationDistance;
             e.SetActiveForTurns(shouldBeActive);
         }

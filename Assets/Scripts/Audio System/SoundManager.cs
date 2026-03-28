@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using Unity.MLAgents;
 
 public class SoundManager : MonoBehaviour
 {
@@ -23,6 +24,26 @@ public class SoundManager : MonoBehaviour
 
     private EventInstance musicInstance;
     private EventInstance ambienceInstance;
+    public static bool CanPlayAudio { get; private set; } = true;
+
+    void Awake()
+    {
+        // Detect training mode:
+        // 1. Check if ML-Agents communicator is on (Python is training).
+        // 2. Check if a Trainer component exists in the scene.
+        bool isCommunicatorOn = Academy.IsInitialized && Academy.Instance.IsCommunicatorOn;
+        bool hasTrainer = FindFirstObjectByType<Trainer>() != null;
+
+        if (isCommunicatorOn || hasTrainer)
+        {
+            CanPlayAudio = false;
+            Debug.Log("[Audio] Training mode detected. Disabling all audio events.");
+        }
+        else
+        {
+            CanPlayAudio = true;
+        }
+    }
 
     public void LoadBanks()
     {
@@ -100,7 +121,7 @@ public class SoundManager : MonoBehaviour
 
     private void StartMusic()
     {
-        if (musicSoundEvent.IsNull) return;
+        if (musicSoundEvent.IsNull || !CanPlayAudio) return;
 
         musicInstance = RuntimeManager.CreateInstance(musicSoundEvent);
         musicInstance.start();
@@ -108,7 +129,7 @@ public class SoundManager : MonoBehaviour
 
     private void StartAmbience()
     {
-        if (ambienceSoundEvent.IsNull) return;
+        if (ambienceSoundEvent.IsNull || !CanPlayAudio) return;
 
         ambienceInstance = RuntimeManager.CreateInstance(ambienceSoundEvent);
         ambienceInstance.start();
@@ -132,7 +153,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayLevelStart()
     {
-        if (levelStartSoundEvent.IsNull) return;
+        if (levelStartSoundEvent.IsNull || !CanPlayAudio) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(levelStartSoundEvent);
         instance.start();
