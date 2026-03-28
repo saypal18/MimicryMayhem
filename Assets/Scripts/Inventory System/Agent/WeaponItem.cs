@@ -14,9 +14,6 @@ public class WeaponItem : InventoryItem
     // [Tooltip("Sound category sent as the FMOD 'ItemType' parameter for pickup and drop sounds.")]
     // public PickupSoundType soundType = PickupSoundType.Other;
 
-    public void Initialize()
-    {
-        currentGrip = tier;
-    }
+
 
 }

@@ -59,7 +59,7 @@ public class UnifiedDamageResolver
             Entity attackerEntity = damageDealer.entity;
             if (victimEntity != null && attackerEntity != null)
             {
-                weaponItem.Initialize();
+                weaponItem.currentGrip = weaponItem.tier;
                 Vector2Int attackerPosition = attackerEntity.GetComponent<GridPlaceable>().Position;
                 victimEntity.OnDropItemToGrid?.Invoke(victimEntity, weaponItem, attackerPosition);
             }
@@ -110,4 +110,4 @@ public class UnifiedDamageResolver
         instance.release();
     }
 
-}
+}
