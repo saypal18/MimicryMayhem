@@ -890,6 +890,13 @@ MonoBehaviour:
         Data3: 570557350
         Data4: 702215327
       Path: event:/SFX/Items/Pickup
+    stealSoundEvent:
+      Guid:
+        Data1: 584097259
+        Data2: 1291611998
+        Data3: 798433951
+        Data4: 1860272782
+      Path: event:/SFX/Items/Steal
   entityCollisionKnockback:
     moveTime: 0.2
     blocksToMove: 1
@@ -899,7 +906,7 @@ MonoBehaviour:
         Data2: 1150363421
         Data3: -2129088604
         Data4: 1418410538
-      Path: event:/SFX/Footstep/GridMovement
+      Path: event:/SFX/GridMovement
     knockbackSoundEvent:
       Guid:
         Data1: -1765258748
