@@ -1,22 +1,10 @@
 fileFormatVersion: 2
-guid: ad346862e8da9054e932ad583dcde044
+guid: efc66791273a29447b51f035a03217d9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6588257164011788065
-    second: Anime BIGJ_0
-  - first:
-      213: -4528615182376397613
-    second: Anime BIGJ_1
-  - first:
-      213: 8911069737947120024
-    second: Anime BIGJ_2
-  - first:
-      213: 4547561450758299300
-    second: Anime BIGJ_3
-  - first:
-      213: 5372894005038393720
-    second: Anime BIGJ_4
+      213: 5337426626309392011
+    second: pe border 4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -67,7 +55,7 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
-  alphaIsTransparency: 0
+  alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
@@ -125,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Anime BIGJ_0
+      name: pe border 4_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1
-        width: 74
-        height: 71
+        x: 0
+        y: 0
+        width: 72
+        height: 89
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,96 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fd8a722f30fc194a0800000000000000
-      internalID: -6588257164011788065
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Anime BIGJ_1
-      rect:
-        serializedVersion: 2
-        x: 75
-        y: 33
-        width: 28
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3d4930a3c702721c0800000000000000
-      internalID: -4528615182376397613
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Anime BIGJ_2
-      rect:
-        serializedVersion: 2
-        x: 75
-        y: 1
-        width: 30
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 891421bb6ba7aab70800000000000000
-      internalID: 8911069737947120024
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Anime BIGJ_3
-      rect:
-        serializedVersion: 2
-        x: 103
-        y: 33
-        width: 22
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4ae55b2ab0f2c1f30800000000000000
-      internalID: 4547561450758299300
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Anime BIGJ_4
-      rect:
-        serializedVersion: 2
-        x: 105
-        y: 1
-        width: 17
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 879a32a71aa509a40800000000000000
-      internalID: 5372894005038393720
+      spriteID: b8602ebdc39521a40800000000000000
+      internalID: 5337426626309392011
       vertices: []
       indices: 
       edges: []
@@ -248,11 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Anime BIGJ_0: -6588257164011788065
-      Anime BIGJ_1: -4528615182376397613
-      Anime BIGJ_2: 8911069737947120024
-      Anime BIGJ_3: 4547561450758299300
-      Anime BIGJ_4: 5372894005038393720
+      pe border 4_0: 5337426626309392011
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

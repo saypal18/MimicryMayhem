@@ -12,6 +12,7 @@ public class PickupHandler
 
     [Header("Audio")]
     [SerializeField] private EventReference pickupSoundEvent;
+    [SerializeField] private EventReference stealSoundEvent;
 
     public void Initialize()
     {
@@ -22,7 +23,7 @@ public class PickupHandler
     public void OnPickup(GameObject other)
     {
         if (thisObject.TryGetComponent(out Entity entity) && entity.IsBoss) return;
-        
+
         if (other != null && other.TryGetComponent(out Pickup pickup))
         {
             ItemType? pickupItemType = null;
@@ -32,9 +33,11 @@ public class PickupHandler
                 if (weapon != null) pickupItemType = weapon.itemType;
             }
 
+            bool isSteal = pickup.WasDroppedByEntity;
+
             if (pickup.Collected(thisObject))
             {
-                PlayPickupSound(pickupItemType);
+                PlayPickupSound(pickupItemType, isSteal);
                 OnPickupCollected?.Invoke(pickup);
             }
             else
@@ -44,12 +47,15 @@ public class PickupHandler
         }
     }
 
-    private void PlayPickupSound(ItemType? itemType)
+    private void PlayPickupSound(ItemType? itemType, bool isSteal)
     {
+
         if (Trainer.IsTraining) return;
         //// FMOD BUG
         //return;
         if (pickupSoundEvent.IsNull) return;
+        EventReference eventRef = isSteal ? stealSoundEvent : pickupSoundEvent;
+        if (eventRef.IsNull) return;
 
         if (!itemType.HasValue)
         {
@@ -58,7 +64,7 @@ public class PickupHandler
         }
 
         Entity entity = thisObject.GetComponent<Entity>();
-        EventInstance instance = RuntimeManager.CreateInstance(pickupSoundEvent);
+        EventInstance instance = RuntimeManager.CreateInstance(eventRef);
         instance.setParameterByNameWithLabel("ItemType", itemType.Value.ToString());
         instance.setParameterByNameWithLabel("CharacterType", (entity != null && entity.IsPlayer) ? "Player" : "Enemy");
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(thisObject.transform.position));

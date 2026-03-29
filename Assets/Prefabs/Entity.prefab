@@ -715,8 +715,8 @@ GameObject:
   m_Component:
   - component: {fileID: 248402895209049497}
   - component: {fileID: 6032070121257784613}
-  - component: {fileID: 3152046630380771171}
   - component: {fileID: 1396743655911654247}
+  - component: {fileID: 1099102077340485599}
   m_Layer: 7
   m_Name: EntityAnimation
   m_TagString: Untagged
@@ -764,7 +764,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 143130b5257fb21439e35e97aa55ea02, type: 2}
+  - {fileID: 2100000, guid: cf6cd548529ed954ab5f8c8963993906, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -788,7 +788,15 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3152046630380771171
+--- !u!33 &1396743655911654247
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3604647958629198823}
+  m_Mesh: {fileID: 0}
+--- !u!114 &1099102077340485599
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -800,7 +808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: spine-unity::Spine.Unity.SkeletonAnimation
-  skeletonDataAsset: {fileID: 11400000, guid: ae7bef29c788e5e41a76c348f8a4aeda, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 220e7d89f6151de4bb6349975f5b3703, type: 2}
   initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -828,17 +836,9 @@ MonoBehaviour:
   physicsMovementRelativeTo: {fileID: 0}
   updateTiming: 1
   unscaledTime: 0
-  _animationName: Body IDLE
-  loop: 1
+  _animationName: 
+  loop: 0
   timeScale: 1
---- !u!33 &1396743655911654247
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3604647958629198823}
-  m_Mesh: {fileID: 0}
 --- !u!1 &4593017720766107119
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,6 +984,13 @@ MonoBehaviour:
         Data3: 570557350
         Data4: 702215327
       Path: event:/SFX/Items/Pickup
+    stealSoundEvent:
+      Guid:
+        Data1: 584097259
+        Data2: 1291611998
+        Data3: 798433951
+        Data4: 1860272782
+      Path: event:/SFX/Items/Steal
   entityCollisionKnockback:
     moveTime: 0.2
     blocksToMove: 1
@@ -993,7 +1000,7 @@ MonoBehaviour:
         Data2: 1150363421
         Data3: -2129088604
         Data4: 1418410538
-      Path: event:/SFX/Footstep/GridMovement
+      Path: event:/SFX/GridMovement
     knockbackSoundEvent:
       Guid:
         Data1: -1765258748

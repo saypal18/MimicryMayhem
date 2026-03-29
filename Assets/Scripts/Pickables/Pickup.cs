@@ -3,6 +3,7 @@ using UnityEngine;
 public abstract class Pickup : MonoBehaviour
 {
     protected GameObject dropper;
+    public bool WasDroppedByEntity => dropper != null;
     public abstract bool Collected(GameObject picker);
     public virtual void Initialize(Grid grid, Vector2Int position, GameObject dropper)
     {

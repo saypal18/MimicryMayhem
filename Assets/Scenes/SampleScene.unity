@@ -819,7 +819,7 @@ MonoBehaviour:
   m_MinValue: 1
   m_MaxValue: 50
   m_WholeNumbers: 1
-  m_Value: 2
+  m_Value: 6
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1428,8 +1428,8 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420030}
-  - component: {fileID: 519420033}
   - component: {fileID: 519420034}
+  - component: {fileID: 519420035}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1549,20 +1549,6 @@ Transform:
   - {fileID: 1102849815}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
-  nonRigidbodyVelocity: 0
-  attenuationObject: {fileID: 0}
 --- !u!114 &519420034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1595,6 +1581,18 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &519420035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e59f4ac966e8494297b4f8030454115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FMODListener2D
 --- !u!1 &570771868
 GameObject:
   m_ObjectHideFlags: 0
@@ -2147,7 +2145,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4934599878771539894, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5084263085645196711, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3108,6 +3106,9 @@ MonoBehaviour:
   useCustomInventorySize: 1
   environments:
   - {fileID: 1241795408}
+  - {fileID: 631604651}
+  - {fileID: 59991942}
+  - {fileID: 2087419247}
 --- !u!4 &1137655401
 Transform:
   m_ObjectHideFlags: 0
@@ -4694,7 +4695,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4934599878771539894, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5084263085645196711, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5704,7 +5705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4934599878771539894, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5084263085645196711, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_LocalPosition.x
