@@ -1,0 +1,60 @@
+Survival of the Fattest.png
+size:283,142
+filter:Linear,Linear
+pma:true
+bow gui item
+bounds:258,59,21,22
+rotate:90
+character body
+bounds:150,68,72,69
+rotate:90
+character leg
+bounds:220,31,28,30
+rotate:90
+character leg 2
+bounds:197,3,26,29
+rotate:90
+crown
+bounds:85,4,53,64
+rotate:90
+crown tier
+bounds:202,33,15,15
+crown tier border
+bounds:258,82,23,23
+eye bg
+bounds:151,2,21,20
+eye fg
+bounds:185,32,15,16
+josh body
+bounds:70,59,81,78
+rotate:90
+josh bow
+bounds:2,54,66,86
+josh eye 2
+bounds:252,31,26,29
+rotate:90
+josh eye1
+bounds:2,2,44,50
+josh hand
+bounds:256,11,18,18
+josh leg 1
+bounds:221,78,35,27
+josh leg 2
+bounds:151,24,32,33
+josh sword
+bounds:221,107,33,60
+rotate:90
+mask item bg
+bounds:48,16,36,35
+rotate:90
+move field
+bounds:228,3,26,26
+shield gui item
+bounds:197,50,16,21
+rotate:90
+sword animated icon
+bounds:221,61,15,35
+rotate:90
+sword gui item
+bounds:174,3,19,21
+rotate:90
