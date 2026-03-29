@@ -1,6 +1,7 @@
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.MLAgents.Policies;
 
 /// <summary>
 /// Advanced ISensor that provides an ego-centric view with tactical information.
@@ -21,28 +22,33 @@ public class TacticalGridSensor : ISensor
 
     public bool LogObservations = false;
 
-    private Grid grid;
-    private GridPlaceable agentPlaceable;
+    // private Grid grid;
+    // private GridPlaceable agentPlaceable;
     private Entity agentEntity;
-    private EntitySpawner entitySpawner;
+    // private EntitySpawner entitySpawner;
 
     private ObservationSpec observationSpec;
 
-    public TacticalGridSensor(Grid grid, int viewRadius, EntitySpawner spawner, Entity agentEntity)
+    public TacticalGridSensor(int viewRadius, Entity agentEntity)
     {
-        this.grid = grid;
+        // this.grid = grid;
         this.viewRadius = viewRadius;
         this.viewSize = viewRadius * 2 + 1;
-        this.entitySpawner = spawner;
+        // this.entitySpawner = spawner;
         this.agentEntity = agentEntity;
+        // this.agentPlaceable = placeable;
         observationSpec = ObservationSpec.Visual(Channels, viewSize, viewSize);
     }
 
-    public void SetAgentReferences(GridPlaceable placeable, Grid grid, EntitySpawner spawner, Entity agentEntity)
+    public void SetAgentReferences( Entity agentEntity)
     {
-        this.grid = grid;
-        this.agentPlaceable = placeable;
-        this.entitySpawner = spawner;
+        //    Debug.Log("setting agent");
+        //    Debug.Log(placeable);
+        //    Debug.Log(grid);
+
+        //    this.grid = grid;
+        //    this.agentPlaceable = placeable;
+        //    this.entitySpawner = spawner;
         this.agentEntity = agentEntity;
     }
 
@@ -56,8 +62,28 @@ public class TacticalGridSensor : ISensor
 
     public int Write(ObservationWriter writer)
     {
+        // if (agentEntity != null && agentEntity.TryGetComponent(out BehaviorParameters bp) && bp.BehaviorType == BehaviorType.InferenceOnly)
+        // {
+        //     Debug.Log("Gotcha");
+        //     Debug.Log(agentPlaceable);
+        //     Debug.Log(grid);
+        //     Debug.Log(entitySpawner);
+        //     Debug.Log(agentEntity);
+        // }
+        //if (LogObservations)
+        //{
+        //    Debug.Log("here");
+        //}
+        //if (agentEntity.GetComponent<CustomGridSensorComponent>().logObservations)
+        //{
+        //    Debug.Log("here");
+        //}
+        GridPlaceable agentPlaceable = agentEntity.gridPlaceable;
+        Grid grid = agentEntity.CurrentGrid;
+        EntitySpawner entitySpawner = agentEntity.entitySpawner;
         if (agentPlaceable == null || grid == null || entitySpawner == null || agentEntity == null)
         {
+            //Debug.Log("NO");
             // Fill with zeros if not initialized
             for (int c = 0; c < Channels; c++)
                 for (int h = 0; h < viewSize; h++)
@@ -65,7 +91,7 @@ public class TacticalGridSensor : ISensor
                         writer[c, h, w] = 0f;
             return viewSize * viewSize * Channels;
         }
-
+        //Debug.Log("at least");
         Vector2Int center = agentPlaceable.Position;
         float[,,] observations = new float[Channels, viewSize, viewSize];
 
@@ -182,63 +208,26 @@ public class TacticalGridSensor : ISensor
                 }
             }
         }
+        if (LogObservations && agentEntity != null)
+        {
+            string[] channelNames = { "Allied Team", "Enemy Team", "Pickup", "Bush", "Wall/Bounds", "Attack Range" };
+            string log = $"TacticalGridSensor - {agentEntity.name} (Team {agentEntity.TeamId}) - {viewSize}x{viewSize}\n";
+            for (int c = 0; c < Channels; c++)
+            {
+                log += $"Channel {c} ({channelNames[c]}):\n";
+                for (int r = viewSize - 1; r >= 0; r--)
+                {
+                    for (int w = 0; w < viewSize; w++)
+                    {
+                        log += observations[c, r, w] > 0.5f ? "# " : "_ ";
+                    }
+                    log += "\n";
+                }
+            }
+            Debug.Log(log);
+        }
 
         return viewSize * viewSize * Channels;
-    }
-
-    public void OnDrawGizmos()
-    {
-        if (agentPlaceable == null || grid == null || agentEntity == null) return;
-
-        Vector2Int center = agentPlaceable.Position;
-
-        // Draw attack range tiles in a different color
-        int range = 0;
-        if (agentEntity.equippedItem != null)
-        {
-            var equipped = agentEntity.equippedItem.Get();
-            if (equipped is WeaponItem weapon)
-            {
-                range = weapon.range;
-            }
-        }
-
-        for (int dy = -viewRadius; dy <= viewRadius; dy++)
-        {
-            for (int dx = -viewRadius; dx <= viewRadius; dx++)
-            {
-                Vector2Int worldCell = center + new Vector2Int(dx, dy);
-                Vector3 worldPos = grid.GetWorldPosition(worldCell);
-
-                // Cardinal direction check for range visualization: straight lines only
-                bool isCardinal = (dx == 0 || dy == 0);
-                int dist = Mathf.Abs(dx) + Mathf.Abs(dy);
-                if (isCardinal && dist > 0 && dist <= range)
-                {
-                    Gizmos.color = new Color(1, 0.5f, 0, 0.3f); // Orange for attack range
-                    Gizmos.DrawCube(worldPos, new Vector3(grid.TileSize.x * 0.95f, grid.TileSize.y * 0.95f, 0.05f));
-                }
-            }
-        }
-
-        // Draw entities at visual positions
-        if (entitySpawner != null)
-        {
-            foreach (var entity in entitySpawner.GetActiveEntities())
-            {
-                if (entity == null) continue;
-                Vector2Int visualPos = grid.GetGridPosition(entity.transform.position);
-                int dx = visualPos.x - center.x;
-                int dy = visualPos.y - center.y;
-
-                if (Mathf.Abs(dx) <= viewRadius && Mathf.Abs(dy) <= viewRadius)
-                {
-                    Vector3 worldPos = grid.GetWorldPosition(visualPos);
-                    Gizmos.color = (entity.TeamId == agentEntity.TeamId) ? Color.blue : Color.red;
-                    Gizmos.DrawWireCube(worldPos, new Vector3(grid.TileSize.x * 0.8f, grid.TileSize.y * 0.8f, 0.1f));
-                }
-            }
-        }
     }
 
     public void Update() { }

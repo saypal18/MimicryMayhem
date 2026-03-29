@@ -8,6 +8,7 @@ using FMOD.Studio;
 public class UnifiedDamageResolver
 {
     public Action<Entity> OnDamageTaken;
+    public Action<Entity> OnKilled;
 
     GridPlaceable gridPlaceable;
     SortedInventory inventory;
@@ -30,6 +31,7 @@ public class UnifiedDamageResolver
         this.equippedItem = equippedItem;
         this.moveInfo = moveInfo;
         OnDamageTaken = null;
+        OnKilled = null;
         knockbackMovement = movementFactory.GetMovement(this.GetType());
         knockbackMovement.Initialize(knockbackTime, knockbackBlocks, gridPlaceable, moveInfo);
         this.controller = controller;
@@ -37,17 +39,32 @@ public class UnifiedDamageResolver
 
     public void AcceptDamage(DamageDealer damageDealer)
     {
+        damageDealer.OnDamageDealt?.Invoke(gridPlaceable.Entity);
+        OnDamageTaken?.Invoke(damageDealer.entity);
+
+        PlayImpactSound(damageDealer);
+
+        Entity victim = gridPlaceable.Entity;
+        if (victim != null && victim.IsKillable && !inventory.HasAnyItem())
+        {
+            damageDealer.OnKillDealt?.Invoke(victim);
+            OnKilled?.Invoke(damageDealer.entity);
+
+            // Reward attacker with a grip reset on all weapons
+            if (damageDealer.entity != null && damageDealer.entity.inventory != null)
+            {
+                damageDealer.entity.inventory.ResetAllGrips();
+            }
+
+            PoolingEntity.Despawn(victim.gameObject);
+            return;
+        }
+
         InventoryItem item = equippedItem.Get();
         if (item == null || !(item is WeaponItem))
         {
             return;
         }
-
-
-        damageDealer.OnDamageDealt?.Invoke(gridPlaceable.Entity);
-        OnDamageTaken?.Invoke(damageDealer.entity);
-
-        PlayImpactSound(damageDealer);
 
         WeaponItem weaponItem = (WeaponItem)item;
         // if grip is < attacker tier, then weapon switches to attacker possession, grip is reset check WeaponPickup for more details
@@ -60,8 +77,7 @@ public class UnifiedDamageResolver
             if (victimEntity != null && attackerEntity != null)
             {
                 weaponItem.currentGrip = weaponItem.tier;
-                Vector2Int attackerPosition = attackerEntity.GetComponent<GridPlaceable>().Position;
-                victimEntity.OnDropItemToGrid?.Invoke(victimEntity, weaponItem, attackerPosition);
+                victimEntity.OnDropItemToGrid?.Invoke(victimEntity, weaponItem, damageDealer.attackStartPosition);
             }
 
             inventory.GetSlot(equippedItem.GetIndex()).Remove();
@@ -82,6 +98,7 @@ public class UnifiedDamageResolver
 
     private void PlayImpactSound(DamageDealer damageDealer)
     {
+        if (Trainer.IsTraining) return;
         if (weaponImpactSoundEvent.IsNull) return;
 
         Entity attacker = damageDealer.GetComponentInParent<Entity>();
@@ -100,6 +117,7 @@ public class UnifiedDamageResolver
 
     private void PlayGripReducedSound(WeaponItem weaponItem)
     {
+        if (Trainer.IsTraining) return;
         if (gripReducedSoundEvent.IsNull) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(gripReducedSoundEvent);

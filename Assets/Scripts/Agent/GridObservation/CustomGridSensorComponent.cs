@@ -16,7 +16,7 @@ public enum GridSensorType
 public class CustomGridSensorComponent : SensorComponent
 {
     private ISensor sensor;
-
+    [SerializeField] Entity entity;
     // Pending refs if SetAgentReferences is called before CreateSensors
     private GridPlaceable pendingPlaceable;
     private DamageDealer pendingDamageResolver;
@@ -29,28 +29,35 @@ public class CustomGridSensorComponent : SensorComponent
     [SerializeField] private int viewRadius = 5;
 
     [Header("Debug")]
-    public bool showGizmos = true;
     public bool logObservations = false;
 
     public override ISensor[] CreateSensors()
     {
+        // Debug.Log("creating sensor");
         // Create sensor with null grid — it will be set via SetAgentReferences
         if (sensorType == GridSensorType.Custom)
         {
             sensor = new CustomGridSensor(null, viewRadius);
         }
+        else if (sensorType == GridSensorType.Easy)
+        {
+            var easySensor = new EasyGridSensor(null, viewRadius);
+            easySensor.LogObservations = logObservations;
+            sensor = easySensor;
+        }
         else if (sensorType == GridSensorType.Tactical)
         {
-            var tacticalSensor = new TacticalGridSensor(null, viewRadius, null, null);
+            var tacticalSensor = new TacticalGridSensor(viewRadius, entity);
+            //var tacticalSensor = new TacticalGridSensor(entity.CurrentGrid, entity.gridPlaceable, viewRadius, null, entity);
             tacticalSensor.LogObservations = logObservations;
             sensor = tacticalSensor;
         }
 
         // Apply any references that arrived before CreateSensors was called
-        if (pendingPlaceable != null)
-        {
-            SetSensorReferences(pendingPlaceable, pendingDamageResolver, pendingGrid, pendingSpawner, pendingAgentEntity);
-        }
+        // if (pendingPlaceable != null)
+        // {
+        //     SetSensorReferences(pendingPlaceable, pendingDamageResolver, pendingGrid, pendingSpawner, pendingAgentEntity);
+        // }
 
         return new ISensor[] { sensor };
     }
@@ -87,71 +94,23 @@ public class CustomGridSensorComponent : SensorComponent
         }
         else if (sensor is TacticalGridSensor tacticalSensor)
         {
-            tacticalSensor.SetAgentReferences(placeable, grid, spawner, agentEntity);
+            tacticalSensor.SetAgentReferences(agentEntity);
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void Update()
     {
-        if (!showGizmos) return;
+        //if (logObservations)
+        //{
+        //    Debug.Log("here");
+        //}
+        if (sensor == null) return;
 
-        if (Application.isPlaying)
-        {
-            if (sensor != null)
-            {
-                if (sensor is CustomGridSensor customSensor)
-                {
-                    customSensor.OnDrawGizmos();
-                }
-                else if (sensor is TacticalGridSensor tacticalSensor)
-                {
-                    tacticalSensor.OnDrawGizmos();
-                }
-            }
-            else if (pendingPlaceable != null)
-            {
-                // We have references but ML-Agents hasn't called CreateSensors yet
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawWireSphere(transform.position, 0.5f);
-#if UNITY_EDITOR
-                UnityEditor.Handles.Label(transform.position + Vector3.up, "Waiting for ML-Agents Sensor Creation...");
-#endif
-            }
-            else
-            {
-                // No references yet
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(transform.position, 0.3f);
-#if UNITY_EDITOR
-                UnityEditor.Handles.Label(transform.position + Vector3.up, "Missing Grid/Agent References!");
-#endif
-            }
-        }
-        else
-        {
-            DrawEditModePreview();
-        }
+        if (sensor is CustomGridSensor custom)
+            custom.LogObservations = logObservations;
+        else if (sensor is EasyGridSensor easy)
+            easy.LogObservations = logObservations;
+        else if (sensor is TacticalGridSensor tactical)
+            tactical.LogObservations = logObservations;
     }
-
-    private void DrawEditModePreview()
-    {
-        var initializer = FindFirstObjectByType<GameInitializer>();
-        if (initializer != null)
-        {
-            Gizmos.color = new Color(1, 1, 1, 0.2f);
-            int size = viewRadius * 2 + 1;
-            Gizmos.DrawWireCube(transform.position, new Vector3(size, size, 0.1f));
-#if UNITY_EDITOR
-            UnityEditor.Handles.Label(transform.position + Vector3.up, "Sensor Preview (Ego-centric)");
-#endif
-        }
-    }
-
-    // private void Update()
-    // {
-    //     if (sensor is EasyGridSensor easySensor)
-    //     {
-    //         easySensor.LogObservations = logObservations;
-    //     }
-    // }
 }

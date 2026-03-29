@@ -77,13 +77,16 @@ public class AttackerAgent : Agent, IMoveInputHandler
         this.moveAbility = moveAbility;
         this.gridPlaceable = gridPlaceable;
         damageResolver.OnDamageTaken += HandleDamageTaken;
+        damageResolver.OnKilled += HandleKilled;
         damageDealer.OnDamageDealt += HandleDamageDealt;
+        damageDealer.OnKillDealt += HandleKillDealt;
         pickupHandler.OnPickupCollected += HandlePickupCollected;
-        customGridSensorComponent.SetAgentReferences(gridPlaceable, damageDealer, grid, entitySpawner, this.entity);
         this.equippedItemObservation = new EquippedItemObservation(equippedItem);
         this.equippedItem = equippedItem;
         this.entity = entity;
         this.entitySpawner = entitySpawner;
+        // Debug.Log(entitySpawner);
+        customGridSensorComponent.SetAgentReferences(gridPlaceable, damageDealer, grid, entitySpawner, this.entity);
     }
 
     public void UpdateSpawner(EntitySpawner newSpawner)
@@ -100,9 +103,9 @@ public class AttackerAgent : Agent, IMoveInputHandler
     {
         if (this.tick != null)
             this.tick.OnTick -= ActOnCooldown;
-        
+
         this.tick = newTick;
-        
+
         if (this.tick != null)
             this.tick.OnTick += ActOnCooldown;
     }
@@ -253,14 +256,14 @@ public class AttackerAgent : Agent, IMoveInputHandler
         }
 
         int actionIndexHeuristic = currentHeuristicAction;
-        
+
         if (useAttack && actionIndexHeuristic != (int)MoveAction.NoAction)
         {
             actionIndexHeuristic += 4;
         }
-        
+
         discreteActions[0] = actionIndexHeuristic;
-        
+
         // Reset so action isn't repeated indefinitely
         currentHeuristicAction = (int)MoveAction.NoAction;
         useAttack = false;
@@ -298,7 +301,31 @@ public class AttackerAgent : Agent, IMoveInputHandler
 
     private void HandleDamageTaken(Entity attacker)
     {
-        //AddReward(0);
+        InventoryItem item = equippedItem.Get();
+        if (item == null || !(item is WeaponItem))
+        {
+            AddReward(-1f);
+        }
+    }
+
+    private void HandleKillDealt(Entity victim)
+    {
+        if (victim == null) return;
+
+        if (victim.TeamId == entity.TeamId)
+        {
+            AddReward(-10f);
+        }
+        else
+        {
+            AddReward(10f);
+        }
+    }
+
+    private void HandleKilled(Entity killer)
+    {
+        AddReward(-10f);
+        EndEpisode();
     }
 
     private void HandleDamageDealt(Entity victim)
@@ -328,7 +355,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
     }
     private void HandlePickupCollected(Pickup pickup)
     {
-        AddReward(0.1f);
+        // AddReward(0.1f);
     }
     ////
 
@@ -414,7 +441,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
             }
 
             // Block move if there's a wall or an entity (can't walk into them)
-            if (hasWall)
+            if (hasWall || hasEnemy)
             {
                 actionMask.SetActionEnabled(0, i, false);
             }

@@ -7,7 +7,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Transform mouseArrow;
     public Transform agentTransform { get; set; }
     public Vector2 mousePosition { get; private set; }
-    
+
     private Grid grid;
     private PlayerActionHighlighter highlighter;
     private Camera cam;
@@ -33,10 +33,27 @@ public class InputManager : MonoBehaviour
         if (context.performed && grid != null && highlighter != null && highlighter.enabled && cam != null)
         {
             Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z));
-            
-            // Check for entity collider
-            Collider2D collider = Physics2D.OverlapPoint(mouseWorldPos);
-            if (collider != null && collider.TryGetComponent(out Entity entity))
+
+            // Try detection on the 'ClickDetection' layer first for a larger hit area
+            int clickLayer = LayerMask.NameToLayer("ClickDetection");
+            Entity entity = null;
+            if (clickLayer != -1)
+            {
+                Collider2D clickCollider = Physics2D.OverlapPoint(mouseWorldPos, 1 << clickLayer);
+                if (clickCollider != null && clickCollider.TryGetComponent(out Root root) && root.GO != null)
+                {
+                    entity = root.GO.GetComponent<Entity>();
+                }
+            }
+
+            // Fallback to standard detection if no ClickDetection collider was hit
+            if (entity == null)
+            {
+                Collider2D collider = Physics2D.OverlapPoint(mouseWorldPos);
+                if (collider != null) collider.TryGetComponent(out entity);
+            }
+
+            if (entity != null)
             {
                 // If it's an enemy (not self), perform cardinal attack calculation
                 if (entity.transform != agentTransform)

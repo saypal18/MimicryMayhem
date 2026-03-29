@@ -193,4 +193,19 @@ public class SortedInventory : InventorySlotHolder
 
         return true;
     }
+
+    /// <summary>
+    /// Resets currentGrip to tier for all weapons in the inventory.
+    /// Called as a reward for finishing off intelligent enemies.
+    /// </summary>
+    public void ResetAllGrips()
+    {
+        foreach (var slot in slots)
+        {
+            if (slot.item != null && slot.item is WeaponItem weapon)
+            {
+                weapon.currentGrip = weapon.tier;
+            }
+        }
+    }
 }

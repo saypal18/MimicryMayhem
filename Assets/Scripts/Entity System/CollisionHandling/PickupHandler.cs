@@ -44,9 +44,10 @@ public class PickupHandler
 
     private void PlayPickupSound(ItemType? itemType)
     {
+        if (Trainer.IsTraining) return;
         //// FMOD BUG
         //return;
-        if (pickupSoundEvent.IsNull || !SoundManager.CanPlayAudio) return;
+        if (pickupSoundEvent.IsNull) return;
 
         if (!itemType.HasValue)
         {

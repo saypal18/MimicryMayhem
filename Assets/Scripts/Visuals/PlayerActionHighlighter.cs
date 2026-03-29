@@ -159,8 +159,27 @@ public class PlayerActionHighlighter : MonoBehaviour
 
         // 3. Mouse Hover Check
         Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(inputManager.mousePosition.x, inputManager.mousePosition.y, -cam.transform.position.z));
-        Collider2D hoveredCollider = Physics2D.OverlapPoint(mouseWorldPos);
-        Entity hoveredEnemy = (hoveredCollider != null && hoveredCollider.TryGetComponent(out Entity eHover) && eHover != owner && eHover.TeamId != owner.TeamId) ? eHover : null;
+        
+        // Try detection on the 'ClickDetection' layer first for a larger hover area
+        int clickLayer = LayerMask.NameToLayer("ClickDetection");
+        Entity eHover = null;
+        if (clickLayer != -1)
+        {
+            Collider2D clickCollider = Physics2D.OverlapPoint(mouseWorldPos, 1 << clickLayer);
+            if (clickCollider != null && clickCollider.TryGetComponent(out Root root) && root.GO != null)
+            {
+                eHover = root.GO.GetComponent<Entity>();
+            }
+        }
+
+        // Fallback to default detection if no ClickDetection collider was hit
+        if (eHover == null)
+        {
+            Collider2D hoveredCollider = Physics2D.OverlapPoint(mouseWorldPos);
+            if (hoveredCollider != null) hoveredCollider.TryGetComponent(out eHover);
+        }
+
+        Entity hoveredEnemy = (eHover != null && eHover != owner && eHover.TeamId != owner.TeamId) ? eHover : null;
         Vector2Int hoveredGridPos = grid.GetGridPosition(mouseWorldPos);
         bool isHoveringMove = hoveredEnemy == null && IsAdjacent(hoveredGridPos) && adjacentMoveTiles.Contains(hoveredGridPos);
 

@@ -55,7 +55,7 @@ public class EquippedItem : MonoBehaviour, IScrollHandler
             }
             OnScroll?.Invoke(index);
 
-            if (!weaponSwitchSoundEvent.IsNull && SoundManager.CanPlayAudio)
+            if (!weaponSwitchSoundEvent.IsNull)
             {
                 EventInstance instance = RuntimeManager.CreateInstance(weaponSwitchSoundEvent);
                 instance.start();

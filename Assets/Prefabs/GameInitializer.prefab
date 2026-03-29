@@ -242,8 +242,8 @@ MonoBehaviour:
   grid:
     startingTilePosition: {fileID: 3509958387582530915}
     tileSize: {x: 1, y: 1}
-    minGridSize: 5
-    maxGridSize: 20
+    minGridSize: 15
+    maxGridSize: 25
     border:
       borderPrefab: {fileID: 7778688139210919124, guid: 37d760a4e9101b446b6c175f8a514290, type: 3}
       borderParent: {fileID: 2335819374844696575}
@@ -259,13 +259,16 @@ MonoBehaviour:
     _tick:
       underlyingValue: {fileID: 0}
     colorize: 1
-    entityPercentage: 2
+    entityPercentage: 1
     teamsEnabled: 0
+    isKillable: 1
     teamAssignmentStrategy: 0
     reserveTeamForPlayer: 0
     reservedTeamId: 0
     initialScale: {x: 1, y: 1, z: 1}
     agentType: 0
+    randomizeInventorySize: 1
+    maxInventorySize: 5
     ruleBasedWeaponPrefabs:
     - {fileID: 2279582224576281527, guid: 2f4824a3662631d4fa4ff5640fb82fe1, type: 3}
     - {fileID: 2279582224576281527, guid: 707c9f4dbc43f3d4c842e3bc41cebc44, type: 3}
@@ -382,7 +385,6 @@ MonoBehaviour:
   doorPrefab: {fileID: 0}
   doorLinks: []
   numTeams: 2
-  teamAssignmentStrategy: 0
   distanceActivator:
     enableDistanceActivation: 0
     activationDistance: 5
@@ -391,7 +393,6 @@ MonoBehaviour:
   MaxSteps: 1000
   shouldRandomize: 1
   turnManager: {fileID: -5087976263453988065}
-  agentType: 0
 --- !u!114 &-5087976263453988065
 MonoBehaviour:
   m_ObjectHideFlags: 0

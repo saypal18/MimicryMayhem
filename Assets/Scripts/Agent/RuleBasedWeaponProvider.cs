@@ -22,6 +22,11 @@ public class RuleBasedWeaponProvider : MonoBehaviour
         this.grid = grid;
         this.pickupParent = parent;
         this.entity = entity;
+        if (this.spawnCoroutine != null)
+        {
+            StopCoroutine(this.spawnCoroutine);
+            this.spawnCoroutine = null;
+        }
 
         StartCoroutine(InitialSpawnRoutine());
     }

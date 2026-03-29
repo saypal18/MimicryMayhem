@@ -27,6 +27,9 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] public PerlinBushPlacer bushPlacer;
     [SerializeField] public GroundTileSpawner groundTileSpawner;
     [SerializeField] public BackgroundStuffSpawner backgroundStuffSpawner;
+    [SerializeField] private BossCreator bossCreator;
+    [SerializeField] private VictorySpawner victorySpawner;
+
 
     [Header("Audio")]
     [SerializeField] public SoundManager soundManager;
@@ -35,10 +38,10 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] private DoorTile doorPrefab;
     [SerializeField] public List<DoorLinkConfig> doorLinks = new List<DoorLinkConfig>();
     private List<GameObject> spawnedDoors = new List<GameObject>();
-    
+    private GameObject spawnedVictoryTrigger;
+
     [Header("Team Settings")]
     [SerializeField] public int numTeams = 2;
-    [SerializeField] public TeamAssignmentStrategy teamAssignmentStrategy = TeamAssignmentStrategy.Alternate;
 
     [Header("Optimization")]
     [SerializeField] public EntityDistanceActivator distanceActivator = new EntityDistanceActivator();
@@ -56,21 +59,37 @@ public class GameInitializer : MonoBehaviour
     public enum AgentType
     {
         MLAgent,
-        RuleBased
+        RuleBased,
+        Randomized
     }
 
-    [Header("Agent Settings")]
-    [SerializeField] public AgentType agentType = AgentType.MLAgent;
+
 
     public Action onEnvironmentReset;
 
     private int stepCount = 0;
-
+    private int minSteps = 100;
     private void FixedUpdate()
     {
         stepCount++;
         pickupPlacer.Tick(Time.fixedDeltaTime);
         distanceActivator.TickActivations(entitySpawner);
+        if (stepCount < minSteps) return;
+        if (IsOneTeamRemaining() && MaxSteps > 0)
+        {
+            IReadOnlyList<Entity> active = entitySpawner.GetActiveEntities();
+            foreach (Entity entity in active)
+            {
+                if (entity.agent != null)
+                {
+                    entity.agent.EndEpisode();
+                }
+            }
+
+            ResetEnvironment();
+            return;
+
+        }
 
         // MaxSteps 0 means no time-based reset
         if (MaxSteps > 0 && stepCount >= MaxSteps)
@@ -90,6 +109,22 @@ public class GameInitializer : MonoBehaviour
         }
     }
 
+    private bool IsOneTeamRemaining()
+    {
+        IReadOnlyList<Entity> active = entitySpawner.GetActiveEntities();
+        if (active.Count <= 1) return true;
+
+        int firstTeamId = active[0].TeamId;
+        for (int i = 1; i < active.Count; i++)
+        {
+            if (active[i].TeamId != firstTeamId)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private bool banksLoaded = false;
 
     public void ResetEnvironment()
@@ -101,9 +136,7 @@ public class GameInitializer : MonoBehaviour
         }
 
         numTeams = Mathf.Max(1, numTeams);
-        entitySpawner.teamAssignmentStrategy = teamAssignmentStrategy;
-        entitySpawner.agentType = agentType;
-        
+
         turnManager.Initialize();
         if (curriculum == null)
         {
@@ -153,6 +186,20 @@ public class GameInitializer : MonoBehaviour
             entitySpawner.SetEntityCountByArea(totalArea);
         }
         entitySpawner.SpawnInitialEntities();
+
+        if (bossCreator != null)
+        {
+            bossCreator.Initialize(grid, entitySpawner, pickupPlacer);
+            bossCreator.SpawnBoss();
+        }
+
+        if (victorySpawner != null)
+        {
+            if (spawnedVictoryTrigger != null) PoolingEntity.Despawn(spawnedVictoryTrigger);
+            victorySpawner.Initialize(grid);
+            spawnedVictoryTrigger = victorySpawner.SpawnVictoryTrigger();
+        }
+
 
         // ── 3. Pickups ────────────────────────────────────────────────────────
         pickupPlacer.SpawnInitialPickups(totalArea);

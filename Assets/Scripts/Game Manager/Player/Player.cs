@@ -14,6 +14,9 @@ public class Player : MonoBehaviour
     [SerializeField] private Image cooldownImage;
     [SerializeField] private Transform highlightParent;
     [SerializeField] private QuestManager questManager;
+    [SerializeField] private int playerInventorySize = 8;
+    [SerializeField] private bool useCustomInventorySize = false;
+
 
     [Header("Multi-Grid Play Mode")]
     [SerializeField] private List<GameInitializer> environments = new List<GameInitializer>();
@@ -36,25 +39,30 @@ public class Player : MonoBehaviour
 
     private void ResetAllEnvironments()
     {
+        if (questManager != null) questManager.ClearAll();
+
         // Unbind previous callbacks to prevent multiple triggers
         foreach (var env in environments)
         {
-            env.onEnvironmentReset -= CreatePvEScenario;
+            // env.onEnvironmentReset -= CreatePvEScenario;
+            env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
             env.entitySpawner.colorize = false;
         }
 
         player = null;
 
         // Bind creation logic to the first grid ONLY
-        environments[0].onEnvironmentReset += CreatePvEScenario;
+        // environments[0].onEnvironmentReset += CreatePvEScenario;
 
         // Reset all
         foreach (var env in environments)
         {
             env.ResetEnvironment();
+            env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
         }
 
-        environments[0].onEnvironmentReset -= CreatePvEScenario;
+        CreatePvEScenario();
+        // environments[0].onEnvironmentReset -= CreatePvEScenario;
     }
 
     void CreatePvEScenario()
@@ -69,6 +77,13 @@ public class Player : MonoBehaviour
                 if (env == environments[0] && i == 0)
                 {
                     player = activeEntities[i];
+
+                    if (useCustomInventorySize && player.inventory != null)
+                    {
+                        player.inventory.slotCount = playerInventorySize;
+                        player.inventory.Initialize();
+                    }
+
 
                     // // If team reservation is enabled, move the player to the reserved team
                     // if (env.entitySpawner.reserveTeamForPlayer)
@@ -111,7 +126,11 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    if (env.agentType == GameInitializer.AgentType.RuleBased)
+                    bool isAgentRuleBased = (env.entitySpawner.agentType == GameInitializer.AgentType.Randomized)
+                        ? activeEntities[i].agent.isRuleBased
+                        : (env.entitySpawner.agentType == GameInitializer.AgentType.RuleBased);
+
+                    if (isAgentRuleBased)
                     {
                         bp.BehaviorType = BehaviorType.HeuristicOnly;
                     }
@@ -121,7 +140,6 @@ public class Player : MonoBehaviour
                     }
                 }
             }
-            env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
         }
 
         points = 0;
@@ -156,7 +174,6 @@ public class Player : MonoBehaviour
 
         playerUI.restartButton.onClick.AddListener(ResetAllEnvironments);
 
-        if (questManager != null) questManager.ClearAll();
 
         ResetAllEnvironments();
     }

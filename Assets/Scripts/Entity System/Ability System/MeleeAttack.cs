@@ -40,6 +40,7 @@ public class MeleeAttack : IAbility
         }
 
         damageDealer.ResetHitTargets();
+        damageDealer.attackStartPosition = gridPlaceable.Position;
         //if (gridPlaceable != null && gridPlaceable.CurrentGrid != null)
         //{
         //    animation.Initialize(gridPlaceable.CurrentGrid);

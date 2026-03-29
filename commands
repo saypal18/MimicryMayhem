@@ -4,7 +4,7 @@ cd "Unity\Survival of The Fattest 2\Assets\ML-Agents"
 pip install -e ml-agents-envs/ -e ml-agents/
 cd C:\Users\Sayantan Pal\Unity\ml-agents\
 mlagents-learn SurvivorAgent.yaml --run-id=run17 --initialize-from=run16 --force --env="..\..\training_build\Survival of The Fattest 2.exe" --num-envs=24 --no-graphics
-mlagents-learn SurvivorAgent.yaml --run-id=test --force --env="..\..\training_build\Survival of The Fattest 2.exe" --num-envs=20 --no-graphics
+mlagents-learn SurvivorAgent.yaml --run-id=test --force --env="..\..\training_build\Survival of The Fattest 2.exe" --num-envs=10 --no-graphics
 tensorboard --logdir results
 
 

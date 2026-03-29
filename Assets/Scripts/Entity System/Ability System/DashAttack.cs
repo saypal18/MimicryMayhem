@@ -11,6 +11,7 @@ public class DashAttack : IAbility
     private DamageDealer damageDealer;
     private Vector2Int currentDirection = Vector2Int.zero;
     private MoveInfo moveInfo;
+    private GridPlaceable gridPlaceable;
     private int _range;
     public int Range 
     { 
@@ -23,6 +24,7 @@ public class DashAttack : IAbility
     public void Initialize(DamageDealer dashDamageDealer, EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo)
     {
         damageDealer = dashDamageDealer;
+        this.gridPlaceable = gridPlaceable;
         movement = movementFactory.GetMovement(this.GetType());
         movement.Initialize(dashTime, Range > 0 ? Range : blocksToMove, gridPlaceable, moveInfo);
         this.moveInfo = moveInfo;
@@ -45,6 +47,7 @@ public class DashAttack : IAbility
         if (movement == null) return false;
 
         damageDealer.ResetHitTargets();
+        damageDealer.attackStartPosition = gridPlaceable.Position;
 
         // Already performing a movement
         if (moveInfo.IsMoving) return false;

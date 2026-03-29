@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class Trainer : MonoBehaviour
 {
+    public static bool IsTraining { get; private set; }
+
+    private void Awake()
+    {
+        IsTraining = true;
+    }
     //[SerializeField] private InputManager inputManager;
     [SerializeField] private GameInitializer gameInitializerPrefab;
     [SerializeField] private int n = 32;

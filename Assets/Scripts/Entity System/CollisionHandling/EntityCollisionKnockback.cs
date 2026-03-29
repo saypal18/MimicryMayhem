@@ -47,7 +47,7 @@ public class EntityCollisionKnockback : MoveAbility
             }
 
             // bool applyStun = ((collidedLayer == damageDealerLayer) || attacker.moveInfo.IsDashing) && inventory.HasAnyItem();
-            bool applyStun = (attacker.moveInfo.IsDashing) && inventory.HasAnyItem();
+            bool applyStun = (attacker.moveInfo.IsDashing) && inventory.HasAnyItem() && gridPlaceable.Entity.canBeStunned;
             if (applyStun)
             {
                 abilityController.Control(1);
@@ -59,7 +59,7 @@ public class EntityCollisionKnockback : MoveAbility
 
     private void PlayKnockbackSound()
     {
-        if (knockbackSoundEvent.IsNull || !SoundManager.CanPlayAudio) return;
+        if (knockbackSoundEvent.IsNull) return;
 
         Entity self = gridPlaceable.Entity;
         EventInstance instance = RuntimeManager.CreateInstance(knockbackSoundEvent);

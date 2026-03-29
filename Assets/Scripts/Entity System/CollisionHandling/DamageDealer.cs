@@ -6,7 +6,9 @@ public class DamageDealer : MonoBehaviour
     public int tier;
     public Vector2Int direction;
     public bool applyKnockback;
+    public Vector2Int attackStartPosition;
     public Action<Entity> OnDamageDealt;
+    public Action<Entity> OnKillDealt;
     public Entity entity;
 
     private HashSet<Entity> hitEntities = new();
@@ -14,8 +16,10 @@ public class DamageDealer : MonoBehaviour
     public void Initialize()
     {
         OnDamageDealt = null;
+        OnKillDealt = null;
         tier = 0;
         direction = Vector2Int.zero;
+        attackStartPosition = Vector2Int.zero;
         applyKnockback = false;
         hitEntities.Clear();
     }
