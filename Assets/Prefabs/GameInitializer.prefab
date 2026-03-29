@@ -317,7 +317,7 @@ MonoBehaviour:
       rotationAngleMin: 0
       rotationAngleMax: 90
       threshold: 0.5
-      minConnectedCoveragePercent: 0.9
+      minConnectedCoveragePercent: 1
       maxWallPercentEarlyStop: 0.1
       maxWallCapPercent: 0.4
     wallPercentage: 10
@@ -381,6 +381,8 @@ MonoBehaviour:
     density: 2
     jitter: {x: 0.5, y: 0.5}
     container: {fileID: 168297767917431162}
+  bossCreator: {fileID: 0}
+  victorySpawner: {fileID: 0}
   soundManager: {fileID: 0}
   doorPrefab: {fileID: 0}
   doorLinks: []

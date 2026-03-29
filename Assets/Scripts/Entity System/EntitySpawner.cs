@@ -220,7 +220,7 @@ public class EntitySpawner
                     teamId = (i < numTeams) ? i : numTeams - 1;
                 }
             }
-            
+
             int defaultSize = entityPrefab.inventory != null ? entityPrefab.inventory.slotCount : 0;
             SpawnAtPosition(entityPrefab, randomPositions[i], teamId, true, null, defaultSize);
         }

@@ -819,7 +819,7 @@ MonoBehaviour:
   m_MinValue: 1
   m_MaxValue: 50
   m_WholeNumbers: 1
-  m_Value: 6
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2147,7 +2147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4934599878771539894, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5084263085645196711, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3108,9 +3108,6 @@ MonoBehaviour:
   useCustomInventorySize: 1
   environments:
   - {fileID: 1241795408}
-  - {fileID: 631604651}
-  - {fileID: 59991942}
-  - {fileID: 2087419247}
 --- !u!4 &1137655401
 Transform:
   m_ObjectHideFlags: 0
@@ -4697,7 +4694,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4934599878771539894, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5084263085645196711, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5707,7 +5704,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4934599878771539894, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5084263085645196711, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6656,7 +6653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VictorySpawner
   victoryTriggerPrefab: {fileID: 5978892719251202894, guid: d24591f75d641314cae62e0e25507d36, type: 3}
-  victoryTriggerPosition: {x: 10, y: 0}
+  victoryTriggerPosition: {x: 0, y: 10}
   victoryPanel: {fileID: 1384874263}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
