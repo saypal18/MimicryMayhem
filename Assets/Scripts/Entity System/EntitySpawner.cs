@@ -244,6 +244,7 @@ public class EntitySpawner
                 entity.inventory.slotCount = defaultInventorySize;
             }
             entity.canBeStunned = true;
+            entity.IsBoss = false;
             entity.OnDropItemToGrid -= HandleEntityDropItem;
             activeEntities.Remove(entity);
             turnManager.UnregisterPlayer(teamId);
@@ -266,6 +267,7 @@ public class EntitySpawner
         if (activeEntities.Contains(entity))
         {
             entity.canBeStunned = true;
+            entity.IsBoss = false;
             entity.OnDropItemToGrid -= HandleEntityDropItem;
             activeEntities.Remove(entity);
             turnManager.UnregisterPlayer(entity.TeamId);

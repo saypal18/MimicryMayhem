@@ -228,7 +228,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
 
             if (target != null)
             {
-                Vector2Int diff = target.Position - entity.Position;
+                Vector3 diff = target.transform.position - transform.position;
                 Vector2Int direction = Vector2Int.zero;
 
                 if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))

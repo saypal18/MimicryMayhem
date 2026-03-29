@@ -22,6 +22,7 @@ public class VictoryTrigger : MonoBehaviour
         {
             gridPlaceable = GetComponent<GridPlaceable>();
         }
+        gridPlaceable.Type = GridPlaceable.PlaceableType.Victory; 
         gridPlaceable.Initialize(grid, position);
     }
 

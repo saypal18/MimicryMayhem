@@ -3,9 +3,9 @@ using UnityEngine;
 using DG.Tweening;
 public sealed class GridPlaceable : MonoBehaviour
 {
-    public enum PlaceableType { Unassigned, Entity, Pickup, Wall, Bush, Door }
+    public enum PlaceableType { Unassigned, Entity, Pickup, Wall, Bush, Door, Victory }
     [SerializeField] private PlaceableType type;
-    public PlaceableType Type => type;
+    public PlaceableType Type { get => type; set => type = value; }
 
     private Vector2Int position;
     private Grid grid;

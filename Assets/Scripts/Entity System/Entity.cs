@@ -22,6 +22,8 @@ public class Entity : MonoBehaviour
     public bool IsPlayer => behaviorParameters != null &&
         behaviorParameters.BehaviorType == BehaviorType.HeuristicOnly &&
         (agent == null || !agent.isRuleBased);
+    public bool IsBoss { get; set; } = false;
+
     public Vector2Int Position => gridPlaceable.Position;
     public Grid CurrentGrid => gridPlaceable.CurrentGrid;
     public bool IsActiveForTurns { get; private set; } = true;
@@ -59,6 +61,7 @@ public class Entity : MonoBehaviour
         IsActiveForTurns = true;
         this.entitySpawner = entitySpawner;
         HasBossKey = false;
+        IsBoss = false;
         gridPlaceable.Initialize(grid, startPosition);
         moveAbility.Initialize(movementFactory, gridPlaceable, moveInfo);
         inventory.Initialize();

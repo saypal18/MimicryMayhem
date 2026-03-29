@@ -190,7 +190,7 @@ public class PlayerActionHighlighter : MonoBehaviour
         UpdateMoveHighlights(adjacentMoveTiles, isHoveringMove ? (Vector2Int?)hoveredGridPos : null);
 
         // Handle Target Highlights
-        UpdateTargetHighlights(enemiesInVision, hoveredEnemy);
+        UpdateTargetHighlights(enemiesInVision, hoveredEnemy, mouseWorldPos);
     }
 
     private void UpdateMoveHighlights(List<Vector2Int> tiles, Vector2Int? hoveredTile)
@@ -239,7 +239,7 @@ public class PlayerActionHighlighter : MonoBehaviour
 
     private Entity currentlyHoveredEnemy = null;
 
-    private void UpdateTargetHighlights(List<Entity> enemies, Entity hoveredEnemy)
+    private void UpdateTargetHighlights(List<Entity> enemies, Entity hoveredEnemy, Vector3 mouseWorldPos)
     {
         currentlyHoveredEnemy = hoveredEnemy;
 
@@ -291,7 +291,7 @@ public class PlayerActionHighlighter : MonoBehaviour
             // Attack Path logic
             if (hoveredEnemy != null)
             {
-                ShowAttackPath(hoveredEnemy.Position);
+                ShowAttackPath(mouseWorldPos);
             }
             else
             {
@@ -303,16 +303,16 @@ public class PlayerActionHighlighter : MonoBehaviour
     private Dictionary<Entity, GameObject> entityTargetHighlights = new Dictionary<Entity, GameObject>();
     private List<GameObject> attackPathHighlights = new List<GameObject>();
 
-    private void ShowAttackPath(Vector2Int targetPos)
+    private void ShowAttackPath(Vector3 mouseWorldPos)
     {
         ClearAttackPath();
         Vector2Int currentPos = owner.Position;
-        Vector2Int diff = targetPos - currentPos;
+        Vector3 directionVector = mouseWorldPos - owner.transform.position;
         
         // Closest cardinal direction
         Vector2Int dir = Vector2Int.zero;
-        if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y)) dir = new Vector2Int(diff.x > 0 ? 1 : -1, 0);
-        else dir = new Vector2Int(0, diff.y > 0 ? 1 : -1);
+        if (Mathf.Abs(directionVector.x) > Mathf.Abs(directionVector.y)) dir = new Vector2Int(directionVector.x > 0 ? 1 : -1, 0);
+        else dir = new Vector2Int(0, directionVector.y > 0 ? 1 : -1);
 
         InventoryItem item = equippedItem.Get();
         int range = (item is WeaponItem weapon) ? weapon.range : 0;

@@ -58,7 +58,19 @@ public class InputManager : MonoBehaviour
                 // If it's an enemy (not self), perform cardinal attack calculation
                 if (entity.transform != agentTransform)
                 {
-                    moveInputHandler?.OnGridClick(entity.Position, true);
+                    Vector3 directionVector = mouseWorldPos - agentTransform.position;
+                    Vector2Int snappedDir = Vector2Int.zero;
+                    if (Mathf.Abs(directionVector.x) > Mathf.Abs(directionVector.y))
+                    {
+                        snappedDir = new Vector2Int(directionVector.x > 0 ? 1 : -1, 0);
+                    }
+                    else
+                    {
+                        snappedDir = new Vector2Int(0, directionVector.y > 0 ? 1 : -1);
+                    }
+
+                    Vector2Int agentGridPos = grid.GetGridPosition(agentTransform.position);
+                    moveInputHandler?.OnGridClick(agentGridPos + snappedDir, true);
                     return;
                 }
             }

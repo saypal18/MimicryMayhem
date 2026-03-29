@@ -18,7 +18,7 @@ TagManager:
   - DamageResolver
   - Pickup
   - ClickDetection
-  - 
+  - Door
   - 
   - 
   - 
@@ -43,6 +43,9 @@ TagManager:
   m_SortingLayers:
   - name: bg
     uniqueID: 2774766837
+    locked: 0
+  - name: girdplaceables
+    uniqueID: 132189653
     locked: 0
   - name: Default
     uniqueID: 0

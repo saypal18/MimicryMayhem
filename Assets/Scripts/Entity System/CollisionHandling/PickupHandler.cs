@@ -21,6 +21,8 @@ public class PickupHandler
 
     public void OnPickup(GameObject other)
     {
+        if (thisObject.TryGetComponent(out Entity entity) && entity.IsBoss) return;
+        
         if (other != null && other.TryGetComponent(out Pickup pickup))
         {
             ItemType? pickupItemType = null;

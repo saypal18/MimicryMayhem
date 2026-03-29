@@ -47,6 +47,7 @@ public class BossCreator : MonoBehaviour
 
         if (boss != null)
         {
+            boss.IsBoss = true;
             boss.canBeStunned = false;
             boss.HasBossKey = true;
             // Add pre-determined items

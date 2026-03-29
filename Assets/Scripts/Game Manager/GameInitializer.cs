@@ -174,13 +174,18 @@ public class GameInitializer : MonoBehaviour
         backgroundStuffSpawner.SpawnStuff();
 
         SpawnDoors(); // Spawn doors FIRST so they reserve empty tiles on the grid.
+        if (victorySpawner != null)
+        {
+            if (spawnedVictoryTrigger != null) PoolingEntity.Despawn(spawnedVictoryTrigger);
+            victorySpawner.Initialize(grid);
+            spawnedVictoryTrigger = victorySpawner.SpawnVictoryTrigger();
+        }
 
         // ── 1. Walls first (so entities/pickups avoid wall tiles) ─────────────
         wallPlacer.PlaceWalls(totalArea);
         bushPlacer.PlaceBushes();
 
         // ── 2. Entities ────────────────────────────────────────────────────────
-
         if (shouldRandomize)
         {
             entitySpawner.SetEntityCountByArea(totalArea);
@@ -191,13 +196,6 @@ public class GameInitializer : MonoBehaviour
         {
             bossCreator.Initialize(grid, entitySpawner, pickupPlacer);
             bossCreator.SpawnBoss();
-        }
-
-        if (victorySpawner != null)
-        {
-            if (spawnedVictoryTrigger != null) PoolingEntity.Despawn(spawnedVictoryTrigger);
-            victorySpawner.Initialize(grid);
-            spawnedVictoryTrigger = victorySpawner.SpawnVictoryTrigger();
         }
 
 
