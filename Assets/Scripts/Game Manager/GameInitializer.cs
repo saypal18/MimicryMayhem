@@ -94,10 +94,15 @@ public class GameInitializer : MonoBehaviour
 
     public void ResetEnvironment()
     {
-        if (!banksLoaded && soundManager != null)
+        if (soundManager != null)
         {
-            soundManager.LoadBanks();
-            banksLoaded = true;
+            soundManager.StopBackgroundAudio();
+
+            if (!banksLoaded)
+            {
+                soundManager.LoadBanks();
+                banksLoaded = true;
+            }
         }
 
         numTeams = Mathf.Max(1, numTeams);
