@@ -1,0 +1,702 @@
+fileFormatVersion: 2
+guid: c404cc9df196faf40a849c0045159a47
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1004214495783307272
+    second: Survival of the Fattest_0
+  - first:
+      213: -2925487324007500673
+    second: Survival of the Fattest_1
+  - first:
+      213: -9100152738768486198
+    second: Survival of the Fattest_2
+  - first:
+      213: 7411275001938949386
+    second: Survival of the Fattest_3
+  - first:
+      213: -6405309566182185966
+    second: Survival of the Fattest_4
+  - first:
+      213: 8555963801882002672
+    second: Survival of the Fattest_5
+  - first:
+      213: 3390888040999456883
+    second: Survival of the Fattest_6
+  - first:
+      213: 4946460653767219146
+    second: Survival of the Fattest_7
+  - first:
+      213: 1664843945486365981
+    second: Survival of the Fattest_8
+  - first:
+      213: -577818274017332547
+    second: Survival of the Fattest_9
+  - first:
+      213: 5825597871728576389
+    second: Survival of the Fattest_10
+  - first:
+      213: 4891935334624623957
+    second: Survival of the Fattest_11
+  - first:
+      213: 2716259015658748279
+    second: Survival of the Fattest_12
+  - first:
+      213: 414622981553666991
+    second: Survival of the Fattest_13
+  - first:
+      213: 403911995479120153
+    second: Survival of the Fattest_14
+  - first:
+      213: -5637907808188495941
+    second: Survival of the Fattest_15
+  - first:
+      213: -1897271123333731774
+    second: Survival of the Fattest_16
+  - first:
+      213: 3469978629076078186
+    second: Survival of the Fattest_17
+  - first:
+      213: 8699898531668035043
+    second: Survival of the Fattest_18
+  - first:
+      213: 3529262961126777936
+    second: Survival of the Fattest_19
+  - first:
+      213: -1189034154671747394
+    second: Survival of the Fattest_20
+  - first:
+      213: -5853702640843382736
+    second: Survival of the Fattest_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Survival of the Fattest_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 89
+        width: 46
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f7b9849c305012f0800000000000000
+      internalID: -1004214495783307272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_1
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 89
+        width: 37
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f74ff9957c49667d0800000000000000
+      internalID: -2925487324007500673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_2
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 84
+        width: 66
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac008eb7c43c5b180800000000000000
+      internalID: -9100152738768486198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_3
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 119
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a05bd4ff8532ad660800000000000000
+      internalID: 7411275001938949386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_4
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 84
+        width: 34
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 214ac47e2e4cb17a0800000000000000
+      internalID: -6405309566182185966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_5
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 119
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f407421fb3ecb670800000000000000
+      internalID: 8555963801882002672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_6
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 112
+        width: 31
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37094e425bade0f20800000000000000
+      internalID: 3390888040999456883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_7
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 112
+        width: 28
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac7dd33d1cb55a440800000000000000
+      internalID: 4946460653767219146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_8
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 112
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d15bc296fb6ba1710800000000000000
+      internalID: 1664843945486365981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_9
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 93
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db2b778575d2bf7f0800000000000000
+      internalID: -577818274017332547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_10
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 75
+        width: 23
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58747a4266ea8d050800000000000000
+      internalID: 5825597871728576389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_11
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 93
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55d7b7ca445a3e340800000000000000
+      internalID: 4891935334624623957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_12
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 82
+        width: 32
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 779ba42fe2712b520800000000000000
+      internalID: 2716259015658748279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_13
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 84
+        width: 31
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fab383ba76901c500800000000000000
+      internalID: 414622981553666991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_14
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1
+        width: 68
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9195d03e1dbfa9500800000000000000
+      internalID: 403911995479120153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_15
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 1
+        width: 80
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb7068828b022c1b0800000000000000
+      internalID: -5637907808188495941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_16
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 1
+        width: 71
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24a261b27f98ba5e0800000000000000
+      internalID: -1897271123333731774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_17
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 65
+        width: 37
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6ec64cad27d72030800000000000000
+      internalID: 3469978629076078186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_18
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 36
+        width: 37
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e5040ade9f3cb870800000000000000
+      internalID: 8699898531668035043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_19
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 61
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 054a7ecd6f57af030800000000000000
+      internalID: 3529262961126777936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_20
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 1
+        width: 62
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebecbf07cb3bf7fe0800000000000000
+      internalID: -1189034154671747394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Survival of the Fattest_21
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 36
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 030a3cf567873cea0800000000000000
+      internalID: -5853702640843382736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Survival of the Fattest_0: -1004214495783307272
+      Survival of the Fattest_1: -2925487324007500673
+      Survival of the Fattest_10: 5825597871728576389
+      Survival of the Fattest_11: 4891935334624623957
+      Survival of the Fattest_12: 2716259015658748279
+      Survival of the Fattest_13: 414622981553666991
+      Survival of the Fattest_14: 403911995479120153
+      Survival of the Fattest_15: -5637907808188495941
+      Survival of the Fattest_16: -1897271123333731774
+      Survival of the Fattest_17: 3469978629076078186
+      Survival of the Fattest_18: 8699898531668035043
+      Survival of the Fattest_19: 3529262961126777936
+      Survival of the Fattest_2: -9100152738768486198
+      Survival of the Fattest_20: -1189034154671747394
+      Survival of the Fattest_21: -5853702640843382736
+      Survival of the Fattest_3: 7411275001938949386
+      Survival of the Fattest_4: -6405309566182185966
+      Survival of the Fattest_5: 8555963801882002672
+      Survival of the Fattest_6: 3390888040999456883
+      Survival of the Fattest_7: 4946460653767219146
+      Survival of the Fattest_8: 1664843945486365981
+      Survival of the Fattest_9: -577818274017332547
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
