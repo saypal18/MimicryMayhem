@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponItem
   itemType: 0
   itemName: Sword
-  itemIcon: {fileID: 5463979634823549903, guid: e6600ca6c78f12841af4cac0b258355b, type: 3}
+  itemIcon: {fileID: 3213126143364699114, guid: d21e0b2c9143b0143b39f2782c136922, type: 3}
   description: Sword
   maxStackSize: 1
   tier: 2

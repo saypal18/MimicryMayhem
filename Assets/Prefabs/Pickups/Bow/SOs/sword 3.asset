@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponItem
   itemType: 1
   itemName: Bow
-  itemIcon: {fileID: -2678413484014037403, guid: 2a317c332ea48784c8173c142bd349d6, type: 3}
+  itemIcon: {fileID: 736055844301397430, guid: 3218d576ce4c7c84a8eabf8ff96b3062, type: 3}
   description: Bow
   maxStackSize: 1
   tier: 3
