@@ -1061,7 +1061,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: db3e6901865e31c4a9c6346fe29f2f3f, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: b4849e95a5d462d4d9b074b33961e462, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: SurvivorAgent
