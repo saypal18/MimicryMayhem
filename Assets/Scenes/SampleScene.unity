@@ -451,7 +451,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: entitySpawner.ruleBasedWeaponPrefabs.Array.size
-      value: 4
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: 'entitySpawner.ruleBasedWeaponPrefabs.Array.data[0]'
@@ -469,6 +469,18 @@ PrefabInstance:
       propertyPath: 'entitySpawner.ruleBasedWeaponPrefabs.Array.data[3]'
       value: 
       objectReference: {fileID: 2279582224576281527, guid: 0732882f54b923345908b517e76e161e, type: 3}
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: 'entitySpawner.ruleBasedWeaponPrefabs.Array.data[4]'
+      value: 
+      objectReference: {fileID: 2279582224576281527, guid: 7373fa2bc024db0468820b0974ebc7ae, type: 3}
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: 'entitySpawner.ruleBasedWeaponPrefabs.Array.data[5]'
+      value: 
+      objectReference: {fileID: 2279582224576281527, guid: 3475a4424a37e5c4786e2f54f74c79ca, type: 3}
+    - target: {fileID: 2424751851155101755, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
+      propertyPath: 'entitySpawner.ruleBasedWeaponPrefabs.Array.data[6]'
+      value: 
+      objectReference: {fileID: 2279582224576281527, guid: 3ff4a2f570e3a344ab59e0d6c4f4ffa0, type: 3}
     - target: {fileID: 4934599878771539894, guid: 2633afe78be63bd4c92d8ff73be11305, type: 3}
       propertyPath: m_Name
       value: GameInitializer (1)
@@ -1471,7 +1483,7 @@ GameObject:
   m_Component:
   - component: {fileID: 288579938}
   m_Layer: 0
-  m_Name: right (1)
+  m_Name: down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1486,7 +1498,7 @@ Transform:
   m_GameObject: {fileID: 288579937}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 2.99, y: -11.07, z: 0}
+  m_LocalPosition: {x: 2.99, y: -11.19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2701,7 +2713,7 @@ Transform:
   m_GameObject: {fileID: 487414752}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -3.09, y: 10.88, z: 0}
+  m_LocalPosition: {x: -3.09, y: 11.03, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6900,7 +6912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6034674986940131403, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_Color.a
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7404421201534151285, guid: 880501aeddd409d4881ad594c5023d1a, type: 3}
       propertyPath: m_Pivot.x
@@ -11189,7 +11201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VictorySpawner
   victoryTriggerPrefab: {fileID: 5978892719251202894, guid: d24591f75d641314cae62e0e25507d36, type: 3}
-  victoryTriggerPosition: {x: 0, y: 10}
+  victoryTriggerPosition: {x: 0, y: 19}
   victoryPanel: {fileID: 1384874263}
 --- !u!1 &2123417720
 GameObject:

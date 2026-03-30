@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -261,10 +261,8 @@ MonoBehaviour:
   InventorySlotUIPrefab: {fileID: 4756065727621559634, guid: 92e609482d728ef4c8072a95f51a91e7, type: 3}
   slotUis: []
   storagePanel: {fileID: 9003433084968400163}
-  inventoryPanel: {fileID: 3615671621906034203}
   storageSize: 0
   assignedCharacter: {fileID: 0}
-  closeButton: {fileID: 3250654068722221538}
   inventoryDragger: {fileID: 34158337374566564}
   eventTrigger: {fileID: -6090233636958901224}
   selectedItemHighlight: {fileID: 2941829951351893612}
@@ -461,7 +459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
