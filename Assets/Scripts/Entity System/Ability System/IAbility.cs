@@ -4,5 +4,6 @@ public interface IAbility
 {
     bool Perform();
     void SetDirection(Vector2Int direction);
+    void SetAnimator(Animator animator);
     int Range { get; set; }
 }

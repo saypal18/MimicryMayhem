@@ -34,11 +34,25 @@ public class RangeAttack : IAbility
         }
     }
 
+    private Animator animator;
+    public void SetAnimator(Animator animator)
+    {
+        this.animator = animator;
+    }
+
     public bool Perform()
     {
         if (currentDirection == Vector2Int.zero || grid == null || gridPlaceable == null)
         {
             return false;
+        }
+
+        if (animator != null)
+        {
+            if (currentDirection == Vector2Int.up) animator.SetTrigger("attackUp");
+            else if (currentDirection == Vector2Int.down) animator.SetTrigger("attackDown");
+            else if (currentDirection == Vector2Int.left) animator.SetTrigger("attackLeft");
+            else if (currentDirection == Vector2Int.right) animator.SetTrigger("attackRight");
         }
 
         damageDealer.ResetHitTargets();

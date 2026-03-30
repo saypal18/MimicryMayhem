@@ -38,6 +38,12 @@ public class MoveAbility : IAbility
         }
     }
 
+    private Animator animator;
+    public void SetAnimator(Animator animator)
+    {
+        this.animator = animator;
+    }
+
     public bool Perform()
     {
         bool moved = movement.Move(currentDirection);

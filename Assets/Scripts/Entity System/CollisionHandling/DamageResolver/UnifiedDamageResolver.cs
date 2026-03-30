@@ -47,6 +47,12 @@ public class UnifiedDamageResolver
         Entity victim = gridPlaceable.Entity;
         if (victim != null && victim.IsKillable && !inventory.HasAnyItem())
         {
+            // Rule-based enemies with no weapons are mimics and cannot be killed.
+            if (victim.agent != null && victim.agent.isRuleBased)
+            {
+                return;
+            }
+
             damageDealer.OnKillDealt?.Invoke(victim);
             OnKilled?.Invoke(damageDealer.entity);
 

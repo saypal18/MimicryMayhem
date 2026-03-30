@@ -13,10 +13,10 @@ public class DashAttack : IAbility
     private MoveInfo moveInfo;
     private GridPlaceable gridPlaceable;
     private int _range;
-    public int Range 
-    { 
-        get => _range; 
-        set { _range = value; if (movement != null) movement.UpdateRange(value); } 
+    public int Range
+    {
+        get => _range;
+        set { _range = value; if (movement != null) movement.UpdateRange(value); }
     }
 
     public bool IsDashing => moveInfo != null && moveInfo.IsDashing;
@@ -42,9 +42,23 @@ public class DashAttack : IAbility
         }
     }
 
+    private Animator animator;
+    public void SetAnimator(Animator animator)
+    {
+        this.animator = animator;
+    }
+
     public bool Perform()
     {
         if (movement == null) return false;
+
+        if (animator != null)
+        {
+            if (currentDirection == Vector2Int.up) animator.SetTrigger("attackUp");
+            else if (currentDirection == Vector2Int.down) animator.SetTrigger("attackDown");
+            else if (currentDirection == Vector2Int.left) animator.SetTrigger("attackLeft");
+            else if (currentDirection == Vector2Int.right) animator.SetTrigger("attackRight");
+        }
 
         damageDealer.ResetHitTargets();
         damageDealer.attackStartPosition = gridPlaceable.Position;

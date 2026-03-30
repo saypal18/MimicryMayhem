@@ -17,6 +17,8 @@ public class Entity : MonoBehaviour
     [SerializeField] public DamageDealer damageDealer;
     [SerializeField] public BehaviorParameters behaviorParameters;
     [SerializeField] public RuleBasedWeaponProvider ruleBasedWeaponProvider;
+    [SerializeField] private Animator animator;
+    [SerializeField] private Animator movementAnimator;
     [HideInInspector] public EntitySpawner entitySpawner;
     public int TeamId;
     public bool IsPlayer => behaviorParameters != null &&
@@ -77,7 +79,7 @@ public class Entity : MonoBehaviour
         pickupHandler.Initialize();
         entityCollisionKnockback.Initialize(movementFactory, gridPlaceable, moveInfo, abilityController, inventory);
         collisionResolver.Initialize(pickupHandler, damageResolver, entityCollisionKnockback, abilityController);
-        activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable, moveInfo);
+        activeAbility.Initialize(grid, damageDealer, equippedItem, inventory, damageDealer, movementFactory, gridPlaceable, moveInfo, animator);
         damageResolver.Initialize(collisionResolver, inventory, equippedItem, movementFactory, abilityController, moveInfo);
         damageDealer.Initialize();
         abilityController.Initialize(moveInfo);
@@ -118,6 +120,10 @@ public class Entity : MonoBehaviour
     /////// apply during play //////
     void Update()
     {
+        if (movementAnimator != null)
+        {
+            movementAnimator.SetBool("isMoving", moveInfo.IsMoving);
+        }
         abilityController.Update();
     }
 }
