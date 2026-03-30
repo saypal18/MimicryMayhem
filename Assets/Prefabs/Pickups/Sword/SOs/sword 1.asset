@@ -15,6 +15,7 @@ MonoBehaviour:
   itemType: 0
   itemName: Sword
   itemIcon: {fileID: 3213126143364699114, guid: d21e0b2c9143b0143b39f2782c136922, type: 3}
+  inventoryIcon: {fileID: 21300000, guid: 64811f4565870b344a9f2f500a68def2, type: 3}
   description: Sword
   maxStackSize: 1
   tier: 1
