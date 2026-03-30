@@ -45,6 +45,8 @@ public class MeleeAttack : IAbility
         //{
         //    animation.Initialize(gridPlaceable.CurrentGrid);
         //}
+        float angle = 180 + Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg;
+        swordDamageCollider.transform.rotation = Quaternion.Euler(0, 0, angle);
         animation.Play(gridPlaceable.Position, currentDirection);
 
         //StartCoroutine(AttackRoutine());
