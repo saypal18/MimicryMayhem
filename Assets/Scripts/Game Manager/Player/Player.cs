@@ -107,6 +107,7 @@ public class Player : MonoBehaviour
 
                     bp.BehaviorType = BehaviorType.HeuristicOnly;
                     player.agent.isRuleBased = false; // Human player is never rule-based
+                    player.entitySpawner.SyncAnimation(player);
                     if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                         inputManager.InitializeMove(handler);
                     inputManager.InitializeScroll(player.equippedItem);

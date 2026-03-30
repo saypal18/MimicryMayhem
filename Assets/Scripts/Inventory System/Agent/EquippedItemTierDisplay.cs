@@ -7,11 +7,9 @@ public class EquippedItemTierDisplay : MonoBehaviour
     [SerializeField] private EquippedItem equippedItem;
     [SerializeField] private SpriteRenderer weaponIcon;
     [SerializeField] private Transform tierParent;
-    [SerializeField] private GameObject tierPrefab;
-    [SerializeField] private Sprite gripSprite;
-    [SerializeField] private Sprite nogripsprite;
+    [SerializeField] private TierVisual tierPrefab;
 
-    private List<GameObject> spawnedTierObjects = new List<GameObject>();
+    private List<TierVisual> spawnedTierVisuals = new List<TierVisual>();
     private InventoryItem currentItem;
     private int lastTier;
     private int lastGrip;
@@ -48,15 +46,15 @@ public class EquippedItemTierDisplay : MonoBehaviour
     private void UpdateDisplay(InventoryItem item)
     {
         // Clear existing objects
-        foreach (var obj in spawnedTierObjects)
+        foreach (var visual in spawnedTierVisuals)
         {
-            if (obj != null)
+            if (visual != null)
             {
-                obj.transform.SetParent(null);
-                PoolingEntity.Despawn(obj);
+                visual.transform.SetParent(null);
+                PoolingEntity.Despawn(visual.gameObject);
             }
         }
-        spawnedTierObjects.Clear();
+        spawnedTierVisuals.Clear();
 
         if (item == null)
         {
@@ -73,13 +71,21 @@ public class EquippedItemTierDisplay : MonoBehaviour
 
             for (int i = 0; i < tier; i++)
             {
-                GameObject tierObj = PoolingEntity.Spawn(tierPrefab, tierParent);
-                spawnedTierObjects.Add(tierObj);
-
-                Image img = tierObj.GetComponent<Image>();
-                if (img != null)
+                GameObject tierObj = PoolingEntity.Spawn(tierPrefab.gameObject, tierParent);
+                TierVisual visual = tierObj.GetComponent<TierVisual>();
+                
+                if (visual != null)
                 {
-                    img.sprite = (i < grip) ? gripSprite : nogripsprite;
+                    visual.Initialize();
+                    if (i < grip)
+                    {
+                        visual.SetTier(tier);
+                    }
+                    else
+                    {
+                        visual.SetTier(0);
+                    }
+                    spawnedTierVisuals.Add(visual);
                 }
             }
         }

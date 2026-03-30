@@ -286,6 +286,10 @@ MonoBehaviour:
     - {fileID: 2279582224576281527, guid: 77e0568456120124ea94c87328266551, type: 3}
     - {fileID: 2279582224576281527, guid: ec814e5744fa1714ea0f54cf673d099d, type: 3}
     ruleBasedWeaponSpawnDelay: 5
+    mlAgentAnimationPrefab: {fileID: 5466145123763703403, guid: 41d5ab079c951964c9eff551f0f354ef, type: 3}
+    ruleBasedAnimationPrefab: {fileID: 5256529774395837238, guid: 2b047fa1dad66bb40bbb6bc2e552b8ed, type: 3}
+    playerAnimationPrefab: {fileID: 2204444103143941614, guid: 045551c334a131e4c9644da1aba29425, type: 3}
+    bossAnimationPrefab: {fileID: 9035053469362661103, guid: c14c1aa05139f5f479fc48c74f9a0db7, type: 3}
   pickupPlacer:
     pickupPrefabs:
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}

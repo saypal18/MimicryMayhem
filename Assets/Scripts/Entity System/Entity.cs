@@ -43,6 +43,9 @@ public class Entity : MonoBehaviour
     public MoveInfo moveInfo = new MoveInfo();
     [SerializeField] public PlayerActionHighlighter playerActionHighlighter;
     [SerializeField] private SpriteRenderer keyVisual;
+    [SerializeField] public Transform animationParent;
+    public GameObject currentAnimation { get; set; }
+
 
     private bool _hasBossKey;
     public bool HasBossKey

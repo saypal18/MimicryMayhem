@@ -41,6 +41,12 @@ public class EntitySpawner
     [Header("Rule Based Weapon Spawning")]
     [SerializeField] private List<Pickup> ruleBasedWeaponPrefabs;
     [SerializeField] private float ruleBasedWeaponSpawnDelay = 5f;
+    [Header("Animation Prefabs")]
+    [SerializeField] private GameObject mlAgentAnimationPrefab;
+    [SerializeField] private GameObject ruleBasedAnimationPrefab;
+    [SerializeField] private GameObject playerAnimationPrefab;
+    [SerializeField] private GameObject bossAnimationPrefab;
+
 
     private int entitiesCount;
     private List<ITick> turnTicks;
@@ -79,10 +85,10 @@ public class EntitySpawner
 
     public void SpawnAtPosition(Vector2Int position, int teamId = 0)
     {
-        SpawnAtPosition(entityPrefab, position, teamId, true, null, entityPrefab.inventory != null ? entityPrefab.inventory.slotCount : 0);
+        SpawnAtPosition(entityPrefab, position, teamId, true, null, entityPrefab.inventory != null ? entityPrefab.inventory.slotCount : 0, false);
     }
 
-    public Entity SpawnAtPosition(Entity prefab, Vector2Int position, int teamId = 0, bool initializeWeaponProvider = true, int? overrideInventorySize = null, int defaultInventorySize = 0)
+    public Entity SpawnAtPosition(Entity prefab, Vector2Int position, int teamId = 0, bool initializeWeaponProvider = true, int? overrideInventorySize = null, int defaultInventorySize = 0, bool isBoss = false)
     {
         Entity entity = PoolingEntity.Spawn(prefab, entityParent);
 
@@ -156,7 +162,47 @@ public class EntitySpawner
             }
         }
         entity.transform.localScale = initialScale;
+
+        if (isBoss) entity.IsBoss = true;
+        SyncAnimation(entity);
+
         return entity;
+    }
+
+    public void SyncAnimation(Entity entity)
+    {
+        if (entity.currentAnimation != null)
+        {
+            PoolingEntity.Despawn(entity.currentAnimation);
+            entity.currentAnimation = null;
+        }
+
+        GameObject animationPrefab = null;
+
+        if (entity.IsBoss)
+        {
+            animationPrefab = bossAnimationPrefab;
+        }
+        else if (entity.agent.isRuleBased)
+        {
+            animationPrefab = ruleBasedAnimationPrefab;
+        }
+        else if (entity.IsPlayer)
+        {
+            animationPrefab = playerAnimationPrefab;
+        }
+        else
+        {
+            animationPrefab = mlAgentAnimationPrefab;
+        }
+
+        if (animationPrefab != null)
+        {
+            GameObject animInstance = PoolingEntity.Spawn(animationPrefab, entity.animationParent != null ? entity.animationParent : entity.transform);
+            animInstance.transform.localPosition = Vector3.zero;
+            animInstance.transform.localRotation = Quaternion.identity;
+            entity.currentAnimation = animInstance;
+        }
     }
 
 
@@ -245,7 +291,13 @@ public class EntitySpawner
             }
             entity.canBeStunned = true;
             entity.IsBoss = false;
+            if (entity.currentAnimation != null)
+            {
+                PoolingEntity.Despawn(entity.currentAnimation);
+                entity.currentAnimation = null;
+            }
             entity.OnDropItemToGrid -= HandleEntityDropItem;
+
             activeEntities.Remove(entity);
             turnManager.UnregisterPlayer(teamId);
             // poolingEntity.OnDespawning -= handler;

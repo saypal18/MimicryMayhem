@@ -41,7 +41,7 @@ public class BossCreator : MonoBehaviour
         // Use the refactored SpawnAtPosition to spawn the boss
         // Passing initializeWeaponProvider = false to satisfy the "items won't spawn on its place" requirement
         int defaultInventorySize = bossPrefab.inventory != null ? bossPrefab.inventory.slotCount : 0;
-        Entity boss = entitySpawner.SpawnAtPosition(bossPrefab, spawnPos, bossTeamId, false, bossInventorySlotCount, defaultInventorySize);
+        Entity boss = entitySpawner.SpawnAtPosition(bossPrefab, spawnPos, bossTeamId, false, bossInventorySlotCount, defaultInventorySize, true);
 
 
 

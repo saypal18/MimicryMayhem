@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 92698086820395722}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.382, y: 0.488, z: 0}
+  m_LocalPosition: {x: 0.34, y: -0.17, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -77,11 +77,11 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -719611323
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 8179790401859168025, guid: d65dda4b0ca7dbe46be2c7358a950a05, type: 3}
+  m_Sprite: {fileID: 1095141833252711340, guid: 744d96c6d9641d246a1969689d42da1d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -166,6 +166,37 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &835513745485239634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4664042682153156153}
+  m_Layer: 7
+  m_Name: weapon parent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4664042682153156153
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835513745485239634}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.344, y: -0.223, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6306993136484929041}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1542353427624950557
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,7 +754,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &248402895209049497
 Transform:
   m_ObjectHideFlags: 0
@@ -867,6 +898,7 @@ GameObject:
   - component: {fileID: 6200968150231765928}
   - component: {fileID: 4519690930531917126}
   - component: {fileID: -8883142681608052853}
+  - component: {fileID: 1401997215675748589}
   m_Layer: 7
   m_Name: Entity
   m_TagString: Agent
@@ -897,6 +929,7 @@ Transform:
   - {fileID: 5067133064531641464}
   - {fileID: 8323097027083536313}
   - {fileID: 1345615145517154759}
+  - {fileID: 4664042682153156153}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5104670366954836522
@@ -1035,6 +1068,10 @@ MonoBehaviour:
     maxInventorySize: 5
     ruleBasedWeaponPrefabs: []
     ruleBasedWeaponSpawnDelay: 5
+    mlAgentAnimationPrefab: {fileID: 0}
+    ruleBasedAnimationPrefab: {fileID: 0}
+    playerAnimationPrefab: {fileID: 0}
+    bossAnimationPrefab: {fileID: 0}
   TeamId: 0
   IsKillable: 1
   canBeStunned: 1
@@ -1051,6 +1088,7 @@ MonoBehaviour:
         m_Calls: []
   playerActionHighlighter: {fileID: 6200968150231765928}
   keyVisual: {fileID: 4273469358210292724}
+  animationParent: {fileID: 6306993136484929041}
 --- !u!114 &-7865425547269084357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1337,9 +1375,7 @@ MonoBehaviour:
   equippedItem: {fileID: -3726688000211129029}
   weaponIcon: {fileID: 5405644710682922133}
   tierParent: {fileID: 1798218046623435034}
-  tierPrefab: {fileID: 9038419565630247060, guid: e937d5ba3aa2c6b49a28ee40ee156cda, type: 3}
-  gripSprite: {fileID: 2572819850109181117, guid: 365f8a27179baee4aaf122bf011ee4c6, type: 3}
-  nogripsprite: {fileID: -7638933322529607394, guid: fe7594d6ba82b044bb3d874ce774193c, type: 3}
+  tierPrefab: {fileID: 5485978787228018986, guid: 97e95a98203e0cb4daab85c5a99644eb, type: 3}
 --- !u!114 &6200968150231765928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1386,6 +1422,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03688b06f383b0f4ebcb444f5c0ede86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RuleBasedWeaponProvider
+--- !u!114 &1401997215675748589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4593017720766107119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e72e04eefed6a45800c1108235173a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EquippedWeaponVisualizer
+  entity: {fileID: 5104670366954836522}
+  equippedItem: {fileID: -3726688000211129029}
+  weaponParent: {fileID: 4664042682153156153}
+  playerColor: {r: 0.264942, g: 0.42767292, b: 0.42767292, a: 1}
+  bossColor: {r: 0.81761, g: 0, b: 0, a: 1}
+  ruleBasedColor: {r: 0.8301887, g: 0.35765985, b: 0.47016674, a: 1}
+  mlAgentColor: {r: 0.81761, g: 0.3213875, b: 0.3213875, a: 1}
 --- !u!1 &4993707176884639830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,7 +1896,7 @@ Transform:
   m_GameObject: {fileID: 7576713356567625540}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.25199997, z: 0}
+  m_LocalPosition: {x: 0, y: -0.384, z: 0}
   m_LocalScale: {x: 0.8, y: 0.2339, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

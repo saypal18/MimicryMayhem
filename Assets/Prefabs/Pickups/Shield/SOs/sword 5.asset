@@ -20,3 +20,4 @@ MonoBehaviour:
   tier: 5
   currentGrip: 5
   range: 3
+  equipPrefab: {fileID: 5372563593665189050, guid: 23e95b00266637f46992bd950be37909, type: 3}

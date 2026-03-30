@@ -50,6 +50,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Equipment
+    uniqueID: 3575355973
+    locked: 0
   - name: bush
     uniqueID: 900308839
     locked: 0
