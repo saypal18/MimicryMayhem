@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponItem
   itemType: 0
   itemName: Sword
-  itemIcon: {fileID: 5053153676737969624, guid: 2f2b5db35ef9a134e96eb11108026e63, type: 3}
+  itemIcon: {fileID: 3213126143364699114, guid: d21e0b2c9143b0143b39f2782c136922, type: 3}
+  inventoryIcon: {fileID: 21300000, guid: 64811f4565870b344a9f2f500a68def2, type: 3}
   description: Sword
   maxStackSize: 1
   tier: 2
   currentGrip: 2
   range: 1
+  equipPrefab: {fileID: 4873332681464649808, guid: 881ef48d55744d44c8c229d9fd1c4acf, type: 3}

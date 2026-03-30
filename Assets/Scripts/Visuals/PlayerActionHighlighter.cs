@@ -3,17 +3,14 @@ using System.Collections.Generic;
 
 public class PlayerActionHighlighter : MonoBehaviour
 {
-    [Header("Settings")]
+    [Header("Prefabs")]
     public GameObject moveHighlightPrefab;
     public GameObject attackHighlightPrefab;
     public GameObject targetHighlightPrefab;
-    [SerializeField] private Color moveColor = new Color(0, 0.5f, 1f, 0.3f);
-    [SerializeField] private Color attackColor = new Color(1f, 0f, 0f, 0.3f);
-    [SerializeField] private Color targetColor = new Color(1f, 1f, 0f, 0.4f);
-    [SerializeField] private float hoverAlphaEnhancement = 0.5f;
-    [SerializeField] private float faintAlphaMultiplier = 0.3f;
+
     [HideInInspector] public Transform highlightParent;
 
+    // ── internal state ────────────────────────────────────────────────────
     private Entity owner;
     private Grid grid;
     private EquippedItem equippedItem;
@@ -22,15 +19,29 @@ public class PlayerActionHighlighter : MonoBehaviour
     private bool isMyTurn = false;
     public bool IsMyTurn => isMyTurn;
 
-    private Dictionary<Vector2Int, GameObject> validMoveTiles = new Dictionary<Vector2Int, GameObject>();
-    private Dictionary<Vector2Int, GameObject> validAttackTiles = new Dictionary<Vector2Int, GameObject>();
     private InputManager inputManager;
-    
-    // Directions
-    private static readonly Vector2Int[] Directions = new[]
+    private Entity currentlyHoveredEnemy = null;
+
+    private Dictionary<Vector2Int, GameObject> validMoveTiles = new();
+    private Dictionary<Entity, GameObject> entityTargetHighlights = new();
+    private List<GameObject> attackPathHighlights = new();
+
+    // Tracks the last isHovering bool set on each highlight's Animator.
+    // Prevents redundant SetBool calls every frame.
+    private Dictionary<GameObject, bool> highlightHoverState = new();
+
+    // Attack path cache — only rebuild when cardinal direction or target changes.
+    private Vector2Int _lastAttackDir = new Vector2Int(int.MinValue, int.MinValue);
+    private Entity _lastAttackedTarget = null;
+
+    private static readonly Vector2Int[] Directions =
     {
         Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
     };
+
+    private static readonly int IsHoveringHash = Animator.StringToHash("isHovering");
+
+    // ── public API ────────────────────────────────────────────────────────
 
     public void Initialize(Entity owner, Grid grid, EquippedItem equippedItem, ITick tick)
     {
@@ -38,33 +49,43 @@ public class PlayerActionHighlighter : MonoBehaviour
         this.grid = grid;
         this.equippedItem = equippedItem;
         this.tick = tick;
-        this.cam = Camera.main; // Fallback, but should ideally be injected if needed. 
-        // Note: InputManager passes cam to moveInputHandler, but highlighter might need it too for hover check.
+        this.cam = Camera.main;
 
         tick.OnTick += HandleOnTick;
         tick.OnPlayed += HandleOnPlayed;
-        
-        equippedItem.OnScroll += (index) => {
-            // Managed in Update()
-        };
 
-        owner.inventory.OnItemAdded.AddListener((item, amount, index) => {
-            // Managed in Update()
-        });
-        owner.inventory.OnItemRemoved.AddListener((item, amount, index) => {
-            // Managed in Update()
-        });
+        equippedItem.OnScroll += (_) => { };
+        owner.inventory.OnItemAdded.AddListener((item, amount, index) => { });
+        owner.inventory.OnItemRemoved.AddListener((item, amount, index) => { });
 
         GridPlaceable gp = owner.GetComponent<GridPlaceable>();
-        if (gp != null)
-        {
-            gp.OnPositionChanged += (pos) => {
-                // Managed in Update()
-            };
-        }
-        
-        // Initial setup if we start on our turn (though tick will probably handle it)
+        if (gp != null) gp.OnPositionChanged += (_) => { };
     }
+
+    public void SetInputManager(InputManager manager) => inputManager = manager;
+
+    public void UpdateEnvironment(Grid newGrid, ITick newTick)
+    {
+        this.grid = newGrid;
+
+        if (this.tick != null)
+        {
+            this.tick.OnTick -= HandleOnTick;
+            this.tick.OnPlayed -= HandleOnPlayed;
+        }
+
+        this.tick = newTick;
+
+        if (this.tick != null)
+        {
+            this.tick.OnTick += HandleOnTick;
+            this.tick.OnPlayed += HandleOnPlayed;
+        }
+
+        ClearHighlights();
+    }
+
+    // ── tick callbacks ────────────────────────────────────────────────────
 
     private void HandleOnTick()
     {
@@ -79,302 +100,304 @@ public class PlayerActionHighlighter : MonoBehaviour
         ClearHighlights();
     }
 
-    public void SetInputManager(InputManager manager)
-    {
-        this.inputManager = manager;
-    }
-
-    public void UpdateEnvironment(Grid newGrid, ITick newTick)
-    {
-        this.grid = newGrid;
-        
-        if (this.tick != null)
-        {
-            this.tick.OnTick -= HandleOnTick;
-            this.tick.OnPlayed -= HandleOnPlayed;
-        }
-        
-        this.tick = newTick;
-        
-        if (this.tick != null)
-        {
-            this.tick.OnTick += HandleOnTick;
-            this.tick.OnPlayed += HandleOnPlayed;
-        }
-
-        ClearHighlights();
-    }
+    // ── Unity loop ────────────────────────────────────────────────────────
 
     private void Update()
     {
         if (!isMyTurn || grid == null || owner == null || cam == null || inputManager == null)
         {
-            if (validMoveTiles.Count > 0 || validAttackTiles.Count > 0) ClearHighlights();
+            if (validMoveTiles.Count > 0 || entityTargetHighlights.Count > 0) ClearHighlights();
             return;
         }
 
         RefreshHighlights();
     }
 
+    // ── highlight logic ───────────────────────────────────────────────────
+
     private void RefreshHighlights()
     {
-        // 1. Determine potential targets (Enemy Entities in vision range 5)
-        List<Entity> enemiesInVision = new List<Entity>();
+        // --- Enemies in vision ---
+        List<Entity> enemiesInVision = new();
         Vector2Int currentPos = owner.Position;
         int visionRadius = 5;
 
-        // Note: This relies on Physics2D for finding enemies if we don't have an entity list.
-        // For efficiency, we just overlap a box.
-        float cellSize = 1f; // Assuming 1 unit per cell
         Vector2 center = grid.GetWorldPosition(currentPos);
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(center, new Vector2(visionRadius * 2 + 1, visionRadius * 2 + 1) * cellSize, 0f);
-        
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(
+            center,
+            new Vector2(visionRadius * 2 + 1, visionRadius * 2 + 1),
+            0f);
+
         foreach (var col in colliders)
         {
-            if (col.TryGetComponent(out Entity e) && e != owner && e.TeamId != owner.TeamId)
-            {
+            if (col.TryGetComponent(out Entity e) &&
+                e != owner && e.TeamId != owner.TeamId && e.IsActiveForTurns)
                 enemiesInVision.Add(e);
-            }
         }
 
-        // 2. Identify Adjacent Move Tiles
-        List<Vector2Int> adjacentMoveTiles = new List<Vector2Int>();
+        // --- Adjacent move tiles ---
+        List<Vector2Int> adjacentMoveTiles = new();
         foreach (Vector2Int dir in Directions)
         {
             Vector2Int neighbor = currentPos + dir;
-            if (IsValidPosition(neighbor) && grid.IsMovable(neighbor))
+            if (!IsValidPosition(neighbor) || !grid.IsMovable(neighbor)) continue;
+
+            bool occupied = false;
+            foreach (var p in grid.GetTile(neighbor))
             {
-                bool occupiedByOther = false;
-                foreach (var p in grid.GetTile(neighbor))
-                {
-                    if (p.Type == GridPlaceable.PlaceableType.Entity && p.GetComponent<Entity>() != owner)
-                    {
-                        occupiedByOther = true;
-                        break;
-                    }
-                }
-                if (!occupiedByOther) adjacentMoveTiles.Add(neighbor);
+                if (p.Type == GridPlaceable.PlaceableType.Entity && p.GetComponent<Entity>() != owner)
+                { occupied = true; break; }
             }
+            if (!occupied) adjacentMoveTiles.Add(neighbor);
         }
 
-        // 3. Mouse Hover Check
-        Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(inputManager.mousePosition.x, inputManager.mousePosition.y, -cam.transform.position.z));
-        Collider2D hoveredCollider = Physics2D.OverlapPoint(mouseWorldPos);
-        Entity hoveredEnemy = (hoveredCollider != null && hoveredCollider.TryGetComponent(out Entity eHover) && eHover != owner && eHover.TeamId != owner.TeamId) ? eHover : null;
+        // --- Mouse hover ---
+        Vector3 mouseWorldPos = cam.ScreenToWorldPoint(
+            new Vector3(inputManager.mousePosition.x, inputManager.mousePosition.y, -cam.transform.position.z));
+
+        Entity eHover = null;
+        int clickLayer = LayerMask.NameToLayer("ClickDetection");
+        if (clickLayer != -1)
+        {
+            Collider2D c = Physics2D.OverlapPoint(mouseWorldPos, 1 << clickLayer);
+            if (c != null && c.TryGetComponent(out Root root) && root.GO != null)
+                eHover = root.GO.GetComponent<Entity>();
+        }
+        if (eHover == null)
+        {
+            Collider2D c = Physics2D.OverlapPoint(mouseWorldPos);
+            c?.TryGetComponent(out eHover);
+        }
+        if (eHover != null && !eHover.IsActiveForTurns) eHover = null;
+
+        Entity hoveredEnemy = (eHover != null && eHover != owner && eHover.TeamId != owner.TeamId) ? eHover : null;
         Vector2Int hoveredGridPos = grid.GetGridPosition(mouseWorldPos);
         bool isHoveringMove = hoveredEnemy == null && IsAdjacent(hoveredGridPos) && adjacentMoveTiles.Contains(hoveredGridPos);
 
-        // 4. Update Visuals (Faint vs Prominent)
-        // Clear old ones first to keep it simple, or reuse. For simplicity, we reuse.
-        
-        // Handle Move Highlights
         UpdateMoveHighlights(adjacentMoveTiles, isHoveringMove ? (Vector2Int?)hoveredGridPos : null);
-
-        // Handle Target Highlights
-        UpdateTargetHighlights(enemiesInVision, hoveredEnemy);
+        UpdateTargetHighlights(enemiesInVision, hoveredEnemy, mouseWorldPos, isHoveringMove);
     }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Move highlights
+    // ─────────────────────────────────────────────────────────────────────
 
     private void UpdateMoveHighlights(List<Vector2Int> tiles, Vector2Int? hoveredTile)
     {
-        // Hide all if we are hovering an enemy
-        if (hoveredTile == null && currentlyHoveredEnemy != null)
-        {
-            foreach (var hl in validMoveTiles.Values) hl.SetActive(false);
-        }
-        else
-        {
-            // If hovering a move tile, hide all other move highlights
-            foreach (var kvp in validMoveTiles)
-            {
-                bool isTarget = hoveredTile.HasValue && kvp.Key == hoveredTile.Value;
-                if (hoveredTile.HasValue && !isTarget)
-                {
-                    kvp.Value.SetActive(false);
-                }
-                else
-                {
-                    kvp.Value.SetActive(tiles.Contains(kvp.Key));
-                    if (kvp.Value.activeSelf)
-                    {
-                        SetHighlightAlpha(kvp.Value, moveColor, hoveredTile.HasValue ? 1.0f : faintAlphaMultiplier);
-                    }
-                }
-            }
+        bool enemyIsHovered = currentlyHoveredEnemy != null;
 
-            // Spawn new ones if missing
-            foreach (var pos in tiles)
-            {
-                if (!validMoveTiles.ContainsKey(pos))
-                {
-                    GameObject hl = SpawnHighlight(pos, moveColor, moveHighlightPrefab);
-                    if (hl != null) 
-                    {
-                        validMoveTiles[pos] = hl;
-                        SetHighlightAlpha(hl, moveColor, hoveredTile == pos ? 1.0f : faintAlphaMultiplier);
-                        hl.SetActive(hoveredTile == null || hoveredTile == pos);
-                    }
-                }
-            }
+        if (enemyIsHovered && hoveredTile == null)
+        {
+            foreach (var hl in validMoveTiles.Values)
+                SetHighlightVisible(hl, false);
+            return;
+        }
+
+        // Update existing
+        foreach (var kvp in validMoveTiles)
+        {
+            bool isHovered = hoveredTile.HasValue && kvp.Key == hoveredTile.Value;
+            bool visible = tiles.Contains(kvp.Key) && (!hoveredTile.HasValue || isHovered);
+
+            SetHighlightVisible(kvp.Value, visible);
+            if (visible) SetHovering(kvp.Value, isHovered);
+        }
+
+        // Spawn new
+        foreach (var pos in tiles)
+        {
+            if (validMoveTiles.ContainsKey(pos)) continue;
+
+            bool isHovered = hoveredTile.HasValue && pos == hoveredTile.Value;
+            bool visible = !hoveredTile.HasValue || isHovered;
+
+            GameObject hl = SpawnHighlight(pos, moveHighlightPrefab);
+            if (hl == null) continue;
+
+            validMoveTiles[pos] = hl;
+            hl.SetActive(visible);
+            if (visible) SetHovering(hl, isHovered);
         }
     }
 
-    private Entity currentlyHoveredEnemy = null;
+    // ─────────────────────────────────────────────────────────────────────
+    // Target highlights
+    // ─────────────────────────────────────────────────────────────────────
 
-    private void UpdateTargetHighlights(List<Entity> enemies, Entity hoveredEnemy)
+    private void UpdateTargetHighlights(
+        List<Entity> enemies, Entity hoveredEnemy, Vector3 mouseWorldPos, bool isHoveringMove)
     {
         currentlyHoveredEnemy = hoveredEnemy;
 
-        // If hovering a move tile, hide all target highlights
-        bool isHoveringMove = IsAdjacent(grid.GetGridPosition(cam.ScreenToWorldPoint(new Vector3(inputManager.mousePosition.x, inputManager.mousePosition.y, -cam.transform.position.z))));
-        
         if (isHoveringMove && hoveredEnemy == null)
         {
-            foreach (var hl in validAttackTiles.Values) hl.SetActive(false);
-            ClearAttackPath();
+            foreach (var hl in entityTargetHighlights.Values)
+                SetHighlightVisible(hl, false);
+            if (attackPathHighlights.Count > 0) ResetAttackPath();
+            return;
         }
-        else
+
+        // Update existing
+        foreach (var kvp in entityTargetHighlights)
         {
-            // If hovering an enemy, hide all other target highlights
-            foreach (var kvp in entityTargetHighlights)
-            {
-                Entity enemy = kvp.Key;
-                GameObject hl = kvp.Value;
-                
-                if (hoveredEnemy != null && enemy != hoveredEnemy)
-                {
-                    hl.SetActive(false);
-                }
-                else
-                {
-                    hl.SetActive(enemies.Contains(enemy));
-                    if (hl.activeSelf)
-                    {
-                        SetHighlightAlpha(hl, targetColor, hoveredEnemy != null ? 1.0f : faintAlphaMultiplier);
-                    }
-                }
-            }
+            Entity enemy = kvp.Key;
+            GameObject hl = kvp.Value;
+            bool isHovered = enemy == hoveredEnemy;
+            bool visible = enemies.Contains(enemy) && (hoveredEnemy == null || isHovered);
 
-            // Spawn new targets
-            foreach (var enemy in enemies)
-            {
-                if (!entityTargetHighlights.ContainsKey(enemy))
-                {
-                    GameObject hl = SpawnHighlight(enemy.Position, targetColor, targetHighlightPrefab, enemy.transform);
-                    if (hl != null)
-                    {
-                        entityTargetHighlights[enemy] = hl;
-                        SetHighlightAlpha(hl, targetColor, enemy == hoveredEnemy ? 1.0f : faintAlphaMultiplier);
-                        hl.SetActive(hoveredEnemy == null || hoveredEnemy == enemy);
-                    }
-                }
-            }
-
-            // Attack Path logic
-            if (hoveredEnemy != null)
-            {
-                ShowAttackPath(hoveredEnemy.Position);
-            }
-            else
-            {
-                ClearAttackPath();
-            }
+            SetHighlightVisible(hl, visible);
+            if (visible) SetHovering(hl, isHovered);
         }
+
+        // Spawn new
+        foreach (var enemy in enemies)
+        {
+            if (entityTargetHighlights.ContainsKey(enemy)) continue;
+
+            bool isHovered = enemy == hoveredEnemy;
+            bool visible = hoveredEnemy == null || isHovered;
+
+            GameObject hl = SpawnHighlight(enemy.Position, targetHighlightPrefab, enemy.transform);
+            if (hl == null) continue;
+
+            entityTargetHighlights[enemy] = hl;
+            hl.SetActive(visible);
+            if (visible) SetHovering(hl, isHovered);
+        }
+
+        // Attack path
+        if (hoveredEnemy != null)
+            ShowAttackPath(mouseWorldPos);
+        else if (attackPathHighlights.Count > 0)
+            ResetAttackPath();
     }
 
-    private Dictionary<Entity, GameObject> entityTargetHighlights = new Dictionary<Entity, GameObject>();
-    private List<GameObject> attackPathHighlights = new List<GameObject>();
+    // ─────────────────────────────────────────────────────────────────────
+    // Attack path  (no animation — static visuals only)
+    // ─────────────────────────────────────────────────────────────────────
 
-    private void ShowAttackPath(Vector2Int targetPos)
+    private void ShowAttackPath(Vector3 mouseWorldPos)
     {
-        ClearAttackPath();
-        Vector2Int currentPos = owner.Position;
-        Vector2Int diff = targetPos - currentPos;
-        
-        // Closest cardinal direction
-        Vector2Int dir = Vector2Int.zero;
-        if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y)) dir = new Vector2Int(diff.x > 0 ? 1 : -1, 0);
-        else dir = new Vector2Int(0, diff.y > 0 ? 1 : -1);
+        Vector3 directionVector = mouseWorldPos - owner.transform.position;
+        Vector2Int dir = Mathf.Abs(directionVector.x) > Mathf.Abs(directionVector.y)
+            ? new Vector2Int(directionVector.x > 0 ? 1 : -1, 0)
+            : new Vector2Int(0, directionVector.y > 0 ? 1 : -1);
 
+        // Skip rebuild if nothing changed
+        if (dir == _lastAttackDir && currentlyHoveredEnemy == _lastAttackedTarget) return;
+
+        _lastAttackDir = dir;
+        _lastAttackedTarget = currentlyHoveredEnemy;
+
+        // Despawn old tiles WITHOUT touching the cache (already updated above)
+        DespawnAttackHighlights();
+
+        // Spawn new tiles
+        Vector2Int currentPos = owner.Position;
         InventoryItem item = equippedItem.Get();
         int range = (item is WeaponItem weapon) ? weapon.range : 0;
-        
+
         for (int i = 1; i <= range; i++)
         {
             Vector2Int pathPos = currentPos + dir * i;
             if (!IsValidPosition(pathPos) || !grid.IsMovable(pathPos)) break;
-            
-            GameObject hl = SpawnHighlight(pathPos, attackColor, attackHighlightPrefab);
-            if (hl != null)
-            {
-                SetHighlightAlpha(hl, attackColor, 1.0f);
-                attackPathHighlights.Add(hl);
-            }
+
+            GameObject hl = SpawnHighlight(pathPos, attackHighlightPrefab);
+            if (hl != null) attackPathHighlights.Add(hl);
         }
     }
 
-    private void ClearAttackPath()
+    /// <summary>Despawns attack highlights and resets the cache (call when attack path should no longer be shown).</summary>
+    private void ResetAttackPath()
+    {
+        DespawnAttackHighlights();
+        _lastAttackDir = new Vector2Int(int.MinValue, int.MinValue);
+        _lastAttackedTarget = null;
+    }
+
+    /// <summary>Despawns attack highlights only — does NOT touch the direction/target cache.</summary>
+    private void DespawnAttackHighlights()
     {
         foreach (var hl in attackPathHighlights) PoolingEntity.Despawn(hl);
         attackPathHighlights.Clear();
     }
 
-    private void SetHighlightAlpha(GameObject hl, Color baseColor, float alphaFactor)
+    // ─────────────────────────────────────────────────────────────────────
+    // Animator helper
+    // ─────────────────────────────────────────────────────────────────────
+
+    private void SetHovering(GameObject hl, bool isHovered)
     {
-        SpriteRenderer sr = hl.GetComponentInChildren<SpriteRenderer>();
-        if (sr != null) sr.color = new Color(baseColor.r, baseColor.g, baseColor.b, baseColor.a * alphaFactor); 
+        if (highlightHoverState.TryGetValue(hl, out bool current) && current == isHovered) return;
+
+        highlightHoverState[hl] = isHovered;
+
+        Animator anim = hl.GetComponentInChildren<Animator>();
+        if (anim != null) anim.SetBool(IsHoveringHash, isHovered);
     }
 
-    private GameObject SpawnHighlight(Vector2Int pos, Color color, GameObject prefab, Transform customParent = null)
+    // ─────────────────────────────────────────────────────────────────────
+    // Visibility helper
+    // ─────────────────────────────────────────────────────────────────────
+
+    private void SetHighlightVisible(GameObject hl, bool visible)
+    {
+        if (hl == null || hl.activeSelf == visible) return;
+
+        hl.SetActive(visible);
+
+        // Clear tracked state so SetHovering re-applies correctly when the object reappears
+        if (!visible) highlightHoverState.Remove(hl);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Spawn / clear
+    // ─────────────────────────────────────────────────────────────────────
+
+    private GameObject SpawnHighlight(Vector2Int pos, GameObject prefab, Transform customParent = null)
     {
         if (prefab == null) return null;
-        Vector3 worldPos = grid.GetWorldPosition(pos);
-        GameObject hl = PoolingEntity.Spawn(prefab, customParent != null ? customParent : highlightParent);
-        if (hl != null)
-        {
-            if (customParent != null)
-            {
-                hl.transform.localPosition = Vector3.zero;
-            }
-            else
-            {
-                hl.transform.position = worldPos;
-            }
-            hl.transform.localScale = Vector3.one;
-            hl.SetActive(true);
-            SpriteRenderer sr = hl.GetComponentInChildren<SpriteRenderer>();
-            if (sr != null) sr.color = color;
-        }
-        return hl;
-    }
 
-    private bool IsValidPosition(Vector2Int pos)
-    {
-        return pos.x >= 0 && pos.x < grid.Size.x && pos.y >= 0 && pos.y < grid.Size.y;
+        GameObject hl = PoolingEntity.Spawn(prefab, customParent ?? highlightParent);
+        if (hl == null) return null;
+
+        if (customParent != null)
+            hl.transform.localPosition = Vector3.zero;
+        else
+            hl.transform.position = grid.GetWorldPosition(pos);
+
+        hl.transform.localScale = Vector3.one;
+        hl.SetActive(true);
+        return hl;
     }
 
     private void ClearHighlights()
     {
         foreach (var hl in validMoveTiles.Values) PoolingEntity.Despawn(hl);
         foreach (var hl in entityTargetHighlights.Values) PoolingEntity.Despawn(hl);
-        ClearAttackPath();
+        ResetAttackPath();
+
         validMoveTiles.Clear();
         entityTargetHighlights.Clear();
+        highlightHoverState.Clear();
     }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Utility
+    // ─────────────────────────────────────────────────────────────────────
+
+    private bool IsValidPosition(Vector2Int pos) =>
+        pos.x >= 0 && pos.x < grid.Size.x && pos.y >= 0 && pos.y < grid.Size.y;
 
     public bool IsAdjacent(Vector2Int pos)
     {
-        Vector2Int currentPos = owner.Position;
+        Vector2Int current = owner.Position;
         foreach (Vector2Int dir in Directions)
-        {
-            if (currentPos + dir == pos) return true;
-        }
+            if (current + dir == pos) return true;
         return false;
     }
 
-    private void OnDisable()
-    {
-        ClearHighlights();
-    }
-
     public bool IsValidMoveTile(Vector2Int pos) => validMoveTiles.ContainsKey(pos);
+
+    private void OnDisable() => ClearHighlights();
 }

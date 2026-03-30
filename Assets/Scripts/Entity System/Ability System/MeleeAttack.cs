@@ -31,6 +31,12 @@ public class MeleeAttack : IAbility
         }
     }
 
+    private Animator animator;
+    public void SetAnimator(Animator animator)
+    {
+        this.animator = animator;
+    }
+
     public bool Perform()
     {
         // Check if an attack is already in progress
@@ -39,11 +45,22 @@ public class MeleeAttack : IAbility
             return false;
         }
 
+        if (animator != null)
+        {
+            if (currentDirection == Vector2Int.up) animator.SetTrigger("attackUp");
+            else if (currentDirection == Vector2Int.down) animator.SetTrigger("attackDown");
+            else if (currentDirection == Vector2Int.left) animator.SetTrigger("attackLeft");
+            else if (currentDirection == Vector2Int.right) animator.SetTrigger("attackRight");
+        }
+
         damageDealer.ResetHitTargets();
+        damageDealer.attackStartPosition = gridPlaceable.Position;
         //if (gridPlaceable != null && gridPlaceable.CurrentGrid != null)
         //{
         //    animation.Initialize(gridPlaceable.CurrentGrid);
         //}
+        float angle = 180 + Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg;
+        swordDamageCollider.transform.rotation = Quaternion.Euler(0, 0, angle);
         animation.Play(gridPlaceable.Position, currentDirection);
 
         //StartCoroutine(AttackRoutine());

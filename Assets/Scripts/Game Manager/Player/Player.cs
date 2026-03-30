@@ -8,12 +8,16 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private InputManager inputManager;
     [SerializeField] private PlayerUI playerUI;
-    [SerializeField] private CinemachineCamera vCam;
+    [SerializeField] private CinemachineTargetGroup targetGroup;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private Image cooldownImage;
+    [SerializeField] private MouseFollower mouseFollower;
     [SerializeField] private Transform highlightParent;
     [SerializeField] private QuestManager questManager;
+    [SerializeField] private int playerInventorySize = 8;
+    [SerializeField] private bool useCustomInventorySize = false;
+
 
     [Header("Multi-Grid Play Mode")]
     [SerializeField] private List<GameInitializer> environments = new List<GameInitializer>();
@@ -36,25 +40,30 @@ public class Player : MonoBehaviour
 
     private void ResetAllEnvironments()
     {
+        if (questManager != null) questManager.ClearAll();
+
         // Unbind previous callbacks to prevent multiple triggers
         foreach (var env in environments)
         {
-            env.onEnvironmentReset -= CreatePvEScenario;
+            // env.onEnvironmentReset -= CreatePvEScenario;
+            env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
             env.entitySpawner.colorize = false;
         }
 
         player = null;
 
         // Bind creation logic to the first grid ONLY
-        environments[0].onEnvironmentReset += CreatePvEScenario;
+        // environments[0].onEnvironmentReset += CreatePvEScenario;
 
         // Reset all
         foreach (var env in environments)
         {
             env.ResetEnvironment();
+            env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
         }
 
-        environments[0].onEnvironmentReset -= CreatePvEScenario;
+        CreatePvEScenario();
+        // environments[0].onEnvironmentReset -= CreatePvEScenario;
     }
 
     void CreatePvEScenario()
@@ -69,6 +78,13 @@ public class Player : MonoBehaviour
                 if (env == environments[0] && i == 0)
                 {
                     player = activeEntities[i];
+
+                    if (useCustomInventorySize && player.inventory != null)
+                    {
+                        player.inventory.slotCount = playerInventorySize;
+                        player.inventory.Initialize();
+                    }
+
 
                     // // If team reservation is enabled, move the player to the reserved team
                     // if (env.entitySpawner.reserveTeamForPlayer)
@@ -92,6 +108,7 @@ public class Player : MonoBehaviour
 
                     bp.BehaviorType = BehaviorType.HeuristicOnly;
                     player.agent.isRuleBased = false; // Human player is never rule-based
+                    player.entitySpawner.SyncAnimation(player);
                     if (activeEntities[i].TryGetComponent(out IMoveInputHandler handler))
                         inputManager.InitializeMove(handler);
                     inputManager.InitializeScroll(player.equippedItem);
@@ -107,11 +124,18 @@ public class Player : MonoBehaviour
                     inventoryUI.Assign(player);
                     inventoryUI.AssignEquippedItem(player.equippedItem);
 
+                    if (mouseFollower != null)
+                        mouseFollower.Initialize(inputManager, player.transform);
+
                     OnPlayerSpawned?.Invoke(player);
                 }
                 else
                 {
-                    if (env.agentType == GameInitializer.AgentType.RuleBased)
+                    bool isAgentRuleBased = (env.entitySpawner.agentType == GameInitializer.AgentType.Randomized)
+                        ? activeEntities[i].agent.isRuleBased
+                        : (env.entitySpawner.agentType == GameInitializer.AgentType.RuleBased);
+
+                    if (isAgentRuleBased)
                     {
                         bp.BehaviorType = BehaviorType.HeuristicOnly;
                     }
@@ -121,13 +145,17 @@ public class Player : MonoBehaviour
                     }
                 }
             }
-            env.MaxSteps = 0; // Disable time-based reset for player control mode across all grids
         }
 
         points = 0;
-        if (vCam != null)
+        if (targetGroup != null && targetGroup.Targets.Count > 0)
         {
-            vCam.Follow = player.transform;
+            targetGroup.Targets[0] = new CinemachineTargetGroup.Target
+            {
+                Object = player.transform,
+                Weight = targetGroup.Targets[0].Weight,
+                Radius = targetGroup.Targets[0].Radius
+            };
         }
     }
 
@@ -156,7 +184,6 @@ public class Player : MonoBehaviour
 
         playerUI.restartButton.onClick.AddListener(ResetAllEnvironments);
 
-        if (questManager != null) questManager.ClearAll();
 
         ResetAllEnvironments();
     }

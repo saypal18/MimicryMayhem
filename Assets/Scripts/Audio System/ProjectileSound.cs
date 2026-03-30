@@ -10,6 +10,7 @@ public class ProjectileSound : MonoBehaviour
 
     void OnEnable()
     {
+        if (Trainer.IsTraining) return;
         if (projectileSoundEvent.IsNull) return;
 
         instance = RuntimeManager.CreateInstance(projectileSoundEvent);

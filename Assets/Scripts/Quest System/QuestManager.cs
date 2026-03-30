@@ -15,6 +15,7 @@ public class QuestManager : MonoBehaviour
     // Event triggered when quest data changes
     public UnityEvent<Dictionary<string, string>> OnQuestChanged = new UnityEvent<Dictionary<string, string>>();
 
+
     private void Awake()
     {
         if (clearOnStart)

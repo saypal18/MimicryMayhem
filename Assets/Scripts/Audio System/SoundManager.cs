@@ -40,10 +40,20 @@ public class SoundManager : MonoBehaviour
                 Debug.LogError($"[Audio] Failed to load bank '{bank}': {e.Message}");
             }
         }
+
+        if (Trainer.IsTraining)
+        {
+            if (RuntimeManager.StudioSystem.getBus("bus:/", out var masterBus) == FMOD.RESULT.OK)
+            {
+                masterBus.setMute(true);
+            }
+        }
     }
 
     public IEnumerator WaitForBanksAndStart()
     {
+        if (Trainer.IsTraining) yield break;
+
         float timeout = 30f;
         float elapsed = 0f;
         while (!RuntimeManager.HaveAllBanksLoaded)
@@ -62,6 +72,8 @@ public class SoundManager : MonoBehaviour
 
     public void StartBackgroundAudio()
     {
+        if (Trainer.IsTraining) return;
+
         StartMusic();
         StartAmbience();
     }
@@ -132,6 +144,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayLevelStart()
     {
+        if (Trainer.IsTraining) return;
         if (levelStartSoundEvent.IsNull) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(levelStartSoundEvent);

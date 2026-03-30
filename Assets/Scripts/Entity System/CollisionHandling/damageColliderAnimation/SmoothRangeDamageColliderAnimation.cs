@@ -24,10 +24,25 @@ public class SmoothRangeDamageColliderAnimation : MonoBehaviour, IRangeDamageCol
             return;
         }
 
+        int furthestReachable = 0;
+        for (int i = 1; i <= maxDistanceBlocks; i++)
+        {
+            Vector2Int checkPosition = position + direction * i;
+            if (grid.IsMovable(checkPosition))
+            {
+                furthestReachable = i;
+            }
+            else
+            {
+                break;
+            }
+        }
 
         rangeDamageCollider.SetActive(true);
         Vector3 startPos = grid.GetWorldPosition(position);
-        Vector3 endPos = grid.GetWorldPosition(position + direction * maxDistanceBlocks);
+        Vector3 endPos = grid.GetWorldPosition(position + direction * furthestReachable);
+
+        float adjustedDuration = (float)furthestReachable * travelDuration / maxDistanceBlocks;
 
         // Reset position to start
         rangeDamageCollider.transform.position = startPos;
@@ -41,7 +56,7 @@ public class SmoothRangeDamageColliderAnimation : MonoBehaviour, IRangeDamageCol
 
         // Animate to end position, then wait, then despawn
         Sequence seq = DOTween.Sequence();
-        seq.Append(rangeDamageCollider.transform.DOMove(endPos, travelDuration).SetEase(Ease.OutQuad));
+        seq.Append(rangeDamageCollider.transform.DOMove(endPos, adjustedDuration).SetEase(Ease.OutQuad));
         seq.AppendCallback(() =>
         {
             if (col2d != null)

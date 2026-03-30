@@ -44,7 +44,7 @@ public class InventorySlotUI : MonoBehaviour, IPointerClickHandler
     /// </summary>
     private void OnItemAdded(InventoryItem item, int amount)
     {
-        slotImage.sprite = item.itemIcon;
+        slotImage.sprite = item.inventoryIcon != null ? item.inventoryIcon : item.itemIcon;
         amountText.text = amount > 1 ? amount.ToString() : "";
         slotImage.enabled = true;
     }

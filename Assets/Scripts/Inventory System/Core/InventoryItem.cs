@@ -17,6 +17,9 @@ public class InventoryItem : ScriptableObject
     /// <summary>The sprite icon representing this item in the UI.</summary>
     public Sprite itemIcon;
 
+    /// <summary>The sprite icon specifically used for the inventory slot display.</summary>
+    public Sprite inventoryIcon;
+
     /// <summary>Descriptive text explaining the item's properties or effects.</summary>
     public string description;
 

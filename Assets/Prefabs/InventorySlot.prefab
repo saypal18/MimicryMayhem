@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -304,3 +304,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventorySlotUI
   amountText: {fileID: 9089182540651398622}
   slotImage: {fileID: 2619606446098901679}
+  slot:
+    slotType: 0
+    item: {fileID: 0}
+    amount: 0
+    maxStackSize: 0
+    OnItemAdded:
+      m_PersistentCalls:
+        m_Calls: []
+    OnItemRemoved:
+      m_PersistentCalls:
+        m_Calls: []

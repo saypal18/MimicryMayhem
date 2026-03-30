@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class Trainer : MonoBehaviour
 {
+    public static bool IsTraining { get; private set; }
+
+    private void Awake()
+    {
+        IsTraining = true;
+    }
     //[SerializeField] private InputManager inputManager;
     [SerializeField] private GameInitializer gameInitializerPrefab;
     [SerializeField] private int n = 32;
@@ -9,6 +15,7 @@ public class Trainer : MonoBehaviour
 
     [SerializeField] private Vector2 gridSize;
     [SerializeField] private int fieldLength = 4;
+    [SerializeField] private SoundManager soundManager; 
 
     void Start()
     {
@@ -18,6 +25,7 @@ public class Trainer : MonoBehaviour
             GameInitializer gameInitializer = Instantiate(gameInitializerPrefab);
             gameInitializer.transform.position = initialPosition + new Vector3((i / fieldLength) * gridSize.x, (i % fieldLength) * gridSize.y, 0);
             //gameInitializer.inputManager = inputManager;
+            gameInitializer.soundManager = soundManager;
             gameInitializer.ResetEnvironment();
         }
     }

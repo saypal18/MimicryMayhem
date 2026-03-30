@@ -10,10 +10,10 @@ public class MoveAbility : IAbility
     protected GridPlaceable gridPlaceable;
     [SerializeField] private float moveTime;
     [SerializeField] private int blocksToMove = 1;
-    public int Range 
-    { 
-        get => blocksToMove; 
-        set { blocksToMove = value; if (movement != null) movement.UpdateRange(value); } 
+    public int Range
+    {
+        get => blocksToMove;
+        set { blocksToMove = value; if (movement != null) movement.UpdateRange(value); }
     }
 
     [Header("Audio")]
@@ -38,6 +38,12 @@ public class MoveAbility : IAbility
         }
     }
 
+    private Animator animator;
+    public void SetAnimator(Animator animator)
+    {
+        this.animator = animator;
+    }
+
     public bool Perform()
     {
         bool moved = movement.Move(currentDirection);
@@ -55,6 +61,7 @@ public class MoveAbility : IAbility
 
     private void PlayMovementSound()
     {
+        if (Trainer.IsTraining) return;
         EnsureMovementSoundInstance();
         if (!movementSoundInstance.isValid()) return;
 

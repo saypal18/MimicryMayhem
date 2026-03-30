@@ -7,10 +7,11 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Transform mouseArrow;
     public Transform agentTransform { get; set; }
     public Vector2 mousePosition { get; private set; }
-    
+
     private Grid grid;
     private PlayerActionHighlighter highlighter;
     private Camera cam;
+    public Camera Cam => cam;
 
     public void InitializeMove(IMoveInputHandler moveInputHandler)
     {
@@ -33,15 +34,46 @@ public class InputManager : MonoBehaviour
         if (context.performed && grid != null && highlighter != null && highlighter.enabled && cam != null)
         {
             Vector3 mouseWorldPos = cam.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, -cam.transform.position.z));
-            
-            // Check for entity collider
-            Collider2D collider = Physics2D.OverlapPoint(mouseWorldPos);
-            if (collider != null && collider.TryGetComponent(out Entity entity))
+
+            // Try detection on the 'ClickDetection' layer first for a larger hit area
+            int clickLayer = LayerMask.NameToLayer("ClickDetection");
+            Entity entity = null;
+            if (clickLayer != -1)
+            {
+                Collider2D clickCollider = Physics2D.OverlapPoint(mouseWorldPos, 1 << clickLayer);
+                if (clickCollider != null && clickCollider.TryGetComponent(out Root root) && root.GO != null)
+                {
+                    entity = root.GO.GetComponent<Entity>();
+                }
+            }
+
+            // Fallback to standard detection if no ClickDetection collider was hit
+            if (entity == null)
+            {
+                Collider2D collider = Physics2D.OverlapPoint(mouseWorldPos);
+                if (collider != null) collider.TryGetComponent(out entity);
+            }
+
+            if (entity != null && !entity.IsActiveForTurns) entity = null;
+
+            if (entity != null)
             {
                 // If it's an enemy (not self), perform cardinal attack calculation
                 if (entity.transform != agentTransform)
                 {
-                    moveInputHandler?.OnGridClick(entity.Position, true);
+                    Vector3 directionVector = mouseWorldPos - agentTransform.position;
+                    Vector2Int snappedDir = Vector2Int.zero;
+                    if (Mathf.Abs(directionVector.x) > Mathf.Abs(directionVector.y))
+                    {
+                        snappedDir = new Vector2Int(directionVector.x > 0 ? 1 : -1, 0);
+                    }
+                    else
+                    {
+                        snappedDir = new Vector2Int(0, directionVector.y > 0 ? 1 : -1);
+                    }
+
+                    Vector2Int agentGridPos = grid.GetGridPosition(agentTransform.position);
+                    moveInputHandler?.OnGridClick(agentGridPos + snappedDir, true);
                     return;
                 }
             }

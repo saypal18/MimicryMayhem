@@ -16,10 +16,10 @@ public class RangeAttack : IAbility
     private DamageDealer damageDealer;
     private Grid grid;
     private int _range;
-    public int Range 
-    { 
-        get => _range; 
-        set { _range = value; if (colliderAnimation != null) colliderAnimation.UpdateRange(value); } 
+    public int Range
+    {
+        get => _range;
+        set { _range = value; if (colliderAnimation != null) colliderAnimation.UpdateRange(value); }
     }
 
     private Vector2Int currentDirection = Vector2Int.zero;
@@ -34,6 +34,12 @@ public class RangeAttack : IAbility
         }
     }
 
+    private Animator animator;
+    public void SetAnimator(Animator animator)
+    {
+        this.animator = animator;
+    }
+
     public bool Perform()
     {
         if (currentDirection == Vector2Int.zero || grid == null || gridPlaceable == null)
@@ -41,9 +47,19 @@ public class RangeAttack : IAbility
             return false;
         }
 
-        damageDealer.ResetHitTargets();
+        if (animator != null)
+        {
+            if (currentDirection == Vector2Int.up) animator.SetTrigger("attackUp");
+            else if (currentDirection == Vector2Int.down) animator.SetTrigger("attackDown");
+            else if (currentDirection == Vector2Int.left) animator.SetTrigger("attackLeft");
+            else if (currentDirection == Vector2Int.right) animator.SetTrigger("attackRight");
+        }
 
-        GameObject spawnedCollider = PoolingEntity.Spawn(rangeColliderPrefab);
+        damageDealer.ResetHitTargets();
+        damageDealer.attackStartPosition = gridPlaceable.Position;
+
+        float angle = 180 + Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg;
+        GameObject spawnedCollider = PoolingEntity.Spawn(rangeColliderPrefab, grid.GetWorldPosition(gridPlaceable.Position), Quaternion.Euler(0, 0, angle));
         if (spawnedCollider.TryGetComponent(out Root root))
         {
             root.Assign(gridPlaceable.gameObject);

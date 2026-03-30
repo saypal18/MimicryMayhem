@@ -242,8 +242,8 @@ MonoBehaviour:
   grid:
     startingTilePosition: {fileID: 3509958387582530915}
     tileSize: {x: 1, y: 1}
-    minGridSize: 5
-    maxGridSize: 20
+    minGridSize: 15
+    maxGridSize: 25
     border:
       borderPrefab: {fileID: 7778688139210919124, guid: 37d760a4e9101b446b6c175f8a514290, type: 3}
       borderParent: {fileID: 2335819374844696575}
@@ -259,21 +259,37 @@ MonoBehaviour:
     _tick:
       underlyingValue: {fileID: 0}
     colorize: 1
-    entityPercentage: 2
+    entityPercentage: 1
     teamsEnabled: 0
+    isKillable: 1
     teamAssignmentStrategy: 0
     reserveTeamForPlayer: 0
     reservedTeamId: 0
     initialScale: {x: 1, y: 1, z: 1}
     agentType: 0
+    randomizeInventorySize: 1
+    maxInventorySize: 5
     ruleBasedWeaponPrefabs:
     - {fileID: 2279582224576281527, guid: 2f4824a3662631d4fa4ff5640fb82fe1, type: 3}
     - {fileID: 2279582224576281527, guid: 707c9f4dbc43f3d4c842e3bc41cebc44, type: 3}
+    - {fileID: 2279582224576281527, guid: 83beccc8ba6994e41ac92eba1e144586, type: 3}
+    - {fileID: 2279582224576281527, guid: 6e9fd59b54c13fc4b927bc3eb74d5d10, type: 3}
+    - {fileID: 2279582224576281527, guid: 4b03c97795c12794e83ad09a53aa82c7, type: 3}
     - {fileID: 2279582224576281527, guid: 7373fa2bc024db0468820b0974ebc7ae, type: 3}
     - {fileID: 2279582224576281527, guid: 3ff4a2f570e3a344ab59e0d6c4f4ffa0, type: 3}
+    - {fileID: 2279582224576281527, guid: 3475a4424a37e5c4786e2f54f74c79ca, type: 3}
+    - {fileID: 2279582224576281527, guid: 53eff3995a64b8948beca4dba8d57801, type: 3}
+    - {fileID: 2279582224576281527, guid: 487244d0ba6e7844cb873539e04bc881, type: 3}
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
     - {fileID: 2279582224576281527, guid: 0732882f54b923345908b517e76e161e, type: 3}
+    - {fileID: 2279582224576281527, guid: ed1b1f90a4e07e24b98428229f39be6b, type: 3}
+    - {fileID: 2279582224576281527, guid: 77e0568456120124ea94c87328266551, type: 3}
+    - {fileID: 2279582224576281527, guid: ec814e5744fa1714ea0f54cf673d099d, type: 3}
     ruleBasedWeaponSpawnDelay: 5
+    mlAgentAnimationPrefab: {fileID: 5466145123763703403, guid: 41d5ab079c951964c9eff551f0f354ef, type: 3}
+    ruleBasedAnimationPrefab: {fileID: 5256529774395837238, guid: 2b047fa1dad66bb40bbb6bc2e552b8ed, type: 3}
+    playerAnimationPrefab: {fileID: 2204444103143941614, guid: 045551c334a131e4c9644da1aba29425, type: 3}
+    bossAnimationPrefab: {fileID: 9035053469362661103, guid: c14c1aa05139f5f479fc48c74f9a0db7, type: 3}
   pickupPlacer:
     pickupPrefabs:
     - {fileID: 2279582224576281527, guid: 39994316fc66bcb459c197339ded1e8e, type: 3}
@@ -292,8 +308,8 @@ MonoBehaviour:
     - {fileID: 2279582224576281527, guid: 53eff3995a64b8948beca4dba8d57801, type: 3}
     - {fileID: 2279582224576281527, guid: 487244d0ba6e7844cb873539e04bc881, type: 3}
     pickupParent: {fileID: 7199370050930525759}
-    spawnInterval: 10
-    pickupPercentage: 5
+    spawnInterval: 20
+    pickupPercentage: 1
   wallPlacer:
     wallMode: 2
     perlinNoiseProbability: 0.9
@@ -305,7 +321,7 @@ MonoBehaviour:
       rotationAngleMin: 0
       rotationAngleMax: 90
       threshold: 0.5
-      minConnectedCoveragePercent: 0.9
+      minConnectedCoveragePercent: 1
       maxWallPercentEarlyStop: 0.1
       maxWallCapPercent: 0.4
     wallPercentage: 10
@@ -369,20 +385,20 @@ MonoBehaviour:
     density: 2
     jitter: {x: 0.5, y: 0.5}
     container: {fileID: 168297767917431162}
+  bossCreator: {fileID: 0}
+  victorySpawner: {fileID: 0}
   soundManager: {fileID: 0}
   doorPrefab: {fileID: 0}
   doorLinks: []
   numTeams: 2
-  teamAssignmentStrategy: 0
   distanceActivator:
-    enableDistanceActivation: 1
+    enableDistanceActivation: 0
     activationDistance: 5
   maxStepsMultiplier: 500
   pickupSpawnIntervalConstant: 2000
   MaxSteps: 1000
   shouldRandomize: 1
   turnManager: {fileID: -5087976263453988065}
-  agentType: 0
 --- !u!114 &-5087976263453988065
 MonoBehaviour:
   m_ObjectHideFlags: 0

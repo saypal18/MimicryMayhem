@@ -11,11 +11,12 @@ public class DashAttack : IAbility
     private DamageDealer damageDealer;
     private Vector2Int currentDirection = Vector2Int.zero;
     private MoveInfo moveInfo;
+    private GridPlaceable gridPlaceable;
     private int _range;
-    public int Range 
-    { 
-        get => _range; 
-        set { _range = value; if (movement != null) movement.UpdateRange(value); } 
+    public int Range
+    {
+        get => _range;
+        set { _range = value; if (movement != null) movement.UpdateRange(value); }
     }
 
     public bool IsDashing => moveInfo != null && moveInfo.IsDashing;
@@ -23,6 +24,7 @@ public class DashAttack : IAbility
     public void Initialize(DamageDealer dashDamageDealer, EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo)
     {
         damageDealer = dashDamageDealer;
+        this.gridPlaceable = gridPlaceable;
         movement = movementFactory.GetMovement(this.GetType());
         movement.Initialize(dashTime, Range > 0 ? Range : blocksToMove, gridPlaceable, moveInfo);
         this.moveInfo = moveInfo;
@@ -40,11 +42,26 @@ public class DashAttack : IAbility
         }
     }
 
+    private Animator animator;
+    public void SetAnimator(Animator animator)
+    {
+        this.animator = animator;
+    }
+
     public bool Perform()
     {
         if (movement == null) return false;
 
+        if (animator != null)
+        {
+            if (currentDirection == Vector2Int.up) animator.SetTrigger("attackUp");
+            else if (currentDirection == Vector2Int.down) animator.SetTrigger("attackDown");
+            else if (currentDirection == Vector2Int.left) animator.SetTrigger("attackLeft");
+            else if (currentDirection == Vector2Int.right) animator.SetTrigger("attackRight");
+        }
+
         damageDealer.ResetHitTargets();
+        damageDealer.attackStartPosition = gridPlaceable.Position;
 
         // Already performing a movement
         if (moveInfo.IsMoving) return false;

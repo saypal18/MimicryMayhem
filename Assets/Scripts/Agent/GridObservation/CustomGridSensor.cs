@@ -19,6 +19,8 @@ public class CustomGridSensor : ISensor
     private int viewSize;
     private const int Channels = 6;
 
+    public bool LogObservations = false;
+
     // ---- references set externally ----
     private Grid grid;
     private GridPlaceable agentPlaceable;
@@ -65,6 +67,7 @@ public class CustomGridSensor : ISensor
 
         Vector2Int center = agentPlaceable.Position;
         int agentPow = agentDamageResolver.tier;
+        float[,,] observations = new float[Channels, viewSize, viewSize];
 
         for (int dy = -viewRadius; dy <= viewRadius; dy++)
         {
@@ -79,12 +82,7 @@ public class CustomGridSensor : ISensor
                 var tile = grid.GetTile(worldCell);
                 if (tile == null)
                 {
-                    writer[0, row, col] = 0f; // enemy exists
-                    writer[1, row, col] = 0f; // enemy is stronger
-                    writer[2, row, col] = 0f; // enemy is weaker
-                    writer[3, row, col] = 0f; // pickup
-                    writer[4, row, col] = 1f; // out-of-bounds treated as wall
-                    writer[5, row, col] = 0f; // bush
+                    observations[4, row, col] = 1f; // out-of-bounds treated as wall
                     continue;
                 }
 
@@ -140,133 +138,50 @@ public class CustomGridSensor : ISensor
                     }
                 }
 
-                writer[0, row, col] = enemyExists;
-                writer[1, row, col] = enemyIsStronger;
-                writer[2, row, col] = enemyIsWeaker;
-                writer[3, row, col] = pickupChannel;
-                writer[4, row, col] = wallChannel;
-                writer[5, row, col] = bushChannel;
+                observations[0, row, col] = enemyExists;
+                observations[1, row, col] = enemyIsStronger;
+                observations[2, row, col] = enemyIsWeaker;
+                observations[3, row, col] = pickupChannel;
+                observations[4, row, col] = wallChannel;
+                observations[5, row, col] = bushChannel;
             }
+        }
+
+        // Write to ML-Agents writer
+        for (int c = 0; c < Channels; c++)
+        {
+            for (int r = 0; r < viewSize; r++)
+            {
+                for (int w = 0; w < viewSize; w++)
+                {
+                    writer[c, r, w] = observations[c, r, w];
+                }
+            }
+        }
+
+        if (LogObservations && agentPlaceable != null && agentPlaceable.Entity != null)
+        {
+            string[] channelNames = { "Enemy Exists", "Enemy Stronger", "Enemy Weaker", "Pickup", "Wall", "Bush" };
+            string log = $"CustomGridSensor - {agentPlaceable.Entity.name} (Team {agentPlaceable.Entity.TeamId}) - {viewSize}x{viewSize}\n";
+            for (int c = 0; c < Channels; c++)
+            {
+                log += $"Channel {c} ({channelNames[c]}):\n";
+                for (int r = viewSize - 1; r >= 0; r--)
+                {
+                    for (int w = 0; w < viewSize; w++)
+                    {
+                        log += observations[c, r, w] > 0.5f ? "# " : ". ";
+                    }
+                    log += "\n";
+                }
+            }
+            Debug.Log(log);
         }
 
         return viewSize * viewSize * Channels;
     }
 
-    public void OnDrawGizmos()
-    {
-        if (agentPlaceable == null || grid == null || agentDamageResolver == null)
-        {
-            // Draw a red "X" if references are missing
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(agentPlaceable != null ? agentPlaceable.transform.position + Vector3.left : Vector3.left,
-                           agentPlaceable != null ? agentPlaceable.transform.position + Vector3.right : Vector3.right);
-            return;
-        }
-
-        Vector2Int center = agentPlaceable.Position;
-        int agentPow = Mathf.Max(0, agentDamageResolver.tier);
-
-        for (int dy = -viewRadius; dy <= viewRadius; dy++)
-        {
-            for (int dx = -viewRadius; dx <= viewRadius; dx++)
-            {
-                Vector2Int worldCell = center + new Vector2Int(dx, dy);
-                Vector3 worldPos = grid.GetWorldPosition(worldCell);
-
-                float enemyExists = 0f;
-                float enemyIsStronger = 0f;
-                float enemyIsWeaker = 0f;
-                float pickupChannel = 0f;
-                float wallChannel = 0f;
-                float bushChannel = 0f;
-
-                var tile = grid.GetTile(worldCell);
-                if (tile == null)
-                {
-                    wallChannel = 1f;
-                }
-                else
-                {
-                    bool hasBush = false;
-                    foreach (GridPlaceable gp in tile)
-                    {
-                        if (gp.Type == GridPlaceable.PlaceableType.Bush)
-                        {
-                            hasBush = true;
-                            break;
-                        }
-                    }
-
-                    foreach (GridPlaceable gp in tile)
-                    {
-                        switch (gp.Type)
-                        {
-                            case GridPlaceable.PlaceableType.Bush:
-                                bushChannel = 1f;
-                                break;
-                            case GridPlaceable.PlaceableType.Wall:
-                                wallChannel = 1f;
-                                break;
-                            case GridPlaceable.PlaceableType.Pickup:
-                                if (hasBush) break;
-                                pickupChannel = 1f;
-                                break;
-                            case GridPlaceable.PlaceableType.Entity:
-                                if (hasBush) break;
-                                if (gp != agentPlaceable && gp.Entity != null)
-                                {
-                                    enemyExists = 1f;
-                                    if (gp.Entity.damageDealer != null)
-                                    {
-                                        int enemyPow = gp.Entity.damageDealer.tier;
-                                        if (enemyPow > agentPow)
-                                            enemyIsStronger = 1f;
-                                        else if (enemyPow < agentPow)
-                                            enemyIsWeaker = 1f;
-                                    }
-                                }
-                                break;
-                        }
-                    }
-                }
-
-                // Draw cell: Red=Threat, Yellow=Prey, Orange=Equal, Green=Pickup, Blue=Wall, Cyan=Bush
-                float r = 0, g = 0, b = 0;
-
-                if (enemyExists > 0)
-                {
-                    if (enemyIsStronger > 0) { r = 1f; g = 0f; } // Red
-                    else if (enemyIsWeaker > 0) { r = 1f; g = 1f; } // Yellow
-                    else { r = 1f; g = 0.5f; } // Orange (Equal power)
-                }
-
-                if (pickupChannel > 0) { g = 1f; } // Green (Additive if overlapping)
-                if (wallChannel > 0) { b = 1f; }   // Blue (Additive)
-                if (bushChannel > 0) { r = 0f; g = 1f; b = 1f; } // Cyan (Bush overrides)
-
-                Color color = new Color(r, g, b, 0.3f);
-                if (enemyExists == 0 && pickupChannel == 0 && wallChannel == 0 && bushChannel == 0)
-                    color.a = 0.05f;
-
-                Gizmos.color = color;
-                Vector3 cubeSize = new Vector3(grid.TileSize.x * 0.9f, grid.TileSize.y * 0.9f, 0.1f);
-                Gizmos.DrawCube(worldPos, cubeSize);
-
-                // Outline for the whole view
-                if (dx == -viewRadius && dy == -viewRadius)
-                {
-                    Gizmos.color = Color.white;
-                    Vector3 viewCenter = grid.GetWorldPosition(center);
-                    Vector3 totalViewSize = new Vector3(viewSize * grid.TileSize.x, viewSize * grid.TileSize.y, 0.1f);
-                    Gizmos.DrawWireCube(viewCenter, totalViewSize);
-                }
-            }
-        }
-    }
-
-    public byte[] GetCompressedObservation() => null;
-
-    public void Update() { }
-
     public void Reset() { }
+    public void Update() { }
+    public byte[] GetCompressedObservation() => null;
 }

@@ -26,14 +26,27 @@ public class EntitySpawner
     [Header("Entity Settings")]
     [SerializeField] public float entityPercentage = 2f;
     [SerializeField] public bool teamsEnabled = false;
+    [SerializeField] public bool isKillable = true;
     [SerializeField] public TeamAssignmentStrategy teamAssignmentStrategy = TeamAssignmentStrategy.Alternate;
     [SerializeField] public bool reserveTeamForPlayer = false;
     [SerializeField] public int reservedTeamId = 0;
     [SerializeField] private Vector3 initialScale = Vector3.one;
-    public GameInitializer.AgentType agentType;
+    [SerializeField] public GameInitializer.AgentType agentType;
+    [Header("Inventory Settings")]
+    [SerializeField] private bool randomizeInventorySize = false;
+    [SerializeField] private int maxInventorySize = 5;
+
+
+
     [Header("Rule Based Weapon Spawning")]
     [SerializeField] private List<Pickup> ruleBasedWeaponPrefabs;
     [SerializeField] private float ruleBasedWeaponSpawnDelay = 5f;
+    [Header("Animation Prefabs")]
+    [SerializeField] private GameObject mlAgentAnimationPrefab;
+    [SerializeField] private GameObject ruleBasedAnimationPrefab;
+    [SerializeField] private GameObject playerAnimationPrefab;
+    [SerializeField] private GameObject bossAnimationPrefab;
+
 
     private int entitiesCount;
     private List<ITick> turnTicks;
@@ -72,18 +85,47 @@ public class EntitySpawner
 
     public void SpawnAtPosition(Vector2Int position, int teamId = 0)
     {
-        Entity entity = PoolingEntity.Spawn(entityPrefab, entityParent);
+        SpawnAtPosition(entityPrefab, position, teamId, true, null, entityPrefab.inventory != null ? entityPrefab.inventory.slotCount : 0, false);
+    }
+
+    public Entity SpawnAtPosition(Entity prefab, Vector2Int position, int teamId = 0, bool initializeWeaponProvider = true, int? overrideInventorySize = null, int defaultInventorySize = 0, bool isBoss = false)
+    {
+        Entity entity = PoolingEntity.Spawn(prefab, entityParent);
+
+
+        if (entity.inventory != null)
+        {
+            if (overrideInventorySize.HasValue)
+            {
+                entity.inventory.slotCount = overrideInventorySize.Value;
+            }
+            else if (randomizeInventorySize)
+            {
+                entity.inventory.slotCount = UnityEngine.Random.Range(1, maxInventorySize + 1);
+            }
+            else if (prefab.inventory != null)
+            {
+                entity.inventory.slotCount = prefab.inventory.slotCount;
+            }
+        }
+
         entity.Initialize(grid, position, movementFactory, turnTicks[teamId], this);
-        bool isRuleBased = (agentType == GameInitializer.AgentType.RuleBased);
+
+        bool isRuleBased = (agentType == GameInitializer.AgentType.RuleBased) ||
+                          (agentType == GameInitializer.AgentType.Randomized && UnityEngine.Random.value > 0.5f);
         entity.agent.isRuleBased = isRuleBased;
+        entity.IsKillable = isKillable;
 
         if (entity.TryGetComponent(out BehaviorParameters bp))
         {
-            bp.BehaviorType = isRuleBased ? BehaviorType.HeuristicOnly : BehaviorType.InferenceOnly;
+            bp.BehaviorType = isRuleBased ? BehaviorType.HeuristicOnly : BehaviorType.Default;
         }
 
-        RuleBasedWeaponProvider weaponProvider = entity.gameObject.AddComponent<RuleBasedWeaponProvider>();
-        weaponProvider.Initialize(ruleBasedWeaponPrefabs, currentWeaponPool, ruleBasedWeaponSpawnDelay, entity.inventory, grid, pickupPlacer.PickupParent, entity);
+        if (initializeWeaponProvider)
+        {
+            entity.ruleBasedWeaponProvider.Initialize(ruleBasedWeaponPrefabs, currentWeaponPool, ruleBasedWeaponSpawnDelay, entity.inventory, grid, pickupPlacer.PickupParent, entity);
+        }
+
 
 
         entity.OnDropItemToGrid -= HandleEntityDropItem;
@@ -94,13 +136,15 @@ public class EntitySpawner
         turnManager.RegisterPlayer(teamId);
         if (entity.TryGetComponent(out PoolingEntity poolingEntity))
         {
-            poolingEntity.OnDespawning += CreateDespawnHandler(entity, poolingEntity, teamId);
+            poolingEntity.OnDespawning += CreateDespawnHandler(entity, poolingEntity, teamId, defaultInventorySize);
         }
+
 
         // if (entity.TryGetComponent(out IMoveInputHandler moveHandler))
         // {
         //     inputManager.InitializeMove(moveHandler);
         // }
+        bp.TeamId = teamId;
 
         // Apply dynamic Team ID for free-for-all Self-Play
         //if (entity.TryGetComponent(out Unity.MLAgents.Policies.BehaviorParameters bp))
@@ -118,7 +162,49 @@ public class EntitySpawner
             }
         }
         entity.transform.localScale = initialScale;
+
+        if (isBoss) entity.IsBoss = true;
+        SyncAnimation(entity);
+
+        return entity;
     }
+
+    public void SyncAnimation(Entity entity)
+    {
+        if (entity.currentAnimation != null)
+        {
+            PoolingEntity.Despawn(entity.currentAnimation);
+            entity.currentAnimation = null;
+        }
+
+        GameObject animationPrefab = null;
+
+        if (entity.IsBoss)
+        {
+            animationPrefab = bossAnimationPrefab;
+        }
+        else if (entity.agent.isRuleBased)
+        {
+            animationPrefab = ruleBasedAnimationPrefab;
+        }
+        else if (entity.IsPlayer)
+        {
+            animationPrefab = playerAnimationPrefab;
+        }
+        else
+        {
+            animationPrefab = mlAgentAnimationPrefab;
+        }
+
+        if (animationPrefab != null)
+        {
+            GameObject animInstance = PoolingEntity.Spawn(animationPrefab, entity.animationParent != null ? entity.animationParent : entity.transform);
+            animInstance.transform.localPosition = Vector3.zero;
+            animInstance.transform.localRotation = Quaternion.identity;
+            entity.currentAnimation = animInstance;
+        }
+    }
+
 
     // public void SpawnInitialEntities(int totalArea)
     // {
@@ -145,16 +231,16 @@ public class EntitySpawner
     {
         List<Vector2Int> randomPositions = grid.GetRandomEmptyPositions(count);
         int numTeams = turnManager.GetTeamCount();
-        
+
         for (int i = 0; i < randomPositions.Count; i++)
         {
             int teamId = 0;
-            
+
             if (reserveTeamForPlayer && numTeams > 1)
             {
                 int effectiveTeams = numTeams - 1;
                 int strategyIndex = 0;
-                
+
                 if (teamAssignmentStrategy == TeamAssignmentStrategy.Alternate)
                 {
                     strategyIndex = i % effectiveTeams;
@@ -163,7 +249,7 @@ public class EntitySpawner
                 {
                     strategyIndex = (i < effectiveTeams) ? i : effectiveTeams - 1;
                 }
-                
+
                 // Shift index to avoid reservedTeamId
                 teamId = (strategyIndex >= reservedTeamId) ? strategyIndex + 1 : strategyIndex;
                 // Clamp to ensure it doesn't exceed numTeams - 1 (in case reservedTeamId was invalidly high)
@@ -180,10 +266,13 @@ public class EntitySpawner
                     teamId = (i < numTeams) ? i : numTeams - 1;
                 }
             }
-            
-            SpawnAtPosition(randomPositions[i], teamId);
+
+            int defaultSize = entityPrefab.inventory != null ? entityPrefab.inventory.slotCount : 0;
+            SpawnAtPosition(entityPrefab, randomPositions[i], teamId, true, null, defaultSize);
         }
     }
+
+
 
 
     /// <summary>
@@ -191,18 +280,31 @@ public class EntitySpawner
     /// and unsubscribes itself from OnDespawning when the entity is despawned.
     /// This prevents stale delegate accumulation across pool reuse cycles.
     /// </summary>
-    private Action CreateDespawnHandler(Entity entity, PoolingEntity poolingEntity, int teamId)
+    private Action CreateDespawnHandler(Entity entity, PoolingEntity poolingEntity, int teamId, int defaultInventorySize)
     {
         Action handler = null;
         handler = () =>
         {
+            if (entity.inventory != null)
+            {
+                entity.inventory.slotCount = defaultInventorySize;
+            }
+            entity.canBeStunned = true;
+            entity.IsBoss = false;
+            if (entity.currentAnimation != null)
+            {
+                PoolingEntity.Despawn(entity.currentAnimation);
+                entity.currentAnimation = null;
+            }
             entity.OnDropItemToGrid -= HandleEntityDropItem;
+
             activeEntities.Remove(entity);
             turnManager.UnregisterPlayer(teamId);
             // poolingEntity.OnDespawning -= handler;
         };
         return handler;
     }
+
 
     private void HandleEntityDropItem(Entity dropper, WeaponItem item, Vector2Int position)
     {
@@ -216,6 +318,8 @@ public class EntitySpawner
     {
         if (activeEntities.Contains(entity))
         {
+            entity.canBeStunned = true;
+            entity.IsBoss = false;
             entity.OnDropItemToGrid -= HandleEntityDropItem;
             activeEntities.Remove(entity);
             turnManager.UnregisterPlayer(entity.TeamId);

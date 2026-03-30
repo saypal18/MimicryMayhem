@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponItem
   itemType: 1
   itemName: Bow
-  itemIcon: {fileID: 6086805392640420785, guid: 3f1b455f61dfb6443b2c85f88d514284, type: 3}
+  itemIcon: {fileID: 736055844301397430, guid: 3218d576ce4c7c84a8eabf8ff96b3062, type: 3}
+  inventoryIcon: {fileID: 21300000, guid: 6cd9f0b3ce954cd468572a5535ba5ce6, type: 3}
   description: Bow
   maxStackSize: 1
   tier: 2
   currentGrip: 2
   range: 2
+  equipPrefab: {fileID: 8436752907251229598, guid: d0bc6012f3bef924197d680b4699318d, type: 3}

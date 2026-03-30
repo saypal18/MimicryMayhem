@@ -22,6 +22,8 @@ public class PickupHandler
 
     public void OnPickup(GameObject other)
     {
+        if (thisObject.TryGetComponent(out Entity entity) && entity.IsBoss) return;
+
         if (other != null && other.TryGetComponent(out Pickup pickup))
         {
             ItemType? pickupItemType = null;
@@ -47,6 +49,11 @@ public class PickupHandler
 
     private void PlayPickupSound(ItemType? itemType, bool isSteal)
     {
+
+        if (Trainer.IsTraining) return;
+        //// FMOD BUG
+        //return;
+        if (pickupSoundEvent.IsNull) return;
         EventReference eventRef = isSteal ? stealSoundEvent : pickupSoundEvent;
         if (eventRef.IsNull) return;
 

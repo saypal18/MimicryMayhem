@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponItem
   itemType: 2
   itemName: Shield
-  itemIcon: {fileID: 6925274584272976137, guid: cdccf6bda42e1fa4982f38b41a5fd87d, type: 3}
+  itemIcon: {fileID: -4583943251622844694, guid: 2add061fde161f44697deef05cfd1650, type: 3}
+  inventoryIcon: {fileID: 21300000, guid: 20078e2cac7d71140b80971f2ae3892d, type: 3}
   description: Shield
   maxStackSize: 1
   tier: 4
   currentGrip: 4
   range: 3
+  equipPrefab: {fileID: 5372563593665189050, guid: 23e95b00266637f46992bd950be37909, type: 3}

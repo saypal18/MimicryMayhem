@@ -5,16 +5,11 @@ public class WeaponPickup : Pickup
 {
     [SerializeField] private WeaponItem weaponItem;
     public WeaponItem GetWeaponItem() => weaponItem;
-    [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField]
-    private Color[] tierColors = new Color[]
-    {
-        Color.white,      // Tier 0
-        Color.green,      // Tier 1
-        Color.blue,       // Tier 2
-        new Color(0.5f, 0f, 0.5f), // Tier 3 (Purple)
-        new Color(1f, 0.5f, 0f)    // Tier 4 (Orange/Gold)
-    };
+    
+    [Header("Visuals")]
+    [SerializeField] private SpriteRenderer weaponRenderer;
+    [SerializeField] private SpriteRenderer tierRenderer;
+    [SerializeField] private TierColorPalette colorPalette;
 
     public override void Initialize(Grid grid, Vector2Int position)
     {
@@ -32,16 +27,16 @@ public class WeaponPickup : Pickup
     {
         if (weaponItem == null) return;
 
-        if (spriteRenderer != null)
+        // Set the weapon sprite if available
+        if (weaponRenderer != null && weaponItem.itemIcon != null)
         {
-            int validTiers = Mathf.Clamp(weaponItem.tier, 1, tierColors.Length);
-            spriteRenderer.color = tierColors[validTiers - 1];
+            weaponRenderer.sprite = weaponItem.itemIcon;
+        }
 
-            // Optionally set the sprite to the item's icon if it has one
-            if (weaponItem.itemIcon != null)
-            {
-                spriteRenderer.sprite = weaponItem.itemIcon;
-            }
+        // Set the tier background color if palette and renderer are available
+        if (tierRenderer != null && colorPalette != null)
+        {
+            tierRenderer.color = colorPalette.GetColorFromTier(weaponItem.tier);
         }
     }
 

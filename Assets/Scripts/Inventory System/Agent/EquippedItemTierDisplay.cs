@@ -1,26 +1,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class EquippedItemTierDisplay : MonoBehaviour
 {
+    [SerializeField] private Entity owner;
     [SerializeField] private EquippedItem equippedItem;
     [SerializeField] private SpriteRenderer weaponIcon;
     [SerializeField] private Transform tierParent;
-    [SerializeField] private GameObject tierPrefab;
-    [SerializeField] private Sprite gripSprite;
-    [SerializeField] private Sprite nogripsprite;
+    [SerializeField] private TierVisual tierPrefab;
 
-    private List<GameObject> spawnedTierObjects = new List<GameObject>();
+    [Header("DOTween Shake Settings")]
+    [SerializeField] private float shakeDuration = 0.5f;
+    [SerializeField] private float shakeStrength = 0.05f;
+
+    private List<TierVisual> spawnedTierVisuals = new List<TierVisual>();
     private InventoryItem currentItem;
     private int lastTier;
     private int lastGrip;
+    private bool isOneShot;
+    private bool isStronger;
+    private Tween shakeTween;
 
-    private void Awake()
-    {
-        if (equippedItem == null)
-            equippedItem = GetComponent<EquippedItem>();
-    }
 
     private void Update()
     {
@@ -45,18 +47,48 @@ public class EquippedItemTierDisplay : MonoBehaviour
         }
     }
 
+    public void SetFeedback(bool isOneShot, bool isStronger)
+    {
+        if (owner != null && owner.IsPlayer) return;
+
+        this.isOneShot = isOneShot;
+        this.isStronger = isStronger;
+
+        foreach (var visual in spawnedTierVisuals)
+        {
+            if (visual != null) visual.SetIsOneShot(isOneShot);
+        }
+
+        if (isStronger)
+        {
+            if (shakeTween == null || !shakeTween.IsActive())
+            {
+                shakeTween = tierParent.DOShakePosition(shakeDuration, shakeStrength, fadeOut: false).SetLoops(-1);
+            }
+        }
+        else
+        {
+            if (shakeTween != null)
+            {
+                shakeTween.Kill();
+                shakeTween = null;
+            }
+            tierParent.localPosition = Vector3.zero;
+        }
+    }
+
     private void UpdateDisplay(InventoryItem item)
     {
         // Clear existing objects
-        foreach (var obj in spawnedTierObjects)
+        foreach (var visual in spawnedTierVisuals)
         {
-            if (obj != null)
+            if (visual != null)
             {
-                obj.transform.SetParent(null);
-                PoolingEntity.Despawn(obj);
+                visual.transform.SetParent(null);
+                PoolingEntity.Despawn(visual.gameObject);
             }
         }
-        spawnedTierObjects.Clear();
+        spawnedTierVisuals.Clear();
 
         if (item == null)
         {
@@ -73,13 +105,22 @@ public class EquippedItemTierDisplay : MonoBehaviour
 
             for (int i = 0; i < tier; i++)
             {
-                GameObject tierObj = PoolingEntity.Spawn(tierPrefab, tierParent);
-                spawnedTierObjects.Add(tierObj);
-
-                Image img = tierObj.GetComponent<Image>();
-                if (img != null)
+                GameObject tierObj = PoolingEntity.Spawn(tierPrefab.gameObject, tierParent);
+                TierVisual visual = tierObj.GetComponent<TierVisual>();
+                
+                if (visual != null)
                 {
-                    img.sprite = (i < grip) ? gripSprite : nogripsprite;
+                    visual.Initialize();
+                    if (i < grip)
+                    {
+                        visual.SetTier(tier);
+                    }
+                    else
+                    {
+                        visual.SetTier(0);
+                    }
+                    spawnedTierVisuals.Add(visual);
+                    visual.SetIsOneShot(isOneShot);
                 }
             }
         }

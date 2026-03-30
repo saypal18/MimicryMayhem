@@ -40,11 +40,11 @@ public class DefeatEnemiesHintQuest : MonoBehaviour
     {
         CleanupListeners();
         playerEntity = entity;
-        
+
         if (playerEntity != null && playerEntity.inventory != null)
         {
             playerEntity.inventory.OnItemAdded.AddListener(HandleItemAdded);
-            
+
             // If player already has a sword, start timer
             if (HasSword())
             {
@@ -64,7 +64,7 @@ public class DefeatEnemiesHintQuest : MonoBehaviour
         {
             if (playerEntity.inventory != null)
                 playerEntity.inventory.OnItemAdded.RemoveListener(HandleItemAdded);
-            
+
             if (playerEntity.agent != null && playerEntity.agent.TryGetComponent(out DamageDealer damageDealer))
                 damageDealer.OnDamageDealt -= HandleDamageDealt;
         }
@@ -92,10 +92,10 @@ public class DefeatEnemiesHintQuest : MonoBehaviour
 
     private void HandleDamageDealt(Entity victim)
     {
-        if (!swordPickedUp || !hintShown) return;
+        // if (!swordPickedUp || !hintShown) return;
 
         defeatCount++;
-        
+
         if (defeatCount >= enemiesToDefeat)
         {
             RemoveHint();

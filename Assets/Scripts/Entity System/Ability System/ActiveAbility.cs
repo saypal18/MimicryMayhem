@@ -18,13 +18,16 @@ public class ActiveAbility
     public bool IsDashing => dashAttack != null && dashAttack.IsDashing;
     public bool IsMeleeAttacking => meleeAttack != null && meleeAttack.IsAttacking;
 
-    public void Initialize(Grid grid, DamageDealer meleeDamageDealer, EquippedItem equippedItem, InventorySlotHolder inventory, DamageDealer damageDealer, EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo)
+    public void Initialize(Grid grid, DamageDealer meleeDamageDealer, EquippedItem equippedItem, InventorySlotHolder inventory, DamageDealer damageDealer, EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo, Animator animator)
     {
         this.equippedItem = equippedItem;
         this.damageDealer = damageDealer;
         meleeAttack.Initialize(grid, meleeDamageDealer);
+        meleeAttack.SetAnimator(animator);
         rangeAttack.Initialize(grid, damageDealer);
+        rangeAttack.SetAnimator(animator);
         dashAttack.Initialize(damageDealer, movementFactory, gridPlaceable, moveInfo);
+        dashAttack.SetAnimator(animator);
         //equippedItem.OnScroll += UpdateActiveAbility;
         //inventory.OnItemRemoved.AddListener((item, amount, index) => UpdateActiveAbility(-1));
         //inventory.OnItemAdded.AddListener((item, amount, index) => UpdateActiveAbility(-1));
@@ -74,6 +77,7 @@ public class ActiveAbility
 
     public void PlayAttackSound(Vector3 position, bool isPlayer)
     {
+        if (Trainer.IsTraining) return;
         if (weaponAttackSoundEvent.IsNull || equippedItem == null) return;
 
         InventoryItem item = equippedItem.Get();
