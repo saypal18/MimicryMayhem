@@ -281,7 +281,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1076,6 +1076,7 @@ MonoBehaviour:
   IsKillable: 1
   canBeStunned: 1
   equippedItem: {fileID: -3726688000211129029}
+  tierDisplay: {fileID: 6801344637305766425}
   inventory:
     slotCount: 1
     slotType: 0
@@ -1372,10 +1373,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3a8c77f499a2794391a8a02e994ac93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquippedItemTierDisplay
+  owner: {fileID: 5104670366954836522}
   equippedItem: {fileID: -3726688000211129029}
   weaponIcon: {fileID: 5405644710682922133}
   tierParent: {fileID: 1798218046623435034}
   tierPrefab: {fileID: 5485978787228018986, guid: 97e95a98203e0cb4daab85c5a99644eb, type: 3}
+  shakeDuration: 10
+  shakeStrength: 10
 --- !u!114 &6200968150231765928
 MonoBehaviour:
   m_ObjectHideFlags: 0

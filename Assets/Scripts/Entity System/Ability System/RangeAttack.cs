@@ -16,10 +16,10 @@ public class RangeAttack : IAbility
     private DamageDealer damageDealer;
     private Grid grid;
     private int _range;
-    public int Range 
-    { 
-        get => _range; 
-        set { _range = value; if (colliderAnimation != null) colliderAnimation.UpdateRange(value); } 
+    public int Range
+    {
+        get => _range;
+        set { _range = value; if (colliderAnimation != null) colliderAnimation.UpdateRange(value); }
     }
 
     private Vector2Int currentDirection = Vector2Int.zero;
@@ -44,7 +44,8 @@ public class RangeAttack : IAbility
         damageDealer.ResetHitTargets();
         damageDealer.attackStartPosition = gridPlaceable.Position;
 
-        GameObject spawnedCollider = PoolingEntity.Spawn(rangeColliderPrefab);
+        float angle = 180 + Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg;
+        GameObject spawnedCollider = PoolingEntity.Spawn(rangeColliderPrefab, grid.GetWorldPosition(gridPlaceable.Position), Quaternion.Euler(0, 0, angle));
         if (spawnedCollider.TryGetComponent(out Root root))
         {
             root.Assign(gridPlaceable.gameObject);

@@ -131,7 +131,7 @@ public class PlayerActionHighlighter : MonoBehaviour
         
         foreach (var col in colliders)
         {
-            if (col.TryGetComponent(out Entity e) && e != owner && e.TeamId != owner.TeamId)
+            if (col.TryGetComponent(out Entity e) && e != owner && e.TeamId != owner.TeamId && e.IsActiveForTurns)
             {
                 enemiesInVision.Add(e);
             }
@@ -179,6 +179,8 @@ public class PlayerActionHighlighter : MonoBehaviour
             if (hoveredCollider != null) hoveredCollider.TryGetComponent(out eHover);
         }
 
+        if (eHover != null && !eHover.IsActiveForTurns) eHover = null;
+
         Entity hoveredEnemy = (eHover != null && eHover != owner && eHover.TeamId != owner.TeamId) ? eHover : null;
         Vector2Int hoveredGridPos = grid.GetGridPosition(mouseWorldPos);
         bool isHoveringMove = hoveredEnemy == null && IsAdjacent(hoveredGridPos) && adjacentMoveTiles.Contains(hoveredGridPos);
@@ -190,7 +192,7 @@ public class PlayerActionHighlighter : MonoBehaviour
         UpdateMoveHighlights(adjacentMoveTiles, isHoveringMove ? (Vector2Int?)hoveredGridPos : null);
 
         // Handle Target Highlights
-        UpdateTargetHighlights(enemiesInVision, hoveredEnemy, mouseWorldPos);
+        UpdateTargetHighlights(enemiesInVision, hoveredEnemy, mouseWorldPos, isHoveringMove);
     }
 
     private void UpdateMoveHighlights(List<Vector2Int> tiles, Vector2Int? hoveredTile)
@@ -239,16 +241,14 @@ public class PlayerActionHighlighter : MonoBehaviour
 
     private Entity currentlyHoveredEnemy = null;
 
-    private void UpdateTargetHighlights(List<Entity> enemies, Entity hoveredEnemy, Vector3 mouseWorldPos)
+    private void UpdateTargetHighlights(List<Entity> enemies, Entity hoveredEnemy, Vector3 mouseWorldPos, bool isHoveringMove)
     {
         currentlyHoveredEnemy = hoveredEnemy;
 
-        // If hovering a move tile, hide all target highlights
-        bool isHoveringMove = IsAdjacent(grid.GetGridPosition(cam.ScreenToWorldPoint(new Vector3(inputManager.mousePosition.x, inputManager.mousePosition.y, -cam.transform.position.z))));
-        
         if (isHoveringMove && hoveredEnemy == null)
         {
             foreach (var hl in validAttackTiles.Values) hl.SetActive(false);
+            foreach (var hl in entityTargetHighlights.Values) hl.SetActive(false);
             ClearAttackPath();
         }
         else

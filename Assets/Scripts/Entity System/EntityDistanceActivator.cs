@@ -13,18 +13,6 @@ public class EntityDistanceActivator
         var activeEntities = entitySpawner.GetActiveEntities();
         if (activeEntities == null || activeEntities.Count == 0) return;
 
-        if (!enableDistanceActivation)
-        {
-            for (int i = 0; i < activeEntities.Count; i++)
-            {
-                if (!activeEntities[i].IsActiveForTurns)
-                {
-                    activeEntities[i].SetActiveForTurns(true);
-                }
-            }
-            return;
-        }
-
         Entity player = null;
         for (int i = 0; i < activeEntities.Count; i++)
         {
@@ -35,11 +23,52 @@ public class EntityDistanceActivator
             }
         }
 
+        int playerTier = 0;
+        int playerGrip = 0;
+        if (player != null && player.equippedItem != null)
+        {
+            if (player.equippedItem.Get() is WeaponItem weapon)
+            {
+                playerTier = weapon.tier;
+                playerGrip = weapon.currentGrip;
+            }
+        }
+
+        if (!enableDistanceActivation)
+        {
+            for (int i = 0; i < activeEntities.Count; i++)
+            {
+                Entity e = activeEntities[i];
+                if (!e.IsActiveForTurns)
+                {
+                    e.SetActiveForTurns(true);
+                }
+                if (e.IsPlayer) continue;
+
+                if (e.tierDisplay != null)
+                {
+                    int enemyTier = 0;
+                    int enemyGrip = 0;
+                    if (e.equippedItem != null && e.equippedItem.Get() is WeaponItem eWeapon)
+                    {
+                        enemyTier = eWeapon.tier;
+                        enemyGrip = eWeapon.currentGrip;
+                    }
+                    bool isOneShot = playerTier > 0 && enemyGrip < playerTier;
+                    bool isStronger = playerTier > 0 && enemyTier > 0 && playerGrip < enemyTier;
+                    e.tierDisplay.SetFeedback(isOneShot, isStronger);
+                }
+            }
+            return;
+        }
+
         if (player == null)
         {
             for (int i = 0; i < activeEntities.Count; i++)
             {
-                activeEntities[i].SetActiveForTurns(false);
+                Entity e = activeEntities[i];
+                e.SetActiveForTurns(false);
+                if (e.tierDisplay != null) e.tierDisplay.SetFeedback(false, false);
             }
             return;
         }
@@ -56,6 +85,27 @@ public class EntityDistanceActivator
 
             bool shouldBeActive = dist <= activationDistance;
             e.SetActiveForTurns(shouldBeActive);
+
+            if (e.tierDisplay != null)
+            {
+                if (shouldBeActive)
+                {
+                    int enemyTier = 0;
+                    int enemyGrip = 0;
+                    if (e.equippedItem != null && e.equippedItem.Get() is WeaponItem eWeapon)
+                    {
+                        enemyTier = eWeapon.tier;
+                        enemyGrip = eWeapon.currentGrip;
+                    }
+                    bool isOneShot = playerTier > 0 && enemyGrip < playerTier;
+                    bool isStronger = playerTier > 0 && enemyTier > 0 && playerGrip < enemyTier;
+                    e.tierDisplay.SetFeedback(isOneShot, isStronger);
+                }
+                else
+                {
+                    e.tierDisplay.SetFeedback(false, false);
+                }
+            }
         }
     }
 }

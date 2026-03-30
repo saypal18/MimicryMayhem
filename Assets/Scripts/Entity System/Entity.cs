@@ -39,6 +39,7 @@ public class Entity : MonoBehaviour
     }
 
     public EquippedItem equippedItem;
+    public EquippedItemTierDisplay tierDisplay;
     public SortedInventory inventory;
     public MoveInfo moveInfo = new MoveInfo();
     [SerializeField] public PlayerActionHighlighter playerActionHighlighter;

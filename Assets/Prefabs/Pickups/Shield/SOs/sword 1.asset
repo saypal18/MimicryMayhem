@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponItem
   itemType: 2
   itemName: Shield
-  itemIcon: {fileID: -8061067977281918955, guid: 8544c35e170638f4a944566e43c3770d, type: 3}
+  itemIcon: {fileID: -630364414634270607, guid: abd3b1c381ab9f448a2369059d59d309, type: 3}
   description: Shield
   maxStackSize: 1
   tier: 1

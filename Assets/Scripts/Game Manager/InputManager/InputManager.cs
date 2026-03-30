@@ -53,6 +53,8 @@ public class InputManager : MonoBehaviour
                 if (collider != null) collider.TryGetComponent(out entity);
             }
 
+            if (entity != null && !entity.IsActiveForTurns) entity = null;
+
             if (entity != null)
             {
                 // If it's an enemy (not self), perform cardinal attack calculation
