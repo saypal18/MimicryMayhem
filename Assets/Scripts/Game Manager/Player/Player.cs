@@ -8,10 +8,11 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private InputManager inputManager;
     [SerializeField] private PlayerUI playerUI;
-    [SerializeField] private CinemachineCamera vCam;
+    [SerializeField] private CinemachineTargetGroup targetGroup;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private Image cooldownImage;
+    [SerializeField] private MouseFollower mouseFollower;
     [SerializeField] private Transform highlightParent;
     [SerializeField] private QuestManager questManager;
     [SerializeField] private int playerInventorySize = 8;
@@ -123,6 +124,9 @@ public class Player : MonoBehaviour
                     inventoryUI.Assign(player);
                     inventoryUI.AssignEquippedItem(player.equippedItem);
 
+                    if (mouseFollower != null)
+                        mouseFollower.Initialize(inputManager, player.transform);
+
                     OnPlayerSpawned?.Invoke(player);
                 }
                 else
@@ -144,9 +148,14 @@ public class Player : MonoBehaviour
         }
 
         points = 0;
-        if (vCam != null)
+        if (targetGroup != null && targetGroup.Targets.Count > 0)
         {
-            vCam.Follow = player.transform;
+            targetGroup.Targets[0] = new CinemachineTargetGroup.Target
+            {
+                Object = player.transform,
+                Weight = targetGroup.Targets[0].Weight,
+                Radius = targetGroup.Targets[0].Radius
+            };
         }
     }
 

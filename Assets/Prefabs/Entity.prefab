@@ -1318,18 +1318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerActionHighlighter
   moveHighlightPrefab: {fileID: 3750636812974624063, guid: 76ed5323bf2e4b74fa4f4c88b94646ef, type: 3}
   attackHighlightPrefab: {fileID: 8231645397858739851, guid: 8a258c19a39614045828868709b1db94, type: 3}
-  targetHighlightPrefab: {fileID: 3750636812974624063, guid: 76ed5323bf2e4b74fa4f4c88b94646ef, type: 3}
-  moveColor: {r: 0, g: 0.5, b: 1, a: 1}
-  attackColor: {r: 1, g: 0, b: 0, a: 1}
-  targetColor: {r: 1, g: 1, b: 0, a: 1}
-  faintAlpha: 0.15
-  faintMinAlpha: 0.08
-  faintMaxAlpha: 0.28
-  faintYoyoDuration: 1.2
-  hoverAlpha: 0.75
-  hoverMinScale: 0.88
-  hoverMaxScale: 1.08
-  hoverYoyoDuration: 0.5
+  targetHighlightPrefab: {fileID: 3750636812974624063, guid: d7f19a50d6c8a984da075a659e3763ab, type: 3}
   highlightParent: {fileID: 3742940275713544803}
 --- !u!114 &-8883142681608052853
 MonoBehaviour:

@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour
     private Grid grid;
     private PlayerActionHighlighter highlighter;
     private Camera cam;
+    public Camera Cam => cam;
 
     public void InitializeMove(IMoveInputHandler moveInputHandler)
     {
