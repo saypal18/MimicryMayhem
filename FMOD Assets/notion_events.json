@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-03-26T16:26:02.543517+00:00",
+  "exportedAt": "2026-03-31T17:04:28.017265+00:00",
   "databaseId": "32ec2cb91b6281be8684e653ff30aa7d",
   "events": [
     {
@@ -25,7 +25,7 @@
     },
     {
       "notionId": "32ec2cb9-1b62-8132-a3a5-c231bf799dc7",
-      "fmodPath": "event:/SFX/Footstep/GridMovement",
+      "fmodPath": "event:/SFX/GridMovement",
       "type": "event/SFX",
       "spatialisation": false,
       "bank": "Gameplay"
@@ -126,6 +126,62 @@
       "fmodPath": "event:/SFX/Combat/ProjectileFlight",
       "type": "event/SFX",
       "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "334c2cb9-1b62-8147-a2ec-d60d412e14c9",
+      "fmodPath": "event:/SFX/Items/KeyDrop",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "334c2cb9-1b62-817a-be41-fc2a16658c14",
+      "fmodPath": "event:/SFX/Enemy/Vox/Activation",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "334c2cb9-1b62-8180-abc6-fc4b120f0fc3",
+      "fmodPath": "event:/SFX/Items/KeyPickup",
+      "type": "event/SFX",
+      "spatialisation": false,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "334c2cb9-1b62-8187-ac98-dbf4c7ce1fc0",
+      "fmodPath": "event:/Music/VictoryStinger",
+      "type": "event/Music",
+      "spatialisation": false,
+      "bank": "UI"
+    },
+    {
+      "notionId": "334c2cb9-1b62-818e-b916-c9b6ef1aee3c",
+      "fmodPath": "event:/SFX/Combat/EntityDeath",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "334c2cb9-1b62-8199-8561-fcfda9056b53",
+      "fmodPath": "event:/SFX/Enemy/Vox/Attack",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "334c2cb9-1b62-81b8-9a1e-e6a3c5e5b18a",
+      "fmodPath": "event:/SFX/Enemy/Vox/Death",
+      "type": "event/SFX",
+      "spatialisation": true,
+      "bank": "Gameplay"
+    },
+    {
+      "notionId": "334c2cb9-1b62-81df-a460-e3750fed17fa",
+      "fmodPath": "event:/SFX/Player/AreaTransition",
+      "type": "event/SFX",
+      "spatialisation": false,
       "bank": "Gameplay"
     }
   ]

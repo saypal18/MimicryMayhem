@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using FMODUnity;
+using FMOD.Studio;
 
 public class BossCreator : MonoBehaviour
 {
@@ -9,6 +11,9 @@ public class BossCreator : MonoBehaviour
     [SerializeField] private List<WeaponItem> preDeterminedItems;
     [SerializeField] private GameObject keyPickupPrefab;
     [SerializeField] private int bossTeamId = 99; // Default to a unique team ID
+
+    [Header("Audio")]
+    [SerializeField] private EventReference keyDropSoundEvent;
 
     private Grid grid;
     private EntitySpawner entitySpawner;
@@ -37,7 +42,7 @@ public class BossCreator : MonoBehaviour
         }
 
         Vector2Int spawnPos = nullablePos.Value;
-        
+
         // Use the refactored SpawnAtPosition to spawn the boss
         // Passing initializeWeaponProvider = false to satisfy the "items won't spawn on its place" requirement
         int defaultInventorySize = bossPrefab.inventory != null ? bossPrefab.inventory.slotCount : 0;
@@ -78,13 +83,26 @@ public class BossCreator : MonoBehaviour
             // Spawn the key at the boss's last position
             Vector3 worldPos = grid.GetWorldPosition(lastPosition);
             GameObject keyObj = PoolingEntity.Spawn(keyPickupPrefab, worldPos, Quaternion.identity, transform);
-            
+
             if (keyObj.TryGetComponent(out Pickup keyPickup))
             {
                 keyPickup.Initialize(grid, lastPosition, bossObj);
+                PlayKeyDropSound(lastPosition);
                 Debug.Log($"[BossCreator] Boss killed at {lastPosition}. Spawning key.");
             }
         }
+    }
+
+    private void PlayKeyDropSound(Vector2Int position)
+    {
+        if (Trainer.IsTraining) return;
+        if (keyDropSoundEvent.IsNull) return;
+
+        Vector3 worldPos = grid.GetWorldPosition(position);
+        EventInstance instance = RuntimeManager.CreateInstance(keyDropSoundEvent);
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(worldPos));
+        instance.start();
+        instance.release();
     }
 }
 

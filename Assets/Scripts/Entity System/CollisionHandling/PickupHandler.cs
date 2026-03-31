@@ -14,10 +14,13 @@ public class PickupHandler
     [SerializeField] private EventReference pickupSoundEvent;
     [SerializeField] private EventReference stealSoundEvent;
 
+    public bool SuppressNextPickupSound { get; set; }
+
     public void Initialize()
     {
         OnPickupCollected = null;
         OnPickupFailed = null;
+        SuppressNextPickupSound = false;
     }
 
     public void OnPickup(GameObject other)
@@ -49,10 +52,13 @@ public class PickupHandler
 
     private void PlayPickupSound(ItemType? itemType, bool isSteal)
     {
+        if (SuppressNextPickupSound)
+        {
+            SuppressNextPickupSound = false;
+            return;
+        }
 
         if (Trainer.IsTraining) return;
-        //// FMOD BUG
-        //return;
         if (pickupSoundEvent.IsNull) return;
         EventReference eventRef = isSteal ? stealSoundEvent : pickupSoundEvent;
         if (eventRef.IsNull) return;

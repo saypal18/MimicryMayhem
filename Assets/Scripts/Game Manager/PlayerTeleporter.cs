@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using FMODUnity;
+using FMOD.Studio;
 
 public class PlayerTeleporter : MonoBehaviour
 {
@@ -7,6 +9,9 @@ public class PlayerTeleporter : MonoBehaviour
     public Camera cam;
     public event System.Action<GameInitializer> OnTeleported;
     private DoorTile lastDoorTeleportedTo;
+
+    [Header("Audio")]
+    [SerializeField] private EventReference areaTransitionSoundEvent;
 
     public void TeleportIfOnDoor(Entity player, Vector3 visualPosition)
     {
@@ -80,6 +85,17 @@ public class PlayerTeleporter : MonoBehaviour
         }
         
         lastDoorTeleportedTo = targetDoorTile;
+        PlayAreaTransitionSound();
         OnTeleported?.Invoke(newEnv);
+    }
+
+    private void PlayAreaTransitionSound()
+    {
+        if (Trainer.IsTraining) return;
+        if (areaTransitionSoundEvent.IsNull) return;
+
+        EventInstance instance = RuntimeManager.CreateInstance(areaTransitionSoundEvent);
+        instance.start();
+        instance.release();
     }
 }
