@@ -29,6 +29,7 @@ public class GameInitializer : MonoBehaviour
     [SerializeField] public BackgroundStuffSpawner backgroundStuffSpawner;
     [SerializeField] private BossCreator bossCreator;
     [SerializeField] private VictorySpawner victorySpawner;
+    [SerializeField] private VictoryAnimationController victoryAnimationController;
 
 
     [Header("Audio")]
@@ -150,6 +151,7 @@ public class GameInitializer : MonoBehaviour
         }
         curriculum.UpdateCurriculumParameters();
 
+        distanceActivator.ResetEnvironment();
         stepCount = 0;
         if (shouldRandomize)
         {
@@ -182,7 +184,8 @@ public class GameInitializer : MonoBehaviour
         if (victorySpawner != null)
         {
             if (spawnedVictoryTrigger != null) PoolingEntity.Despawn(spawnedVictoryTrigger);
-            victorySpawner.Initialize(grid);
+            if (victoryAnimationController != null) victoryAnimationController.Initialize();
+            victorySpawner.Initialize(grid, victoryAnimationController);
             spawnedVictoryTrigger = victorySpawner.SpawnVictoryTrigger();
         }
 

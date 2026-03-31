@@ -7,21 +7,32 @@ public class EntityDistanceActivator
 {
     [SerializeField] public bool enableDistanceActivation = false;
     [SerializeField] public int activationDistance = 10;
+    private Entity cachedPlayer;
+
+    public void ResetEnvironment()
+    {
+        cachedPlayer = null;
+    }
 
     public void TickActivations(EntitySpawner entitySpawner)
     {
         var activeEntities = entitySpawner.GetActiveEntities();
         if (activeEntities == null || activeEntities.Count == 0) return;
 
-        Entity player = null;
-        for (int i = 0; i < activeEntities.Count; i++)
+        if (cachedPlayer == null || !cachedPlayer.gameObject.activeInHierarchy || !cachedPlayer.IsPlayer)
         {
-            if (activeEntities[i].IsPlayer)
+            cachedPlayer = null;
+            for (int i = 0; i < activeEntities.Count; i++)
             {
-                player = activeEntities[i];
-                break;
+                if (activeEntities[i].IsPlayer)
+                {
+                    cachedPlayer = activeEntities[i];
+                    break;
+                }
             }
         }
+
+        Entity player = cachedPlayer;
 
         int playerTier = 0;
         int playerGrip = 0;

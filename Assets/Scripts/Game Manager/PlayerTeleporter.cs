@@ -5,6 +5,7 @@ public class PlayerTeleporter : MonoBehaviour
 {
     public InputManager inputManager;
     public Camera cam;
+    public event System.Action<GameInitializer> OnTeleported;
     private DoorTile lastDoorTeleportedTo;
 
     public void TeleportIfOnDoor(Entity player, Vector3 visualPosition)
@@ -79,5 +80,6 @@ public class PlayerTeleporter : MonoBehaviour
         }
         
         lastDoorTeleportedTo = targetDoorTile;
+        OnTeleported?.Invoke(newEnv);
     }
 }

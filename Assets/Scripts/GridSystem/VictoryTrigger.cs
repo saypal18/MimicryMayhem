@@ -11,13 +11,12 @@ public class VictoryTrigger : MonoBehaviour
     [SerializeField] private GridPlaceable gridPlaceable;
     public GridPlaceable Placeable => gridPlaceable;
 
-    [Header("UI Reference")]
-    [Tooltip("The Victory Panel GameObject to activate when the player reaches this tile with the key.")]
-    public GameObject victoryPanel;
+    [Header("Victory Sequence")]
+    [SerializeField] private VictoryAnimationController animationController;
 
-    public void Initialize(Grid grid, Vector2Int position, GameObject victoryPanel)
+    public void Initialize(Grid grid, Vector2Int position, VictoryAnimationController controller)
     {
-        this.victoryPanel = victoryPanel;
+        this.animationController = controller;
         if (gridPlaceable == null)
         {
             gridPlaceable = GetComponent<GridPlaceable>();
@@ -41,14 +40,17 @@ public class VictoryTrigger : MonoBehaviour
 
     private void TriggerVictory()
     {
-        if (victoryPanel != null)
+        if (animationController != null)
         {
-            victoryPanel.SetActive(true);
-            Debug.Log("[VictoryTrigger] Player reached victory tile with boss key. VICTORY!");
+            // Focus on the first child if it exists, otherwise the door itself.
+            Transform focalTarget = transform.childCount > 0 ? transform.GetChild(0) : transform;
+
+            animationController.PlayVictoryAnimation(focalTarget);
+            Debug.Log($"[VictoryTrigger] Victory sequence triggered! Focusing on: {focalTarget.name}");
         }
         else
         {
-            Debug.LogWarning("[VictoryTrigger] Victory! (But Victory Panel is not assigned in the inspector)");
+            Debug.LogWarning("[VictoryTrigger] Victory! (But VictoryAnimationController is not assigned)");
         }
     }
 }

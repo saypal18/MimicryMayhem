@@ -291,6 +291,11 @@ public class EntitySpawner
             }
             entity.canBeStunned = true;
             entity.IsBoss = false;
+            entity.agent.isRuleBased = false;
+            if (entity.behaviorParameters != null)
+            {
+                entity.behaviorParameters.BehaviorType = BehaviorType.Default;
+            }
             if (entity.currentAnimation != null)
             {
                 PoolingEntity.Despawn(entity.currentAnimation);

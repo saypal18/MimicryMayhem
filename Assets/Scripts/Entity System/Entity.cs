@@ -65,6 +65,7 @@ public class Entity : MonoBehaviour
     public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick, EntitySpawner entitySpawner)
     {
         IsActiveForTurns = true;
+        if (agent != null) agent.enabled = true;
         this.entitySpawner = entitySpawner;
         HasBossKey = false;
         IsBoss = false;

@@ -15,8 +15,11 @@ public class Player : MonoBehaviour
     [SerializeField] private MouseFollower mouseFollower;
     [SerializeField] private Transform highlightParent;
     [SerializeField] private QuestManager questManager;
+    [SerializeField] private ForceTurnButton forceTurnButton;
     [SerializeField] private int playerInventorySize = 8;
     [SerializeField] private bool useCustomInventorySize = false;
+    [SerializeField] private GameObject playerSpotlightPrefab;
+    [SerializeField] private VictoryAnimationController victoryAnimationController;
 
 
     [Header("Multi-Grid Play Mode")]
@@ -119,6 +122,9 @@ public class Player : MonoBehaviour
                     {
                         player.playerActionHighlighter.highlightParent = highlightParent;
                         player.playerActionHighlighter.enabled = true;
+                        
+                        if (victoryAnimationController != null)
+                            victoryAnimationController.SetPlayerActionHighlighter(player.playerActionHighlighter);
                     }
                     inventoryUI.AssignInventory(player.inventory);
                     inventoryUI.Assign(player);
@@ -128,6 +134,14 @@ public class Player : MonoBehaviour
                         mouseFollower.Initialize(inputManager, player.transform);
 
                     OnPlayerSpawned?.Invoke(player);
+                    if (forceTurnButton != null)
+                        forceTurnButton.Initialize(env.turnManager);
+
+                    if (playerSpotlightPrefab != null)
+                    {
+                        playerSpotlightPrefab.transform.SetParent(player.transform);
+                        playerSpotlightPrefab.transform.localPosition = Vector3.zero;
+                    }
                 }
                 else
                 {
@@ -200,6 +214,11 @@ public class Player : MonoBehaviour
         teleporter = gameObject.AddComponent<PlayerTeleporter>();
         teleporter.inputManager = inputManager;
         teleporter.cam = mainCamera;
+        teleporter.OnTeleported += (newEnv) =>
+        {
+            if (forceTurnButton != null)
+                forceTurnButton.Initialize(newEnv.turnManager);
+        };
         StartEnvironment();
     }
 

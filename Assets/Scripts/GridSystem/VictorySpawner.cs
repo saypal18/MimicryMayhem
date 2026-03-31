@@ -1,4 +1,8 @@
 using UnityEngine;
+using DG.Tweening;
+using Unity.Cinemachine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
 /// Modular spawner for the Victory Trigger tile.
@@ -11,15 +15,16 @@ public class VictorySpawner : MonoBehaviour
     [SerializeField] private VictoryTrigger victoryTriggerPrefab;
     [SerializeField] private Vector2Int victoryTriggerPosition;
     
-    [Header("UI Reference")]
-    [Tooltip("Reference to the Victory Panel UI in the scene.")]
-    [SerializeField] private GameObject victoryPanel;
+    [Header("Sequence Reference")]
+    [Tooltip("Reference to the Victory Animation Controller in the scene.")]
+    [SerializeField] private VictoryAnimationController animationController;
 
     private Grid grid;
 
-    public void Initialize(Grid grid)
+    public void Initialize(Grid grid, VictoryAnimationController controller)
     {
         this.grid = grid;
+        this.animationController = controller;
     }
 
     /// <summary>
@@ -40,7 +45,7 @@ public class VictorySpawner : MonoBehaviour
         VictoryTrigger trigger = triggerObj.GetComponent<VictoryTrigger>();
         if (trigger != null)
         {
-            trigger.Initialize(grid, victoryTriggerPosition, victoryPanel);
+            trigger.Initialize(grid, victoryTriggerPosition, animationController);
             Debug.Log($"[VictorySpawner] Victory trigger spawned at {victoryTriggerPosition}.");
         }
 
