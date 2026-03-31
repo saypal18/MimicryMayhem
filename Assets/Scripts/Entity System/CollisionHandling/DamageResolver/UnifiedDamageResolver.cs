@@ -23,6 +23,7 @@ public class UnifiedDamageResolver
     [Header("Audio")]
     [SerializeField] private EventReference weaponImpactSoundEvent;
     [SerializeField] private EventReference gripReducedSoundEvent;
+    [SerializeField] private EventReference entityDeathSoundEvent;
     public void Initialize(CollisionResolver collisionResolver, SortedInventory inventory, EquippedItem equippedItem, EntityMovementFactory movementFactory, AbilityController controller, MoveInfo moveInfo)
     {
         // collisionResolver.OnCollision += OnCollision; // Removed action-subscriber
@@ -62,6 +63,7 @@ public class UnifiedDamageResolver
                 damageDealer.entity.inventory.ResetAllGrips();
             }
 
+            PlayDeathSound();
             PoolingEntity.Despawn(victim.gameObject);
             return;
         }
@@ -134,4 +136,15 @@ public class UnifiedDamageResolver
         instance.release();
     }
 
+    private void PlayDeathSound()
+    {
+        if (Trainer.IsTraining) return;
+        if (entityDeathSoundEvent.IsNull) return;
+
+        EventInstance instance = RuntimeManager.CreateInstance(entityDeathSoundEvent);
+        instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
+        instance.start();
+        instance.release();
+    }
 }

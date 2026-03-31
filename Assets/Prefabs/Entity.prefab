@@ -931,6 +931,13 @@ MonoBehaviour:
         Data3: 1164234903
         Data4: 1210100954
       Path: event:/SFX/Combat/Feedback/GripReduced
+    entityDeathSoundEvent:
+      Guid:
+        Data1: 1530459585
+        Data2: 1338760467
+        Data3: 768507823
+        Data4: 923126927
+      Path: event:/SFX/Combat/EntityDeath
   pickupHandler:
     thisObject: {fileID: 4593017720766107119}
     pickupSoundEvent:
@@ -1015,6 +1022,13 @@ MonoBehaviour:
   playerActionHighlighter: {fileID: 6200968150231765928}
   keyVisual: {fileID: 4273469358210292724}
   animationParent: {fileID: 6236515429969227846}
+  activationBarkSoundEvent:
+    Guid:
+      Data1: 1330285489
+      Data2: 1206468522
+      Data3: 1785836935
+      Data4: -1788904595
+    Path: event:/SFX/Enemy/Vox/Activation
 --- !u!114 &-7865425547269084357
 MonoBehaviour:
   m_ObjectHideFlags: 0

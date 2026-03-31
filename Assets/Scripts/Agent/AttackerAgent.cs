@@ -199,7 +199,7 @@ public class AttackerAgent : Agent, IMoveInputHandler
             bool acted = controller.Act(abilityToUse);
             if (acted && isAttack)
             {
-                activeAbility.PlayAttackSound(transform.position, entity.IsPlayer);
+                activeAbility.PlayAttackSound(transform.position, entity);
                 OnAttackPerformed?.Invoke();
             }
             pendingDecision = false;

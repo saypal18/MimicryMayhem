@@ -12560,6 +12560,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6a48a2833927b8947ae8e82b8ee864e9, type: 2}
   keyPickupPrefab: {fileID: 5674517952303270089, guid: 1a31e94e2c90f0d4bbe8a8d400973645, type: 3}
   bossTeamId: 1
+  keyDropSoundEvent:
+    Guid:
+      Data1: 1190778582
+      Data2: 1127265325
+      Data3: 727221150
+      Data4: -1575071160
+    Path: event:/SFX/Items/KeyDrop
 --- !u!114 &2087419251
 MonoBehaviour:
   m_ObjectHideFlags: 0
