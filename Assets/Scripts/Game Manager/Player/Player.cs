@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField] private MouseFollower mouseFollower;
     [SerializeField] private Transform highlightParent;
     [SerializeField] private QuestManager questManager;
+    [SerializeField] private ForceTurnButton forceTurnButton;
     [SerializeField] private int playerInventorySize = 8;
     [SerializeField] private bool useCustomInventorySize = false;
 
@@ -128,6 +129,8 @@ public class Player : MonoBehaviour
                         mouseFollower.Initialize(inputManager, player.transform);
 
                     OnPlayerSpawned?.Invoke(player);
+                    if (forceTurnButton != null)
+                        forceTurnButton.Initialize(env.turnManager);
                 }
                 else
                 {
@@ -200,6 +203,11 @@ public class Player : MonoBehaviour
         teleporter = gameObject.AddComponent<PlayerTeleporter>();
         teleporter.inputManager = inputManager;
         teleporter.cam = mainCamera;
+        teleporter.OnTeleported += (newEnv) =>
+        {
+            if (forceTurnButton != null)
+                forceTurnButton.Initialize(newEnv.turnManager);
+        };
         StartEnvironment();
     }
 

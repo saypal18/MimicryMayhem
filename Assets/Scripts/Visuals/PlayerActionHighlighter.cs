@@ -118,6 +118,7 @@ public class PlayerActionHighlighter : MonoBehaviour
     private void RefreshHighlights()
     {
         // --- Enemies in vision ---
+        bool isHoldingWeapon = equippedItem.Get() is WeaponItem;
         List<Entity> enemiesInVision = new();
         Vector2Int currentPos = owner.Position;
         int visionRadius = 5;
@@ -130,7 +131,7 @@ public class PlayerActionHighlighter : MonoBehaviour
 
         foreach (var col in colliders)
         {
-            if (col.TryGetComponent(out Entity e) &&
+            if (isHoldingWeapon && col.TryGetComponent(out Entity e) &&
                 e != owner && e.TeamId != owner.TeamId && e.IsActiveForTurns)
                 enemiesInVision.Add(e);
         }
@@ -170,7 +171,7 @@ public class PlayerActionHighlighter : MonoBehaviour
         }
         if (eHover != null && !eHover.IsActiveForTurns) eHover = null;
 
-        Entity hoveredEnemy = (eHover != null && eHover != owner && eHover.TeamId != owner.TeamId) ? eHover : null;
+        Entity hoveredEnemy = (isHoldingWeapon && eHover != null && eHover != owner && eHover.TeamId != owner.TeamId) ? eHover : null;
         Vector2Int hoveredGridPos = grid.GetGridPosition(mouseWorldPos);
         bool isHoveringMove = hoveredEnemy == null && IsAdjacent(hoveredGridPos) && adjacentMoveTiles.Contains(hoveredGridPos);
 

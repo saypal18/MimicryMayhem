@@ -150,6 +150,7 @@ public class GameInitializer : MonoBehaviour
         }
         curriculum.UpdateCurriculumParameters();
 
+        distanceActivator.ResetEnvironment();
         stepCount = 0;
         if (shouldRandomize)
         {

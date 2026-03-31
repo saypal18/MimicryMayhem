@@ -11,6 +11,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
     private int currentTeamIndex = -1;
     private List<ITick> turnTicks = new();
     private bool isTransitioning = false;
+    public event System.Action OnTurnSwitched;
 
     private int[] teamPlayerCounts;
     private int currentTeamActionsReceived;
@@ -62,6 +63,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         Log($"Initialized with {teamsCount} teams.");
         UpdateVisuals();
+        OnTurnSwitched?.Invoke();
         // Start the first turn (one frame later to ensure everything is ready)
         StartCoroutine(StartFirstTurn());
     }
@@ -93,6 +95,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         Log($"Starting Turn for Team {currentTeamIndex}. Expecting {teamPlayerCounts[currentTeamIndex]} actions.");
         UpdateVisuals();
+        OnTurnSwitched?.Invoke();
         TriggerCurrentTurn();
     }
 
@@ -136,6 +139,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         isTransitioning = false;
         Log($"Proceeding to index {currentTeamIndex}.");
         UpdateVisuals();
+        OnTurnSwitched?.Invoke();
         CheckAndTriggerTurn();
     }
 
@@ -192,4 +196,15 @@ public class TurnManager : MonoBehaviour, ITurnManager
     public int GetCurrentTeamIndex() => currentTeamIndex;
     public int GetTeamCount() => teamsCount;
     public List<ITick> GetTeams() => turnTicks;
+
+    public void ForceNextTurn()
+    {
+        Log("Force Next Turn triggered.");
+        StopAllCoroutines();
+        isTransitioning = false;
+        currentTeamIndex = (currentTeamIndex + 1) % teamsCount;
+        UpdateVisuals();
+        OnTurnSwitched?.Invoke();
+        CheckAndTriggerTurn();
+    }
 }
