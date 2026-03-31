@@ -8,15 +8,7 @@ public abstract class Pickup : MonoBehaviour
     public virtual void Initialize(Grid grid, Vector2Int position, GameObject dropper)
     {
         Initialize(grid, position);
-        
-        // Only ignore the dropper if they are actually standing on the tile where the item dropped.
-        if (dropper != null)
-        {
-            if (grid.GetGridPosition(dropper.transform.position) == position)
-            {
-                this.dropper = dropper;
-            }
-        }
+        this.dropper = dropper;
     }
 
     [SerializeField] private GridPlaceable gridPlaceable;

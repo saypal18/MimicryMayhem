@@ -39,7 +39,34 @@ public class Entity : MonoBehaviour
         if (IsActiveForTurns == active) return;
         IsActiveForTurns = active;
         if (active) PlayActivationBark();
+        UpdateBossPresence(active);
         if (agent != null) agent.enabled = active;
+    }
+
+    private void UpdateBossPresence(bool active)
+    {
+        if (Trainer.IsTraining || !IsBoss || bossPresenceSoundEvent.IsNull) return;
+
+        if (active && !bossPresenceInstance.isValid())
+        {
+            bossPresenceInstance = RuntimeManager.CreateInstance(bossPresenceSoundEvent);
+            bossPresenceInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
+            bossPresenceInstance.start();
+        }
+        else if (!active && bossPresenceInstance.isValid())
+        {
+            bossPresenceInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            bossPresenceInstance.release();
+        }
+    }
+
+    private void ReleaseBossPresence()
+    {
+        if (bossPresenceInstance.isValid())
+        {
+            bossPresenceInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            bossPresenceInstance.release();
+        }
     }
 
     private void PlayActivationBark()
@@ -64,6 +91,8 @@ public class Entity : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private EventReference activationBarkSoundEvent;
+    [SerializeField] private EventReference bossPresenceSoundEvent;
+    private EventInstance bossPresenceInstance;
     public GameObject currentAnimation { get; set; }
 
 
@@ -81,6 +110,7 @@ public class Entity : MonoBehaviour
 
     public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick, EntitySpawner entitySpawner)
     {
+        ReleaseBossPresence();
         IsActiveForTurns = true;
         if (agent != null) agent.enabled = true;
         this.entitySpawner = entitySpawner;
@@ -143,6 +173,11 @@ public class Entity : MonoBehaviour
             movementAnimator.SetBool("isMoving", moveInfo.IsMoving);
         }
         abilityController.Update();
+
+        if (bossPresenceInstance.isValid())
+        {
+            bossPresenceInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
+        }
     }
 }
 

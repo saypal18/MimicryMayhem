@@ -1029,6 +1029,13 @@ MonoBehaviour:
       Data3: 1785836935
       Data4: -1788904595
     Path: event:/SFX/Enemy/Vox/Activation
+  bossPresenceSoundEvent:
+    Guid:
+      Data1: 923088969
+      Data2: 1284386823
+      Data3: -2117227365
+      Data4: -1951938119
+    Path: event:/SFX/Enemy/Boss Presence
 --- !u!114 &-7865425547269084357
 MonoBehaviour:
   m_ObjectHideFlags: 0
