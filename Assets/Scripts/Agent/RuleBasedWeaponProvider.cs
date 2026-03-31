@@ -12,6 +12,7 @@ public class RuleBasedWeaponProvider : MonoBehaviour
     private Transform pickupParent;
     private Coroutine spawnCoroutine;
     private Entity entity;
+    private PickupHandler pickupHandler;
 
     public void Initialize(List<Pickup> fullPool, List<Pickup> currentPool, float delay, SortedInventory inventory, Grid grid, Transform parent, Entity entity)
     {
@@ -22,6 +23,7 @@ public class RuleBasedWeaponProvider : MonoBehaviour
         this.grid = grid;
         this.pickupParent = parent;
         this.entity = entity;
+        this.pickupHandler = entity.pickupHandler;
         if (this.spawnCoroutine != null)
         {
             StopCoroutine(this.spawnCoroutine);
@@ -86,6 +88,7 @@ public class RuleBasedWeaponProvider : MonoBehaviour
         currentPool.RemoveAt(index);
 
         Vector2Int pos = GetComponent<GridPlaceable>().Position;
+        if (pickupHandler != null) pickupHandler.SuppressNextPickupSound = true;
         Pickup spawned = PoolingEntity.Spawn(prefab, pickupParent);
         spawned.Initialize(grid, pos, null);
     }
