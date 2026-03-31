@@ -21,6 +21,11 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject playerSpotlightPrefab;
     [SerializeField] private VictoryAnimationController victoryAnimationController;
 
+    [Header("Fade Out UI")]
+    [SerializeField] private Image fadeOutImage;
+    [SerializeField] private float fadeOutDuration = 2f;
+    [SerializeField] private float fadeOutDelay = 2f;
+
 
     [Header("Multi-Grid Play Mode")]
     [SerializeField] private List<GameInitializer> environments = new List<GameInitializer>();
@@ -219,7 +224,35 @@ public class Player : MonoBehaviour
             if (forceTurnButton != null)
                 forceTurnButton.Initialize(newEnv.turnManager);
         };
+        if (fadeOutImage != null)
+        {
+            StartCoroutine(FadeOut());
+        }
+
         StartEnvironment();
+    }
+
+    private System.Collections.IEnumerator FadeOut()
+    {
+        if (fadeOutDelay > 0)
+            yield return new WaitForSeconds(fadeOutDelay);
+
+        float startAlpha = fadeOutImage.color.a;
+        float elapsed = 0f;
+
+        while (elapsed < fadeOutDuration)
+        {
+            elapsed += Time.deltaTime;
+            Color c = fadeOutImage.color;
+            c.a = Mathf.Lerp(startAlpha, 0f, elapsed / fadeOutDuration);
+            fadeOutImage.color = c;
+            yield return null;
+        }
+
+        Color finalColor = fadeOutImage.color;
+        finalColor.a = 0f;
+        fadeOutImage.color = finalColor;
+        fadeOutImage.gameObject.SetActive(false);
     }
 
     private void Update()

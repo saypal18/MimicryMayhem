@@ -10,9 +10,11 @@ public class EquippedWeaponVisualizer : MonoBehaviour
     [SerializeField] private Entity entity;
     [SerializeField] private EquippedItem equippedItem;
     [SerializeField] private Transform weaponParent;
+    [SerializeField] private ParticleSystem weaponParticleSystem;
 
     [Header("Colors (Entity Type)")]
     [SerializeField] private Color playerColor = Color.white;
+    [SerializeField] private Color playerParticleColor = Color.cyan;
     [SerializeField] private Color bossColor = Color.red;
     [SerializeField] private Color ruleBasedColor = Color.green;
     [SerializeField] private Color mlAgentColor = Color.yellow;
@@ -66,6 +68,12 @@ public class EquippedWeaponVisualizer : MonoBehaviour
             {
                 currentHands.SetColor(handColor);
             }
+        }
+
+        if (weaponParticleSystem != null)
+        {
+            var main = weaponParticleSystem.main;
+            main.startColor = entity.IsPlayer ? playerParticleColor : handColor;
         }
     }
 
