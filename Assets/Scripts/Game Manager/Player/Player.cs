@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
     [SerializeField] private ForceTurnButton forceTurnButton;
     [SerializeField] private int playerInventorySize = 8;
     [SerializeField] private bool useCustomInventorySize = false;
+    [SerializeField] private GameObject playerSpotlightPrefab;
+    [SerializeField] private VictoryAnimationController victoryAnimationController;
 
 
     [Header("Multi-Grid Play Mode")]
@@ -120,6 +122,9 @@ public class Player : MonoBehaviour
                     {
                         player.playerActionHighlighter.highlightParent = highlightParent;
                         player.playerActionHighlighter.enabled = true;
+                        
+                        if (victoryAnimationController != null)
+                            victoryAnimationController.SetPlayerActionHighlighter(player.playerActionHighlighter);
                     }
                     inventoryUI.AssignInventory(player.inventory);
                     inventoryUI.Assign(player);
@@ -131,6 +136,12 @@ public class Player : MonoBehaviour
                     OnPlayerSpawned?.Invoke(player);
                     if (forceTurnButton != null)
                         forceTurnButton.Initialize(env.turnManager);
+
+                    if (playerSpotlightPrefab != null)
+                    {
+                        playerSpotlightPrefab.transform.SetParent(player.transform);
+                        playerSpotlightPrefab.transform.localPosition = Vector3.zero;
+                    }
                 }
                 else
                 {
