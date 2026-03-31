@@ -17,7 +17,7 @@ public class VictoryTrigger : MonoBehaviour
     [SerializeField] private VictoryAnimationController animationController;
 
     [Header("Audio")]
-    [SerializeField] private EventReference victoryStingerSoundEvent;
+    [SerializeField] private EventReference levelCompletedSoundEvent;
     private SoundManager soundManager; // Set at runtime via Initialize()
 
     public void Initialize(Grid grid, Vector2Int position, VictoryAnimationController controller, SoundManager soundManager)
@@ -66,9 +66,9 @@ public class VictoryTrigger : MonoBehaviour
     private void PlayVictoryStinger()
     {
         if (Trainer.IsTraining) return;
-        if (victoryStingerSoundEvent.IsNull) return;
+        if (levelCompletedSoundEvent.IsNull) return;
 
-        EventInstance instance = RuntimeManager.CreateInstance(victoryStingerSoundEvent);
+        EventInstance instance = RuntimeManager.CreateInstance(levelCompletedSoundEvent);
         // We're going to stop the music and ambience from FMOD when this event
         // is started.
         instance.start();
