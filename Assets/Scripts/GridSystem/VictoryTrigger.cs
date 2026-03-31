@@ -1,4 +1,6 @@
 using UnityEngine;
+using FMODUnity;
+using FMOD.Studio;
 
 /// <summary>
 /// Attach this script to your pre-specified Victory Tile/Door.
@@ -14,14 +16,19 @@ public class VictoryTrigger : MonoBehaviour
     [Header("Victory Sequence")]
     [SerializeField] private VictoryAnimationController animationController;
 
-    public void Initialize(Grid grid, Vector2Int position, VictoryAnimationController controller)
+    [Header("Audio")]
+    [SerializeField] private EventReference victoryStingerSoundEvent;
+    private SoundManager soundManager; // Set at runtime via Initialize()
+
+    public void Initialize(Grid grid, Vector2Int position, VictoryAnimationController controller, SoundManager soundManager)
     {
         this.animationController = controller;
+        this.soundManager = soundManager;
         if (gridPlaceable == null)
         {
             gridPlaceable = GetComponent<GridPlaceable>();
         }
-        gridPlaceable.Type = GridPlaceable.PlaceableType.Victory; 
+        gridPlaceable.Type = GridPlaceable.PlaceableType.Victory;
         gridPlaceable.Initialize(grid, position);
     }
 
@@ -40,6 +47,8 @@ public class VictoryTrigger : MonoBehaviour
 
     private void TriggerVictory()
     {
+        PlayVictoryStinger();
+
         if (animationController != null)
         {
             // Focus on the first child if it exists, otherwise the door itself.
@@ -52,5 +61,17 @@ public class VictoryTrigger : MonoBehaviour
         {
             Debug.LogWarning("[VictoryTrigger] Victory! (But VictoryAnimationController is not assigned)");
         }
+    }
+
+    private void PlayVictoryStinger()
+    {
+        if (Trainer.IsTraining) return;
+        if (victoryStingerSoundEvent.IsNull) return;
+
+        EventInstance instance = RuntimeManager.CreateInstance(victoryStingerSoundEvent);
+        // We're going to stop the music and ambience from FMOD when this event
+        // is started.
+        instance.start();
+        instance.release();
     }
 }

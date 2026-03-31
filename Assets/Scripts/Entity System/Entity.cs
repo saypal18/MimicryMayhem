@@ -1,6 +1,8 @@
 using UnityEngine;
 using Unity.MLAgents.Policies;
 using System;
+using FMODUnity;
+using FMOD.Studio;
 public class Entity : MonoBehaviour
 {
     [SerializeField] public GridPlaceable gridPlaceable;
@@ -36,8 +38,20 @@ public class Entity : MonoBehaviour
     {
         if (IsActiveForTurns == active) return;
         IsActiveForTurns = active;
-        //Debug.Log($"[Entity] {(active ? "Activated" : "Deactivated")}: {gameObject.name}");
+        if (active) PlayActivationBark();
         if (agent != null) agent.enabled = active;
+    }
+
+    private void PlayActivationBark()
+    {
+        if (Trainer.IsTraining) return;
+        if (activationBarkSoundEvent.IsNull || IsPlayer) return;
+
+        EventInstance instance = RuntimeManager.CreateInstance(activationBarkSoundEvent);
+        instance.setParameterByNameWithLabel("CharacterType", IsBoss ? "Boss" : "Enemy");
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
+        instance.start();
+        instance.release();
     }
 
     public EquippedItem equippedItem;
@@ -47,6 +61,9 @@ public class Entity : MonoBehaviour
     [SerializeField] public PlayerActionHighlighter playerActionHighlighter;
     [SerializeField] private SpriteRenderer keyVisual;
     [SerializeField] public Transform animationParent;
+
+    [Header("Audio")]
+    [SerializeField] private EventReference activationBarkSoundEvent;
     public GameObject currentAnimation { get; set; }
 
 

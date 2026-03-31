@@ -20,11 +20,13 @@ public class VictorySpawner : MonoBehaviour
     [SerializeField] private VictoryAnimationController animationController;
 
     private Grid grid;
+    private SoundManager soundManager;
 
-    public void Initialize(Grid grid, VictoryAnimationController controller)
+    public void Initialize(Grid grid, VictoryAnimationController controller, SoundManager soundManager)
     {
         this.grid = grid;
         this.animationController = controller;
+        this.soundManager = soundManager;
     }
 
     /// <summary>
@@ -45,7 +47,7 @@ public class VictorySpawner : MonoBehaviour
         VictoryTrigger trigger = triggerObj.GetComponent<VictoryTrigger>();
         if (trigger != null)
         {
-            trigger.Initialize(grid, victoryTriggerPosition, animationController);
+            trigger.Initialize(grid, victoryTriggerPosition, animationController, soundManager);
             Debug.Log($"[VictorySpawner] Victory trigger spawned at {victoryTriggerPosition}.");
         }
 

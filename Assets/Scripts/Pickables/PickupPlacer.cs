@@ -69,6 +69,13 @@ public class PickupPlacer
                 weaponPickup.SetItem(item);
             }
             pickup.Initialize(grid, position, dropper);
+            // Force Unity to re-evaluate trigger overlaps at the new position,
+            // so entities already standing on this tile detect the pickup.
+            if (pickup.TryGetComponent(out Collider2D col))
+            {
+                col.enabled = false;
+                col.enabled = true;
+            }
             activePickups.Add(pickup);
             if (pickup.TryGetComponent(out PoolingEntity poolingEntity))
             {

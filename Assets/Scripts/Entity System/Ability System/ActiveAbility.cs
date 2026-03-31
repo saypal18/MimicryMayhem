@@ -75,7 +75,7 @@ public class ActiveAbility
         damageDealer.UpdateDamage(weapon);
     }
 
-    public void PlayAttackSound(Vector3 position, bool isPlayer)
+    public void PlayAttackSound(Vector3 position, Entity entity)
     {
         if (Trainer.IsTraining) return;
         if (weaponAttackSoundEvent.IsNull || equippedItem == null) return;
@@ -83,11 +83,17 @@ public class ActiveAbility
         InventoryItem item = equippedItem.Get();
         if (item == null) return;
 
-        EventInstance instance = RuntimeManager.CreateInstance(weaponAttackSoundEvent);
-        instance.setParameterByNameWithLabel("ItemType", item.itemType.ToString());
-        instance.setParameterByNameWithLabel("CharacterType", isPlayer ? "Player" : "Enemy");
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
-        instance.start();
-        instance.release();
+        string characterType = entity != null ? (entity.IsPlayer ? "Player" : entity.IsBoss ? "Boss" : "Enemy") : "Enemy";
+
+        if (!weaponAttackSoundEvent.IsNull)
+        {
+            EventInstance instance = RuntimeManager.CreateInstance(weaponAttackSoundEvent);
+            instance.setParameterByNameWithLabel("ItemType", item.itemType.ToString());
+            instance.setParameterByNameWithLabel("CharacterType", characterType);
+            instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+            instance.start();
+            instance.release();
+        }
+
     }
 }

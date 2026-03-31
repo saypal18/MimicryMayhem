@@ -108,6 +108,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
   gridPlaceable: {fileID: 2948528795530487685}
+  keyPickupSoundEvent:
+    Guid:
+      Data1: 608087984
+      Data2: 1141542116
+      Data3: 1107661735
+      Data4: 301942872
+    Path: event:/SFX/Items/KeyPickup
 --- !u!114 &2948528795530487685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,7 +166,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.75, y: 1.49}
+    oldSize: {x: 1, y: 0.5418182}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
