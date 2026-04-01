@@ -11,7 +11,7 @@ public class PlayerTeleporter : MonoBehaviour
     private DoorTile lastDoorTeleportedTo;
 
     [Header("Audio")]
-    [SerializeField] private EventReference areaTransitionSoundEvent;
+    public EventReference areaTransitionSoundEvent;
 
     public void TeleportIfOnDoor(Entity player, Vector3 visualPosition)
     {

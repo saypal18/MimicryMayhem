@@ -7296,6 +7296,13 @@ MonoBehaviour:
   useCustomInventorySize: 1
   playerSpotlightPrefab: {fileID: 1576087388}
   victoryAnimationController: {fileID: 2087419254}
+  areaTransitionSoundEvent:
+    Guid:
+      Data1: 1850177454
+      Data2: 1176738275
+      Data3: 1720283294
+      Data4: 1276122125
+    Path: event:/SFX/Player/AreaTransition
   fadeOutImage: {fileID: 1252542407}
   fadeOutDuration: 0.5
   fadeOutDelay: 3
