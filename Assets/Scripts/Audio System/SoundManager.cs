@@ -6,6 +6,26 @@ using FMOD.Studio;
 
 public class SoundManager : MonoBehaviour
 {
+    [Header("Debug")]
+    [SerializeField] private bool strictAudioMode = false;
+    public static bool StrictAudioMode;
+
+    void Awake()
+    {
+        StrictAudioMode = strictAudioMode;
+    }
+
+    /// <summary>
+    /// Returns true if the event reference is null. Logs a warning in strict mode.
+    /// </summary>
+    public static bool CheckEventNull(EventReference eventRef, string context, Object unityObject = null)
+    {
+        if (!eventRef.IsNull) return false;
+        if (StrictAudioMode)
+            Debug.LogWarning($"[Audio] EventReference not assigned: {context}", unityObject);
+        return true;
+    }
+
     [Header("Music & Ambience")]
     [SerializeField] private EventReference musicSoundEvent;
     [SerializeField] private EventReference ambienceSoundEvent;
@@ -112,7 +132,7 @@ public class SoundManager : MonoBehaviour
 
     private void StartMusic()
     {
-        if (musicSoundEvent.IsNull) return;
+        if (CheckEventNull(musicSoundEvent, "Music", this)) return;
 
         musicInstance = RuntimeManager.CreateInstance(musicSoundEvent);
         musicInstance.start();
@@ -120,7 +140,7 @@ public class SoundManager : MonoBehaviour
 
     private void StartAmbience()
     {
-        if (ambienceSoundEvent.IsNull) return;
+        if (CheckEventNull(ambienceSoundEvent, "Ambience", this)) return;
 
         ambienceInstance = RuntimeManager.CreateInstance(ambienceSoundEvent);
         ambienceInstance.start();

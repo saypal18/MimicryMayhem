@@ -92,7 +92,7 @@ public class PlayerTeleporter : MonoBehaviour
     private void PlayAreaTransitionSound()
     {
         if (Trainer.IsTraining) return;
-        if (areaTransitionSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(areaTransitionSoundEvent, "AreaTransition")) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(areaTransitionSoundEvent);
         instance.start();

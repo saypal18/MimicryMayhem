@@ -34,7 +34,7 @@ public class KeyPickup : Pickup
     private void PlayKeyPickupSound()
     {
         if (Trainer.IsTraining) return;
-        if (keyPickupSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(keyPickupSoundEvent, "KeyPickup", this)) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(keyPickupSoundEvent);
         instance.start();

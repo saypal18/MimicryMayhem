@@ -53,7 +53,8 @@ public class MoveAbility : IAbility
 
     private void EnsureMovementSoundInstance()
     {
-        if (movementSoundInstance.isValid() || gridMovementSoundEvent.IsNull) return;
+        if (movementSoundInstance.isValid()) return;
+        if (SoundManager.CheckEventNull(gridMovementSoundEvent, "GridMovement")) return;
         if (!RuntimeManager.HaveAllBanksLoaded) return;
 
         movementSoundInstance = RuntimeManager.CreateInstance(gridMovementSoundEvent);

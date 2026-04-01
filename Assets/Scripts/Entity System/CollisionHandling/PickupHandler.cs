@@ -59,9 +59,8 @@ public class PickupHandler
         }
 
         if (Trainer.IsTraining) return;
-        if (pickupSoundEvent.IsNull) return;
         EventReference eventRef = isSteal ? stealSoundEvent : pickupSoundEvent;
-        if (eventRef.IsNull) return;
+        if (SoundManager.CheckEventNull(eventRef, isSteal ? "Steal" : "Pickup", thisObject)) return;
 
         if (!itemType.HasValue)
         {

@@ -66,7 +66,7 @@ public class VictoryTrigger : MonoBehaviour
     private void PlayVictoryStinger()
     {
         if (Trainer.IsTraining) return;
-        if (levelCompletedSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(levelCompletedSoundEvent, "LevelCompleted", this)) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(levelCompletedSoundEvent);
         // We're going to stop the music and ambience from FMOD when this event

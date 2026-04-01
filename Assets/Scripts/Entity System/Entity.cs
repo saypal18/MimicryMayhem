@@ -45,7 +45,8 @@ public class Entity : MonoBehaviour
 
     private void UpdateBossPresence(bool active)
     {
-        if (Trainer.IsTraining || !IsBoss || bossPresenceSoundEvent.IsNull) return;
+        if (Trainer.IsTraining || !IsBoss) return;
+        if (SoundManager.CheckEventNull(bossPresenceSoundEvent, "BossPresence", this)) return;
 
         if (active && !bossPresenceInstance.isValid())
         {
@@ -72,7 +73,8 @@ public class Entity : MonoBehaviour
     private void PlayActivationBark()
     {
         if (Trainer.IsTraining) return;
-        if (activationBarkSoundEvent.IsNull || IsPlayer) return;
+        if (IsPlayer) return;
+        if (SoundManager.CheckEventNull(activationBarkSoundEvent, "ActivationBark", this)) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(activationBarkSoundEvent);
         instance.setParameterByNameWithLabel("CharacterType", IsBoss ? "Boss" : "Enemy");
@@ -163,6 +165,11 @@ public class Entity : MonoBehaviour
     private void HandleItemDropped(WeaponItem item, int slotIndex)
     {
         OnDropItemToGrid?.Invoke(this, item, gridPlaceable.Position);
+    }
+
+    void OnDisable()
+    {
+        ReleaseBossPresence();
     }
 
     /////// apply during play //////

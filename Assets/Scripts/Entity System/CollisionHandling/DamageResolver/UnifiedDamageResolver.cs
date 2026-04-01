@@ -101,13 +101,14 @@ public class UnifiedDamageResolver
     private string GetCharacterTypeLabel()
     {
         Entity self = gridPlaceable.Entity;
-        return (self != null && self.IsPlayer) ? "Player" : "Enemy";
+        if (self == null) return "Enemy";
+        return self.IsPlayer ? "Player" : self.IsBoss ? "Boss" : "Enemy";
     }
 
     private void PlayImpactSound(DamageDealer damageDealer)
     {
         if (Trainer.IsTraining) return;
-        if (weaponImpactSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(weaponImpactSoundEvent, "WeaponImpact")) return;
 
         Entity attacker = damageDealer.GetComponentInParent<Entity>();
         InventoryItem attackerItem = attacker != null ? attacker.equippedItem.Get() : null;
@@ -126,7 +127,7 @@ public class UnifiedDamageResolver
     private void PlayGripReducedSound(WeaponItem weaponItem)
     {
         if (Trainer.IsTraining) return;
-        if (gripReducedSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(gripReducedSoundEvent, "GripReduced")) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(gripReducedSoundEvent);
         instance.setParameterByName("GripAmount", weaponItem.currentGrip);
@@ -139,7 +140,7 @@ public class UnifiedDamageResolver
     private void PlayDeathSound()
     {
         if (Trainer.IsTraining) return;
-        if (entityDeathSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(entityDeathSoundEvent, "EntityDeath")) return;
 
         EventInstance instance = RuntimeManager.CreateInstance(entityDeathSoundEvent);
         instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());

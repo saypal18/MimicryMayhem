@@ -11,7 +11,7 @@ public class ProjectileSound : MonoBehaviour
     void OnEnable()
     {
         if (Trainer.IsTraining) return;
-        if (projectileSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(projectileSoundEvent, "ProjectileSound", this)) return;
 
         instance = RuntimeManager.CreateInstance(projectileSoundEvent);
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform));

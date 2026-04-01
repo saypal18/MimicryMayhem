@@ -96,7 +96,7 @@ public class BossCreator : MonoBehaviour
     private void PlayKeyDropSound(Vector2Int position)
     {
         if (Trainer.IsTraining) return;
-        if (keyDropSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(keyDropSoundEvent, "KeyDrop", this)) return;
 
         Vector3 worldPos = grid.GetWorldPosition(position);
         EventInstance instance = RuntimeManager.CreateInstance(keyDropSoundEvent);

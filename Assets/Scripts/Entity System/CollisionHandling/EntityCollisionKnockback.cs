@@ -59,7 +59,7 @@ public class EntityCollisionKnockback : MoveAbility
 
     private void PlayKnockbackSound()
     {
-        if (knockbackSoundEvent.IsNull) return;
+        if (SoundManager.CheckEventNull(knockbackSoundEvent, "Knockback")) return;
 
         Entity self = gridPlaceable.Entity;
         EventInstance instance = RuntimeManager.CreateInstance(knockbackSoundEvent);

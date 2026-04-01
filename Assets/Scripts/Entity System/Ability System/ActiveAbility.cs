@@ -78,14 +78,14 @@ public class ActiveAbility
     public void PlayAttackSound(Vector3 position, Entity entity)
     {
         if (Trainer.IsTraining) return;
-        if (weaponAttackSoundEvent.IsNull || equippedItem == null) return;
+        if (equippedItem == null) return;
+        if (SoundManager.CheckEventNull(weaponAttackSoundEvent, "WeaponAttack")) return;
 
         InventoryItem item = equippedItem.Get();
         if (item == null) return;
 
         string characterType = entity != null ? (entity.IsPlayer ? "Player" : entity.IsBoss ? "Boss" : "Enemy") : "Enemy";
 
-        if (!weaponAttackSoundEvent.IsNull)
         {
             EventInstance instance = RuntimeManager.CreateInstance(weaponAttackSoundEvent);
             instance.setParameterByNameWithLabel("ItemType", item.itemType.ToString());
