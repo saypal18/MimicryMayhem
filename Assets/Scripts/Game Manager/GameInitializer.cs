@@ -185,7 +185,7 @@ public class GameInitializer : MonoBehaviour
         {
             if (spawnedVictoryTrigger != null) PoolingEntity.Despawn(spawnedVictoryTrigger);
             if (victoryAnimationController != null) victoryAnimationController.Initialize();
-            victorySpawner.Initialize(grid, victoryAnimationController, soundManager);
+            victorySpawner.Initialize(grid, victoryAnimationController);
             spawnedVictoryTrigger = victorySpawner.SpawnVictoryTrigger();
         }
 

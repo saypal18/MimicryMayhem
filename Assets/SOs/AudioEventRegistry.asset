@@ -1,0 +1,147 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bdf4cf9d22344defa27fafe8f8e3d0c, type: 3}
+  m_Name: AudioEventRegistry
+  m_EditorClassIdentifier: Assembly-CSharp::AudioEventRegistry
+  attack:
+    Guid:
+      Data1: -812323023
+      Data2: 1146443535
+      Data3: -1979226467
+      Data4: 2057014809
+    Path: event:/SFX/Combat/Attack
+  impact:
+    Guid:
+      Data1: 654358561
+      Data2: 1094272230
+      Data3: -247950207
+      Data4: 602705943
+    Path: event:/SFX/Combat/Hit
+  gripReduced:
+    Guid:
+      Data1: -393644465
+      Data2: 1159654135
+      Data3: 1164234903
+      Data4: 1210100954
+    Path: event:/SFX/Combat/Feedback/GripReduced
+  knockback:
+    Guid:
+      Data1: -1765258748
+      Data2: 1301259413
+      Data3: 1667868091
+      Data4: -65333191
+    Path: event:/SFX/Combat/Knockback
+  entityDeath:
+    Guid:
+      Data1: 1530459585
+      Data2: 1338760467
+      Data3: 768507823
+      Data4: 923126927
+    Path: event:/SFX/Combat/EntityDeath
+  projectileFlight:
+    Guid:
+      Data1: 915301476
+      Data2: 1102847600
+      Data3: -2029105024
+      Data4: -1014272259
+    Path: event:/SFX/Combat/ProjectileFlight
+  pickup:
+    Guid:
+      Data1: 1839979469
+      Data2: 1132864219
+      Data3: 692810394
+      Data4: -1646398931
+    Path: event:/SFX/Enemy/Item Pickup
+  steal:
+    Guid:
+      Data1: 584097259
+      Data2: 1291611998
+      Data3: 798433951
+      Data4: 1860272782
+    Path: event:/SFX/Items/Steal
+  drop:
+    Guid:
+      Data1: 480622837
+      Data2: 1155337215
+      Data3: 1565690240
+      Data4: -5695745
+    Path: event:/SFX/Items/Drop
+  keyPickup:
+    Guid:
+      Data1: 608087984
+      Data2: 1141542116
+      Data3: 1107661735
+      Data4: 301942872
+    Path: event:/SFX/Items/KeyPickup
+  keyDrop:
+    Guid:
+      Data1: 1190778582
+      Data2: 1127265325
+      Data3: 727221150
+      Data4: -1575071160
+    Path: event:/SFX/Items/KeyDrop
+  gridMovement:
+    Guid:
+      Data1: 1217002394
+      Data2: 1150363421
+      Data3: -2129088604
+      Data4: 1418410538
+    Path: event:/SFX/Shared/GridMovement
+  activationBark:
+    Guid:
+      Data1: 1330285489
+      Data2: 1206468522
+      Data3: 1785836935
+      Data4: -1788904595
+    Path: event:/SFX/Enemy/Vox/Activation
+  bossPresence:
+    Guid:
+      Data1: 923088969
+      Data2: 1284386823
+      Data3: -2117227365
+      Data4: -1951938119
+    Path: event:/SFX/Enemy/Boss Presence
+  weaponSwitch:
+    Guid:
+      Data1: 923063522
+      Data2: 1198280528
+      Data3: -1396954465
+      Data4: 228279798
+    Path: event:/SFX/UI/WeaponSwitch
+  areaTransition:
+    Guid:
+      Data1: 1850177454
+      Data2: 1176738275
+      Data3: 1720283294
+      Data4: 1276122125
+    Path: event:/SFX/Player/AreaTransition
+  music:
+    Guid:
+      Data1: -1294304327
+      Data2: 1335850839
+      Data3: -1320219988
+      Data4: -1647065570
+    Path: event:/Music/Music
+  ambience:
+    Guid:
+      Data1: 1876592471
+      Data2: 1205279964
+      Data3: 1723615625
+      Data4: -550807086
+    Path: event:/SFX/Ambience/DungeonAmbience
+  levelCompleted:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 

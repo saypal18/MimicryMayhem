@@ -1,7 +1,5 @@
 using System;
 using UnityEngine;
-using FMODUnity;
-using FMOD.Studio;
 [Serializable]
 
 public class PickupHandler
@@ -9,10 +7,6 @@ public class PickupHandler
     public Action<Pickup> OnPickupCollected;
     public Action<Pickup> OnPickupFailed;
     [SerializeField] private GameObject thisObject;
-
-    [Header("Audio")]
-    [SerializeField] private EventReference pickupSoundEvent;
-    [SerializeField] private EventReference stealSoundEvent;
 
     public bool SuppressNextPickupSound { get; set; }
 
@@ -58,9 +52,7 @@ public class PickupHandler
             return;
         }
 
-        if (Trainer.IsTraining) return;
-        EventReference eventRef = isSteal ? stealSoundEvent : pickupSoundEvent;
-        if (SoundManager.CheckEventNull(eventRef, isSteal ? "Steal" : "Pickup", thisObject)) return;
+        if (Trainer.IsTraining || SoundManager.Events == null) return;
 
         if (!itemType.HasValue)
         {
@@ -69,11 +61,11 @@ public class PickupHandler
         }
 
         Entity entity = thisObject.GetComponent<Entity>();
-        EventInstance instance = RuntimeManager.CreateInstance(eventRef);
-        instance.setParameterByNameWithLabel("ItemType", itemType.Value.ToString());
-        instance.setParameterByNameWithLabel("CharacterType", (entity != null && entity.IsPlayer) ? "Player" : "Enemy");
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(thisObject.transform.position));
-        instance.start();
-        instance.release();
+        string characterType = entity != null ? (entity.IsPlayer ? "Player" : entity.IsBoss ? "Boss" : "Enemy") : "Enemy";
+        var eventRef = isSteal ? SoundManager.Events.steal : SoundManager.Events.pickup;
+
+        SoundManager.PlayOneShot(eventRef, thisObject.transform.position,
+            ("ItemType", itemType.Value.ToString()),
+            ("CharacterType", characterType));
     }
 }

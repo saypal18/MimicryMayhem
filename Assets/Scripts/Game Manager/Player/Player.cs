@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.MLAgents.Policies;
 using UnityEngine.UI;
 using Unity.Cinemachine;
-using FMODUnity;
 
 public class Player : MonoBehaviour
 {
@@ -21,9 +20,6 @@ public class Player : MonoBehaviour
     [SerializeField] private bool useCustomInventorySize = false;
     [SerializeField] private GameObject playerSpotlightPrefab;
     [SerializeField] private VictoryAnimationController victoryAnimationController;
-
-    [Header("Audio")]
-    [SerializeField] private EventReference areaTransitionSoundEvent;
 
     [Header("Fade Out UI")]
     [SerializeField] private Image fadeOutImage;
@@ -223,7 +219,6 @@ public class Player : MonoBehaviour
         teleporter = gameObject.AddComponent<PlayerTeleporter>();
         teleporter.inputManager = inputManager;
         teleporter.cam = mainCamera;
-        teleporter.areaTransitionSoundEvent = areaTransitionSoundEvent;
         teleporter.OnTeleported += (newEnv) =>
         {
             if (forceTurnButton != null)

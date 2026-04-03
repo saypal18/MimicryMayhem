@@ -1,17 +1,12 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using FMODUnity;
-using FMOD.Studio;
 
 public class EquippedItem : MonoBehaviour, IScrollHandler
 {
     private int index;
     private InventorySlotHolder inventory;
     public Action<int> OnScroll; // invoked when the index changes due to scrolling
-
-    [Header("Audio")]
-    [SerializeField] private EventReference weaponSwitchSoundEvent;
 
     public void Initialize(InventorySlotHolder inventory)
     {
@@ -55,12 +50,8 @@ public class EquippedItem : MonoBehaviour, IScrollHandler
             }
             OnScroll?.Invoke(index);
 
-            if (!SoundManager.CheckEventNull(weaponSwitchSoundEvent, "WeaponSwitch"))
-            {
-                EventInstance instance = RuntimeManager.CreateInstance(weaponSwitchSoundEvent);
-                instance.start();
-                instance.release();
-            }
+            if (SoundManager.Events != null)
+                SoundManager.PlayOneShot(SoundManager.Events.weaponSwitch);
         }
     }
 }

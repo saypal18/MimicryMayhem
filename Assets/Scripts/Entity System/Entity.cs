@@ -3,6 +3,7 @@ using Unity.MLAgents.Policies;
 using System;
 using FMODUnity;
 using FMOD.Studio;
+
 public class Entity : MonoBehaviour
 {
     [SerializeField] public GridPlaceable gridPlaceable;
@@ -45,12 +46,12 @@ public class Entity : MonoBehaviour
 
     private void UpdateBossPresence(bool active)
     {
-        if (Trainer.IsTraining || !IsBoss) return;
-        if (SoundManager.CheckEventNull(bossPresenceSoundEvent, "BossPresence", this)) return;
+        if (Trainer.IsTraining || !IsBoss || SoundManager.Events == null) return;
+        if (SoundManager.CheckEventNull(SoundManager.Events.bossPresence, this)) return;
 
         if (active && !bossPresenceInstance.isValid())
         {
-            bossPresenceInstance = RuntimeManager.CreateInstance(bossPresenceSoundEvent);
+            bossPresenceInstance = RuntimeManager.CreateInstance(SoundManager.Events.bossPresence);
             bossPresenceInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
             bossPresenceInstance.start();
         }
@@ -72,15 +73,10 @@ public class Entity : MonoBehaviour
 
     private void PlayActivationBark()
     {
-        if (Trainer.IsTraining) return;
-        if (IsPlayer) return;
-        if (SoundManager.CheckEventNull(activationBarkSoundEvent, "ActivationBark", this)) return;
+        if (Trainer.IsTraining || IsPlayer || SoundManager.Events == null) return;
 
-        EventInstance instance = RuntimeManager.CreateInstance(activationBarkSoundEvent);
-        instance.setParameterByNameWithLabel("CharacterType", IsBoss ? "Boss" : "Enemy");
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-        instance.start();
-        instance.release();
+        SoundManager.PlayOneShot(SoundManager.Events.activationBark, transform.position,
+            ("CharacterType", IsBoss ? "Boss" : "Enemy"));
     }
 
     public EquippedItem equippedItem;
@@ -91,9 +87,6 @@ public class Entity : MonoBehaviour
     [SerializeField] private SpriteRenderer keyVisual;
     [SerializeField] public Transform animationParent;
 
-    [Header("Audio")]
-    [SerializeField] private EventReference activationBarkSoundEvent;
-    [SerializeField] private EventReference bossPresenceSoundEvent;
     private EventInstance bossPresenceInstance;
     public GameObject currentAnimation { get; set; }
 
