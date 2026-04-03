@@ -1,7 +1,5 @@
 using UnityEngine;
 using System;
-using FMODUnity;
-using FMOD.Studio;
 [Serializable]
 public class ActiveAbility
 {
@@ -11,9 +9,6 @@ public class ActiveAbility
     private EquippedItem equippedItem;
     public IAbility ability = null;
     private DamageDealer damageDealer;
-
-    [Header("Audio")]
-    [SerializeField] private EventReference weaponAttackSoundEvent;
 
     public bool IsDashing => dashAttack != null && dashAttack.IsDashing;
     public bool IsMeleeAttacking => meleeAttack != null && meleeAttack.IsAttacking;
@@ -77,23 +72,15 @@ public class ActiveAbility
 
     public void PlayAttackSound(Vector3 position, Entity entity)
     {
-        if (Trainer.IsTraining) return;
-        if (weaponAttackSoundEvent.IsNull || equippedItem == null) return;
+        if (equippedItem == null || SoundManager.Events == null) return;
 
         InventoryItem item = equippedItem.Get();
         if (item == null) return;
 
         string characterType = entity != null ? (entity.IsPlayer ? "Player" : entity.IsBoss ? "Boss" : "Enemy") : "Enemy";
 
-        if (!weaponAttackSoundEvent.IsNull)
-        {
-            EventInstance instance = RuntimeManager.CreateInstance(weaponAttackSoundEvent);
-            instance.setParameterByNameWithLabel("ItemType", item.itemType.ToString());
-            instance.setParameterByNameWithLabel("CharacterType", characterType);
-            instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
-            instance.start();
-            instance.release();
-        }
-
+        SoundManager.PlayOneShot(SoundManager.Events.attack, position,
+            ("ItemType", item.itemType.ToString()),
+            ("CharacterType", characterType));
     }
 }

@@ -16,8 +16,6 @@ public class MoveAbility : IAbility
         set { blocksToMove = value; if (movement != null) movement.UpdateRange(value); }
     }
 
-    [Header("Audio")]
-    [SerializeField] private EventReference gridMovementSoundEvent;
     private EventInstance movementSoundInstance;
 
     public void Initialize(EntityMovementFactory movementFactory, GridPlaceable gridPlaceable, MoveInfo moveInfo)
@@ -53,10 +51,12 @@ public class MoveAbility : IAbility
 
     private void EnsureMovementSoundInstance()
     {
-        if (movementSoundInstance.isValid() || gridMovementSoundEvent.IsNull) return;
+        if (movementSoundInstance.isValid()) return;
+        if (SoundManager.Events == null) return;
+        if (SoundManager.CheckEventNull(SoundManager.Events.gridMovement)) return;
         if (!RuntimeManager.HaveAllBanksLoaded) return;
 
-        movementSoundInstance = RuntimeManager.CreateInstance(gridMovementSoundEvent);
+        movementSoundInstance = RuntimeManager.CreateInstance(SoundManager.Events.gridMovement);
     }
 
     private void PlayMovementSound()

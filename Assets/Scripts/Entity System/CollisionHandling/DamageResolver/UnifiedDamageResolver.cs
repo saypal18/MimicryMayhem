@@ -20,10 +20,6 @@ public class UnifiedDamageResolver
     [SerializeField] private float knockbackTime = 0.1f;
     [SerializeField] private int knockbackBlocks = 1;
 
-    [Header("Audio")]
-    [SerializeField] private EventReference weaponImpactSoundEvent;
-    [SerializeField] private EventReference gripReducedSoundEvent;
-    [SerializeField] private EventReference entityDeathSoundEvent;
     public void Initialize(CollisionResolver collisionResolver, SortedInventory inventory, EquippedItem equippedItem, EntityMovementFactory movementFactory, AbilityController controller, MoveInfo moveInfo)
     {
         // collisionResolver.OnCollision += OnCollision; // Removed action-subscriber
@@ -101,34 +97,36 @@ public class UnifiedDamageResolver
     private string GetCharacterTypeLabel()
     {
         Entity self = gridPlaceable.Entity;
-        return (self != null && self.IsPlayer) ? "Player" : "Enemy";
+        if (self == null) return "Enemy";
+        return self.IsPlayer ? "Player" : self.IsBoss ? "Boss" : "Enemy";
     }
 
     private void PlayImpactSound(DamageDealer damageDealer)
     {
-        if (Trainer.IsTraining) return;
-        if (weaponImpactSoundEvent.IsNull) return;
+        if (Trainer.IsTraining || SoundManager.Events == null) return;
 
         Entity attacker = damageDealer.GetComponentInParent<Entity>();
         InventoryItem attackerItem = attacker != null ? attacker.equippedItem.Get() : null;
 
-        EventInstance instance = RuntimeManager.CreateInstance(weaponImpactSoundEvent);
         if (attackerItem != null)
         {
-            instance.setParameterByNameWithLabel("ItemType", attackerItem.itemType.ToString());
+            SoundManager.PlayOneShot(SoundManager.Events.impact, gridPlaceable.transform.position,
+                ("ItemType", attackerItem.itemType.ToString()),
+                ("CharacterType", GetCharacterTypeLabel()));
         }
-        instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
-        instance.start();
-        instance.release();
+        else
+        {
+            SoundManager.PlayOneShot(SoundManager.Events.impact, gridPlaceable.transform.position,
+                ("CharacterType", GetCharacterTypeLabel()));
+        }
     }
 
     private void PlayGripReducedSound(WeaponItem weaponItem)
     {
-        if (Trainer.IsTraining) return;
-        if (gripReducedSoundEvent.IsNull) return;
+        if (Trainer.IsTraining || SoundManager.Events == null) return;
+        if (SoundManager.CheckEventNull(SoundManager.Events.gripReduced)) return;
 
-        EventInstance instance = RuntimeManager.CreateInstance(gripReducedSoundEvent);
+        EventInstance instance = RuntimeManager.CreateInstance(SoundManager.Events.gripReduced);
         instance.setParameterByName("GripAmount", weaponItem.currentGrip);
         instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
@@ -138,13 +136,9 @@ public class UnifiedDamageResolver
 
     private void PlayDeathSound()
     {
-        if (Trainer.IsTraining) return;
-        if (entityDeathSoundEvent.IsNull) return;
+        if (Trainer.IsTraining || SoundManager.Events == null) return;
 
-        EventInstance instance = RuntimeManager.CreateInstance(entityDeathSoundEvent);
-        instance.setParameterByNameWithLabel("CharacterType", GetCharacterTypeLabel());
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(gridPlaceable.transform.position));
-        instance.start();
-        instance.release();
+        SoundManager.PlayOneShot(SoundManager.Events.entityDeath, gridPlaceable.transform.position,
+            ("CharacterType", GetCharacterTypeLabel()));
     }
 }

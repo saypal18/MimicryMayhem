@@ -246,14 +246,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VictoryTrigger
   gridPlaceable: {fileID: 6695327865386514748}
   animationController: {fileID: 0}
-  victoryStingerSoundEvent:
+  levelCompletedSoundEvent:
     Guid:
       Data1: 832203576
       Data2: 1091432734
       Data3: -1446083450
       Data4: 291079378
-    Path: event:/Music/VictoryStinger
-  soundManager: {fileID: 0}
+    Path: event:/Music/LevelCompleted
 --- !u!114 &6695327865386514748
 MonoBehaviour:
   m_ObjectHideFlags: 0

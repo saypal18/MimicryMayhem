@@ -1,6 +1,4 @@
 using UnityEngine;
-using FMODUnity;
-using FMOD.Studio;
 
 /// <summary>
 /// Attach this script to your pre-specified Victory Tile/Door.
@@ -16,14 +14,9 @@ public class VictoryTrigger : MonoBehaviour
     [Header("Victory Sequence")]
     [SerializeField] private VictoryAnimationController animationController;
 
-    [Header("Audio")]
-    [SerializeField] private EventReference levelCompletedSoundEvent;
-    private SoundManager soundManager; // Set at runtime via Initialize()
-
-    public void Initialize(Grid grid, Vector2Int position, VictoryAnimationController controller, SoundManager soundManager)
+    public void Initialize(Grid grid, Vector2Int position, VictoryAnimationController controller)
     {
         this.animationController = controller;
-        this.soundManager = soundManager;
         if (gridPlaceable == null)
         {
             gridPlaceable = GetComponent<GridPlaceable>();
@@ -34,10 +27,8 @@ public class VictoryTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Check if the entering object is an Entity
         if (other.TryGetComponent(out Entity entity))
         {
-            // Verify it's the player and they have the key
             if (entity.IsPlayer && entity.HasBossKey)
             {
                 TriggerVictory();
@@ -47,7 +38,8 @@ public class VictoryTrigger : MonoBehaviour
 
     private void TriggerVictory()
     {
-        PlayVictoryStinger();
+        if (SoundManager.Events != null)
+            SoundManager.PlayOneShot(SoundManager.Events.levelCompleted);
 
         if (animationController != null)
         {
@@ -61,17 +53,5 @@ public class VictoryTrigger : MonoBehaviour
         {
             Debug.LogWarning("[VictoryTrigger] Victory! (But VictoryAnimationController is not assigned)");
         }
-    }
-
-    private void PlayVictoryStinger()
-    {
-        if (Trainer.IsTraining) return;
-        if (levelCompletedSoundEvent.IsNull) return;
-
-        EventInstance instance = RuntimeManager.CreateInstance(levelCompletedSoundEvent);
-        // We're going to stop the music and ambience from FMOD when this event
-        // is started.
-        instance.start();
-        instance.release();
     }
 }

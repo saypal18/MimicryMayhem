@@ -1,21 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
 
 public class SoundManager : MonoBehaviour
 {
-    [Header("Music & Ambience")]
-    [SerializeField] private EventReference musicSoundEvent;
-    [SerializeField] private EventReference ambienceSoundEvent;
+    [Header("Debug")]
+    [Tooltip("Shows a warning when an event reference is null, otherwise it'll silently fail.")]
+    [SerializeField] private bool strictAudioMode = false;
+    public static bool StrictAudioMode;
+
+    [Header("Audio Events")]
+    [SerializeField] private AudioEventRegistry audioEvents;
+    public static AudioEventRegistry Events { get; private set; }
 
     [Header("Banks")]
     [BankRef]
     [SerializeField] private List<string> requiredBanks = new List<string> { "Gameplay" };
-
-    [Header("SFX")]
-    [SerializeField] private EventReference levelStartSoundEvent;
 
     [Header("WebGL")]
     [Tooltip("Suspend FMOD mixer when the browser tab loses focus (WebGL only).")]
@@ -23,6 +26,51 @@ public class SoundManager : MonoBehaviour
 
     private EventInstance musicInstance;
     private EventInstance ambienceInstance;
+
+    void Awake()
+    {
+        StrictAudioMode = strictAudioMode;
+        Events = audioEvents;
+    }
+
+    /// <summary>
+    /// Returns true if the event reference is null. Logs a warning in strict mode.
+    /// CallerMemberName and CallerFilePath are auto-filled by the compiler.
+    /// </summary>
+    public static bool CheckEventNull(
+        EventReference eventRef,
+        Object unityObject = null,
+        [CallerMemberName] string caller = "",
+        [CallerFilePath] string filePath = "")
+    {
+        if (!eventRef.IsNull) return false;
+        if (StrictAudioMode)
+        {
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+            Debug.LogWarning($"[Audio] EventReference not assigned — called from {fileName}.{caller}()", unityObject);
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Fire-and-forget one-shot with optional position and labelled parameters.
+    /// </summary>
+    public static void PlayOneShot(
+        EventReference eventRef,
+        Vector3? position = null,
+        params (string name, string label)[] parameters)
+    {
+        if (Trainer.IsTraining) return;
+        if (CheckEventNull(eventRef)) return;
+
+        EventInstance instance = RuntimeManager.CreateInstance(eventRef);
+        foreach (var (name, label) in parameters)
+            instance.setParameterByNameWithLabel(name, label);
+        if (position.HasValue)
+            instance.set3DAttributes(RuntimeUtils.To3DAttributes(position.Value));
+        instance.start();
+        instance.release();
+    }
 
     public void LoadBanks()
     {
@@ -112,17 +160,17 @@ public class SoundManager : MonoBehaviour
 
     private void StartMusic()
     {
-        if (musicSoundEvent.IsNull) return;
+        if (CheckEventNull(audioEvents.music, this)) return;
 
-        musicInstance = RuntimeManager.CreateInstance(musicSoundEvent);
+        musicInstance = RuntimeManager.CreateInstance(audioEvents.music);
         musicInstance.start();
     }
 
     private void StartAmbience()
     {
-        if (ambienceSoundEvent.IsNull) return;
+        if (CheckEventNull(audioEvents.ambience, this)) return;
 
-        ambienceInstance = RuntimeManager.CreateInstance(ambienceSoundEvent);
+        ambienceInstance = RuntimeManager.CreateInstance(audioEvents.ambience);
         ambienceInstance.start();
     }
 
@@ -142,13 +190,4 @@ public class SoundManager : MonoBehaviour
         ambienceInstance.release();
     }
 
-    public void PlayLevelStart()
-    {
-        if (Trainer.IsTraining) return;
-        if (levelStartSoundEvent.IsNull) return;
-
-        EventInstance instance = RuntimeManager.CreateInstance(levelStartSoundEvent);
-        instance.start();
-        instance.release();
-    }
 }

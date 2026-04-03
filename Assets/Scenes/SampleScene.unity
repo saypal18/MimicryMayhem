@@ -5156,31 +5156,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bf7c7b3441524d8881d91ebd2b2f662, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
-  musicSoundEvent:
-    Guid:
-      Data1: -1294304327
-      Data2: 1335850839
-      Data3: -1320219988
-      Data4: -1647065570
-    Path: event:/Music/Music
-  ambienceSoundEvent:
-    Guid:
-      Data1: 1876592471
-      Data2: 1205279964
-      Data3: 1723615625
-      Data4: -550807086
-    Path: event:/SFX/Ambience/DungeonAmbience
+  strictAudioMode: 0
+  audioEvents: {fileID: 11400000, guid: f35d11194760d4f799d42076c5a4e3e4, type: 2}
   requiredBanks:
   - Gameplay
-  levelStartSoundEvent:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
   suspendOnFocusLoss: 1
 --- !u!4 &670429426
 Transform:
@@ -7296,6 +7277,13 @@ MonoBehaviour:
   useCustomInventorySize: 1
   playerSpotlightPrefab: {fileID: 1576087388}
   victoryAnimationController: {fileID: 2087419254}
+  areaTransitionSoundEvent:
+    Guid:
+      Data1: 1850177454
+      Data2: 1176738275
+      Data3: 1720283294
+      Data4: 1276122125
+    Path: event:/SFX/Player/AreaTransition
   fadeOutImage: {fileID: 1252542407}
   fadeOutDuration: 0.5
   fadeOutDelay: 3

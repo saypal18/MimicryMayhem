@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using FMODUnity;
-using FMOD.Studio;
 
 public class BossCreator : MonoBehaviour
 {
@@ -11,9 +9,6 @@ public class BossCreator : MonoBehaviour
     [SerializeField] private List<WeaponItem> preDeterminedItems;
     [SerializeField] private GameObject keyPickupPrefab;
     [SerializeField] private int bossTeamId = 99; // Default to a unique team ID
-
-    [Header("Audio")]
-    [SerializeField] private EventReference keyDropSoundEvent;
 
     private Grid grid;
     private EntitySpawner entitySpawner;
@@ -95,14 +90,9 @@ public class BossCreator : MonoBehaviour
 
     private void PlayKeyDropSound(Vector2Int position)
     {
-        if (Trainer.IsTraining) return;
-        if (keyDropSoundEvent.IsNull) return;
-
+        if (Trainer.IsTraining || SoundManager.Events == null) return;
         Vector3 worldPos = grid.GetWorldPosition(position);
-        EventInstance instance = RuntimeManager.CreateInstance(keyDropSoundEvent);
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(worldPos));
-        instance.start();
-        instance.release();
+        SoundManager.PlayOneShot(SoundManager.Events.keyDrop, worldPos);
     }
 }
 

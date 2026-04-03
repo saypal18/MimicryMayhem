@@ -3,6 +3,7 @@ using Unity.MLAgents.Policies;
 using System;
 using FMODUnity;
 using FMOD.Studio;
+
 public class Entity : MonoBehaviour
 {
     [SerializeField] public GridPlaceable gridPlaceable;
@@ -39,19 +40,43 @@ public class Entity : MonoBehaviour
         if (IsActiveForTurns == active) return;
         IsActiveForTurns = active;
         if (active) PlayActivationBark();
+        UpdateBossPresence(active);
         if (agent != null) agent.enabled = active;
+    }
+
+    private void UpdateBossPresence(bool active)
+    {
+        if (Trainer.IsTraining || !IsBoss || SoundManager.Events == null) return;
+        if (SoundManager.CheckEventNull(SoundManager.Events.bossPresence, this)) return;
+
+        if (active && !bossPresenceInstance.isValid())
+        {
+            bossPresenceInstance = RuntimeManager.CreateInstance(SoundManager.Events.bossPresence);
+            bossPresenceInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
+            bossPresenceInstance.start();
+        }
+        else if (!active && bossPresenceInstance.isValid())
+        {
+            bossPresenceInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            bossPresenceInstance.release();
+        }
+    }
+
+    private void ReleaseBossPresence()
+    {
+        if (bossPresenceInstance.isValid())
+        {
+            bossPresenceInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            bossPresenceInstance.release();
+        }
     }
 
     private void PlayActivationBark()
     {
-        if (Trainer.IsTraining) return;
-        if (activationBarkSoundEvent.IsNull || IsPlayer) return;
+        if (Trainer.IsTraining || IsPlayer || SoundManager.Events == null) return;
 
-        EventInstance instance = RuntimeManager.CreateInstance(activationBarkSoundEvent);
-        instance.setParameterByNameWithLabel("CharacterType", IsBoss ? "Boss" : "Enemy");
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
-        instance.start();
-        instance.release();
+        SoundManager.PlayOneShot(SoundManager.Events.activationBark, transform.position,
+            ("CharacterType", IsBoss ? "Boss" : "Enemy"));
     }
 
     public EquippedItem equippedItem;
@@ -62,8 +87,7 @@ public class Entity : MonoBehaviour
     [SerializeField] private SpriteRenderer keyVisual;
     [SerializeField] public Transform animationParent;
 
-    [Header("Audio")]
-    [SerializeField] private EventReference activationBarkSoundEvent;
+    private EventInstance bossPresenceInstance;
     public GameObject currentAnimation { get; set; }
 
 
@@ -81,6 +105,7 @@ public class Entity : MonoBehaviour
 
     public void Initialize(Grid grid, Vector2Int startPosition, EntityMovementFactory movementFactory, ITick tick, EntitySpawner entitySpawner)
     {
+        ReleaseBossPresence();
         IsActiveForTurns = true;
         if (agent != null) agent.enabled = true;
         this.entitySpawner = entitySpawner;
@@ -135,6 +160,11 @@ public class Entity : MonoBehaviour
         OnDropItemToGrid?.Invoke(this, item, gridPlaceable.Position);
     }
 
+    void OnDisable()
+    {
+        ReleaseBossPresence();
+    }
+
     /////// apply during play //////
     void Update()
     {
@@ -143,6 +173,11 @@ public class Entity : MonoBehaviour
             movementAnimator.SetBool("isMoving", moveInfo.IsMoving);
         }
         abilityController.Update();
+
+        if (bossPresenceInstance.isValid())
+        {
+            bossPresenceInstance.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
+        }
     }
 }
 

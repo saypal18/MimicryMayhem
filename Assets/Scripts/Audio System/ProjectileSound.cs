@@ -4,16 +4,14 @@ using FMOD.Studio;
 
 public class ProjectileSound : MonoBehaviour
 {
-    [SerializeField] private EventReference projectileSoundEvent;
-
     private EventInstance instance;
 
     void OnEnable()
     {
-        if (Trainer.IsTraining) return;
-        if (projectileSoundEvent.IsNull) return;
+        if (Trainer.IsTraining || SoundManager.Events == null) return;
+        if (SoundManager.CheckEventNull(SoundManager.Events.projectileFlight, this)) return;
 
-        instance = RuntimeManager.CreateInstance(projectileSoundEvent);
+        instance = RuntimeManager.CreateInstance(SoundManager.Events.projectileFlight);
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
         instance.start();
     }
